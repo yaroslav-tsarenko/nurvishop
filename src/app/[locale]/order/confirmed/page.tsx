@@ -5,31 +5,92 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/Button";
-import { CheckCircle, Package, MapPin, Truck, Mail, ChevronRight } from "lucide-react";
+import { CheckCircle, AlertTriangle, Package, MapPin, Truck, Mail, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { useCurrency } from "@/providers/CurrencyProvider";
 import { formatPrice } from "@/lib/utils/format-price";
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner/LoadingSpinner";
+import { useCart } from "@/providers/CartProvider";
 import type { OrderDetail } from "@/types/order";
 
 function ConfirmedContent() {
   const t = useTranslations("notifications");
   const { currency, convert } = useCurrency();
+  const { clearCart } = useCart();
   const searchParams = useSearchParams();
   const orderId = searchParams.get("orderId");
+  const paymentLinkId = searchParams.get("id");
+  const checkoutId = searchParams.get("checkoutId");
+
   const [order, setOrder] = useState<OrderDetail | null>(null);
-  const [loading, setLoading] = useState(!!orderId);
+  const [loading, setLoading] = useState(!!orderId || (!!paymentLinkId && !!checkoutId));
 
   useEffect(() => {
-    if (!orderId) return;
-    fetch(`/api/orders/${orderId}`)
-      .then((res) => res.json())
-      .then((data) => setOrder(data?.id ? data : null))
-      .catch(() => setOrder(null))
-      .finally(() => setLoading(false));
-  }, [orderId]);
+    if (paymentLinkId && checkoutId) {
+      let isSubscribed = true;
+      let intervalId: NodeJS.Timeout;
 
-  if (loading) return <LoadingSpinner />;
+      const checkStatus = () => {
+        fetch(`/api/orders/verify?paymentLinkId=${paymentLinkId}&checkoutId=${checkoutId}`)
+          .then((res) => res.json())
+          .then((data) => {
+            if (!isSubscribed) return;
+            if (data?.id) {
+              setOrder(data);
+              if (data.paymentStatus === "PAID") {
+                clearCart();
+                setLoading(false);
+                clearInterval(intervalId);
+              } else if (data.paymentStatus === "FAILED") {
+                setLoading(false);
+                clearInterval(intervalId);
+              }
+            }
+          })
+          .catch(() => {
+            if (isSubscribed) {
+              setOrder(null);
+              setLoading(false);
+              clearInterval(intervalId);
+            }
+          });
+      };
+
+      // Run immediately
+      checkStatus();
+
+      // Poll every 2 seconds
+      intervalId = setInterval(checkStatus, 2000);
+
+      return () => {
+        isSubscribed = false;
+        clearInterval(intervalId);
+      };
+    } else if (orderId) {
+      fetch(`/api/orders/${orderId}`)
+        .then((res) => res.json())
+        .then((data) => {
+          setOrder(data?.id ? data : null);
+          if (data?.paymentStatus === "PAID") {
+            clearCart();
+          }
+        })
+        .catch(() => setOrder(null))
+        .finally(() => setLoading(false));
+    }
+  }, [orderId, paymentLinkId, checkoutId, clearCart]);
+
+  if (loading) {
+    return (
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "60vh", gap: "1.5rem" }}>
+        <LoadingSpinner />
+        <h2 style={{ fontSize: "1.25rem", fontWeight: 700 }}>Checking payment status...</h2>
+        <p style={{ color: "var(--color-text-secondary)", fontSize: "0.875rem" }}>Please do not close or refresh this page.</p>
+      </div>
+    );
+  }
+
+  const isFailed = order?.paymentStatus === "FAILED";
 
   return (
     <div style={{ maxWidth: "640px", margin: "2rem auto 4rem", padding: "0 1rem" }}>
@@ -47,21 +108,25 @@ function ConfirmedContent() {
             width: 72,
             height: 72,
             borderRadius: "50%",
-            background: "var(--color-success-light, rgba(34,197,94,0.12))",
-            color: "var(--color-success)",
+            background: isFailed 
+              ? "rgba(239, 68, 68, 0.12)"
+              : "var(--color-success-light, rgba(34,197,94,0.12))",
+            color: isFailed ? "var(--color-danger, #ef4444)" : "var(--color-success)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             margin: "0 auto 1rem",
           }}
         >
-          <CheckCircle size={40} />
+          {isFailed ? <AlertTriangle size={40} /> : <CheckCircle size={40} />}
         </motion.div>
         <h1 style={{ fontSize: "1.75rem", fontWeight: 800, letterSpacing: "-0.02em", marginBottom: "0.5rem" }}>
-          {t("orderPlaced")}
+          {isFailed ? "Payment Failed" : t("orderPlaced")}
         </h1>
         <p style={{ color: "var(--color-text-secondary)", fontSize: "0.9375rem" }}>
-          Thank you for your order. We&apos;ll send a confirmation email shortly.
+          {isFailed 
+            ? "Your payment transaction could not be completed. Please try again or use another payment method."
+            : "Thank you for your order. We'll send a confirmation email shortly."}
         </p>
         {order && (
           <p style={{ marginTop: "0.75rem", fontSize: "0.875rem", color: "var(--color-text-tertiary)" }}>
@@ -164,37 +229,45 @@ function ConfirmedContent() {
                 Next Steps
               </span>
             </div>
-            <ul style={{ fontSize: "0.8125rem", color: "var(--color-text-secondary)", lineHeight: 1.6, paddingLeft: "1rem", margin: 0 }}>
-              <li>We&apos;ll prepare your order within 1–2 business days</li>
-              <li>You&apos;ll receive a tracking link by email</li>
-              <li>Estimated delivery depends on destination</li>
-            </ul>
+            {isFailed ? (
+              <p style={{ fontSize: "0.8125rem", color: "var(--color-text-secondary)", lineHeight: 1.5, margin: 0 }}>
+                Please check your card details and try again. Alternatively, you can contact our customer support for assistance.
+              </p>
+            ) : (
+              <ul style={{ fontSize: "0.8125rem", color: "var(--color-text-secondary)", lineHeight: 1.6, paddingLeft: "1rem", margin: 0 }}>
+                <li>We&apos;ll prepare your order within 1–2 business days</li>
+                <li>You&apos;ll receive a tracking link by email</li>
+                <li>Estimated delivery depends on destination</li>
+              </ul>
+            )}
           </div>
         </motion.div>
       )}
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
-        style={{
-          padding: "0.875rem 1rem",
-          background: "var(--color-accent-light)",
-          border: "1px solid var(--color-accent)",
-          borderRadius: "var(--radius-lg)",
-          display: "flex",
-          alignItems: "center",
-          gap: "0.625rem",
-          marginBottom: "1.5rem",
-          fontSize: "0.8125rem",
-        }}
-      >
-        <Mail size={16} color="var(--color-accent)" style={{ flexShrink: 0 }} />
-        <span>
-          A confirmation email has been sent to{" "}
-          <strong>{order?.customerEmail || "your email"}</strong>
-        </span>
-      </motion.div>
+      {order && !isFailed && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          style={{
+            padding: "0.875rem 1rem",
+            background: "var(--color-accent-light)",
+            border: "1px solid var(--color-accent)",
+            borderRadius: "var(--radius-lg)",
+            display: "flex",
+            alignItems: "center",
+            gap: "0.625rem",
+            marginBottom: "1.5rem",
+            fontSize: "0.8125rem",
+          }}
+        >
+          <Mail size={16} color="var(--color-accent)" style={{ flexShrink: 0 }} />
+          <span>
+            A confirmation email has been sent to{" "}
+            <strong>{order.customerEmail}</strong>
+          </span>
+        </motion.div>
+      )}
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
