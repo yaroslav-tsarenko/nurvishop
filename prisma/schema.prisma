@@ -20,11 +20,16 @@ model User {
   role         UserRole  @default(CUSTOMER)
   phone        String?
 
+  welcomeDiscountUsed    Boolean @default(false)
+  newsletterDiscountUsed Boolean @default(false)
+  newsletterSubscribed   Boolean @default(false)
+
   addresses          Address[]
   orders             Order[]
   reviews            Review[]
   wishlist           WishlistItem[]
   passwordResetTokens PasswordResetToken[]
+  newsletter         Newsletter?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -206,10 +211,12 @@ model Order {
   shippingCost    Decimal       @default(0)
   trackingNumber  String?
 
-  subtotal       Decimal
-  taxAmount      Decimal
-  discountAmount Decimal @default(0)
-  total          Decimal
+  subtotal        Decimal
+  taxAmount       Decimal
+  discountAmount  Decimal  @default(0)
+  discountCode    String?
+  discountPercent Decimal? @db.Decimal(5, 2)
+  total           Decimal
 
   paymentStatus PaymentStatus @default(PENDING)
   paymentMethod String?
@@ -425,4 +432,18 @@ model FeedConfig {
   url           String?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+}
+
+// ── Newsletter & Discounts ─────────────────────
+
+model Newsletter {
+  id             String    @id @default(cuid())
+  email          String    @unique
+  userId         String?   @unique
+  user           User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  discountCode   String?   @unique
+  discountUsed   Boolean   @default(false)
+  unsubscribedAt DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 }
