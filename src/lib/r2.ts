@@ -47,16 +47,35 @@ export async function uploadToR2(
     throw new Error("R2 storage is not configured. Set R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, and R2_BUCKET_NAME in .env");
   }
 
+  if (!hasPublicUrl()) {
+    console.warn(
+      "[r2] R2_PUBLIC_URL is not set — uploaded objects will not be browser-accessible. " +
+        "Enable public access on the bucket in Cloudflare dashboard and set R2_PUBLIC_URL in .env.",
+    );
+  }
+
   const client = getR2Client();
 
-  await client.send(
-    new PutObjectCommand({
-      Bucket: R2_BUCKET_NAME,
-      Key: key,
-      Body: buffer,
-      ContentType: contentType,
-    }),
-  );
+  try {
+    await client.send(
+      new PutObjectCommand({
+        Bucket: R2_BUCKET_NAME,
+        Key: key,
+        Body: buffer,
+        ContentType: contentType,
+      }),
+    );
+  } catch (err) {
+    const e = err as { name?: string; message?: string; $metadata?: { httpStatusCode?: number } };
+    console.error("[r2] PutObject failed", {
+      bucket: R2_BUCKET_NAME,
+      key,
+      name: e.name,
+      message: e.message,
+      httpStatusCode: e.$metadata?.httpStatusCode,
+    });
+    throw new Error(`R2 upload failed: ${e.name || "Unknown"} — ${e.message || "no message"}`);
+  }
 
   return getPublicUrl(key);
 }

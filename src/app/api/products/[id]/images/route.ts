@@ -2,10 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/auth";
 import { uploadToR2, isR2Configured, deleteFromR2 } from "@/lib/r2";
-import { writeFile, mkdir } from "fs/promises";
-import path from "path";
+
+export const runtime = "nodejs";
+export const maxDuration = 60;
 
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/avif", "image/gif"];
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB per file
+const MAX_TOTAL_SIZE = 4 * 1024 * 1024; // Vercel serverless body limit is ~4.5MB
 
 export async function POST(
   request: NextRequest,
@@ -24,11 +27,46 @@ export async function POST(
       return NextResponse.json({ error: "Product not found" }, { status: 404 });
     }
 
-    const formData = await request.formData();
+    let formData: FormData;
+    try {
+      formData = await request.formData();
+    } catch (err) {
+      console.error("[images/upload] Failed to parse formData", err);
+      return NextResponse.json(
+        { error: "Request body too large or malformed. Try uploading fewer/smaller images (each < 4MB)." },
+        { status: 413 },
+      );
+    }
+
     const files = formData.getAll("files") as File[];
 
     if (files.length === 0) {
       return NextResponse.json({ error: "No files provided" }, { status: 400 });
+    }
+
+    let totalSize = 0;
+    for (const file of files) {
+      if (!ALLOWED_TYPES.includes(file.type)) {
+        return NextResponse.json(
+          { error: `Invalid file type "${file.type}". Allowed: JPEG, PNG, WebP, AVIF, GIF` },
+          { status: 400 },
+        );
+      }
+      if (file.size > MAX_FILE_SIZE) {
+        return NextResponse.json(
+          { error: `File "${file.name}" is too large (${(file.size / 1024 / 1024).toFixed(1)}MB). Max 10MB per file.` },
+          { status: 413 },
+        );
+      }
+      totalSize += file.size;
+    }
+    if (totalSize > MAX_TOTAL_SIZE) {
+      return NextResponse.json(
+        {
+          error: `Total upload size ${(totalSize / 1024 / 1024).toFixed(1)}MB exceeds ~4MB. Upload images one at a time or compress them.`,
+        },
+        { status: 413 },
+      );
     }
 
     const maxSort = await prisma.productImage.findFirst({
@@ -40,22 +78,19 @@ export async function POST(
 
     const uploaded: { id: string; url: string; alt: string | null; sortOrder: number }[] = [];
 
-    for (const file of files) {
-      if (!ALLOWED_TYPES.includes(file.type)) continue;
+    if (!isR2Configured()) {
+      return NextResponse.json(
+        { error: "R2 storage is not configured. Set R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET_NAME." },
+        { status: 500 },
+      );
+    }
 
+    for (const file of files) {
       const fileExt = file.name.split(".").pop() || "jpg";
       const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}.${fileExt}`;
       const buffer = Buffer.from(await file.arrayBuffer());
 
-      let url: string;
-      if (isR2Configured()) {
-        url = await uploadToR2(buffer, fileName, file.type, "products");
-      } else {
-        const uploadDir = path.join(process.cwd(), "public", "uploads", "products");
-        await mkdir(uploadDir, { recursive: true });
-        await writeFile(path.join(uploadDir, fileName), buffer);
-        url = `/uploads/products/${fileName}`;
-      }
+      const url = await uploadToR2(buffer, fileName, file.type, "products");
 
       const image = await prisma.productImage.create({
         data: {
@@ -72,7 +107,8 @@ export async function POST(
     return NextResponse.json({ images: uploaded });
   } catch (error) {
     console.error("Error uploading product images:", error);
-    return NextResponse.json({ error: "Upload failed" }, { status: 500 });
+    const message = error instanceof Error ? error.message : "Upload failed";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 
