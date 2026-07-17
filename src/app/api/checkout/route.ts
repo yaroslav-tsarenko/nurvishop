@@ -67,9 +67,11 @@ export async function POST(request: NextRequest) {
         : baseCurrency);
 
     const taxRate = Number(settings?.taxRate ?? 21);
-    const taxAmount = +(discountedSubtotal * (taxRate / 100)).toFixed(2);
+    // Product prices are VAT-inclusive, so VAT is the portion already contained
+    // in the price rather than an amount added on top of the total.
+    const taxAmount = +(discountedSubtotal - discountedSubtotal / (1 + taxRate / 100)).toFixed(2);
     const shippingCost = discountedSubtotal >= Number(settings?.freeShippingMin ?? 100) ? 0 : 5.99;
-    const total = +(discountedSubtotal + taxAmount + shippingCost).toFixed(2);
+    const total = +(discountedSubtotal + shippingCost).toFixed(2);
 
     // Convert total to the selected currency for Oppwa
     let totalInSelectedCurrency = total;

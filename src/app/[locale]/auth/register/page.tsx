@@ -560,7 +560,7 @@ export default function RegisterPage() {
         </form>
 
         <p className={styles.authFooter}>
-          {t("haveAccount")}{" "}
+          {t("hasAccount")}{" "}
           <Link href="/auth/login">{t("signIn")}</Link>
         </p>
       </motion.div>

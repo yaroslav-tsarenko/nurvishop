@@ -4,8 +4,9 @@ import Image from "next/image";
 import { Link } from "@/i18n/routing";
 import { Heart, ShoppingCart, Star, Eye } from "lucide-react";
 import { useCart } from "@/providers/CartProvider";
+import { useCurrency } from "@/providers/CurrencyProvider";
 import { formatPrice } from "@/lib/utils/format-price";
-import { getProductImage, getProductImageFallback } from "@/lib/utils/product-image";
+import { getProductImage, getProductImageFallback, shouldUnoptimizeImage } from "@/lib/utils/product-image";
 import styles from "./MarketplaceProductCard.module.css";
 
 interface Props {
@@ -26,6 +27,7 @@ interface Props {
 
 export function MarketplaceProductCard({ product }: Props) {
   const { addItem } = useCart();
+  const { currency, convert } = useCurrency();
   const price = Number(product.price);
   const comparePrice = product.comparePrice ? Number(product.comparePrice) : null;
   const hasDiscount = comparePrice && comparePrice > price;
@@ -62,6 +64,7 @@ export function MarketplaceProductCard({ product }: Props) {
           width={200}
           height={200}
           className={styles.image}
+          unoptimized={shouldUnoptimizeImage(imgSrc)}
           onError={(e) => {
             (e.target as HTMLImageElement).src = getProductImageFallback();
           }}
@@ -100,9 +103,9 @@ export function MarketplaceProductCard({ product }: Props) {
         </div>
         <div className={styles.priceRow}>
           <div className={styles.prices}>
-            <span className={styles.price}>{formatPrice(price)}</span>
+            <span className={styles.price}>{formatPrice(convert(price), currency)}</span>
             {hasDiscount && (
-              <span className={styles.oldPrice}>{formatPrice(comparePrice)}</span>
+              <span className={styles.oldPrice}>{formatPrice(convert(comparePrice), currency)}</span>
             )}
           </div>
           <button

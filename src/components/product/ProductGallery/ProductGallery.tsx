@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { shouldUnoptimizeImage } from "@/lib/utils/product-image";
 import styles from "./ProductGallery.module.css";
 
 interface ProductGalleryProps {
@@ -32,6 +33,7 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
           sizes="(max-width: 768px) 100vw, 50vw"
           style={{ objectFit: "contain" }}
           priority
+          unoptimized={shouldUnoptimizeImage(images[selectedIndex].url)}
         />
       </div>
       {images.length > 1 && (
@@ -48,6 +50,7 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
                 fill
                 sizes="64px"
                 style={{ objectFit: "contain" }}
+                unoptimized={shouldUnoptimizeImage(image.url)}
               />
             </button>
           ))}

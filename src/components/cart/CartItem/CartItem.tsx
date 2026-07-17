@@ -6,6 +6,7 @@ import { Trash2 } from "lucide-react";
 import { QuantitySelector } from "@/components/shared/QuantitySelector/QuantitySelector";
 import { PriceDisplay } from "@/components/shared/PriceDisplay/PriceDisplay";
 import { useCart } from "@/providers/CartProvider";
+import { shouldUnoptimizeImage } from "@/lib/utils/product-image";
 import type { CartItem as CartItemType } from "@/types/cart";
 import styles from "./CartItem.module.css";
 
@@ -26,6 +27,7 @@ export function CartItem({ item }: CartItemProps) {
             fill
             sizes="80px"
             style={{ objectFit: "contain", padding: "4px" }}
+            unoptimized={shouldUnoptimizeImage(item.imageUrl)}
           />
         ) : (
           <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.625rem", color: "var(--color-text-tertiary)" }}>

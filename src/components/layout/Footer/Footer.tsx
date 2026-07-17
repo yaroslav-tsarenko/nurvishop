@@ -5,6 +5,8 @@ import { Link } from "@/i18n/routing";
 import Image from "next/image";
 import { FaLinkedinIn, FaInstagram } from "react-icons/fa6";
 import { AvontLogo } from "../AvontLogo";
+import { COMPANY } from "@/lib/utils/constants";
+import { openCookieSettings } from "@/components/shared/CookieConsent/CookieConsent";
 import visaLogo from "@/assets/visa-logo.svg";
 import mastercardLogo from "@/assets/mastercard-logo.svg";
 import pciDssLogo from "@/assets/pci-dss-compliant-logo-vector.svg";
@@ -70,8 +72,26 @@ export function Footer() {
               <li><Link href="/policies/shipping" className={styles.link}>Shipping Policy</Link></li>
               <li><Link href="/policies/warranty" className={styles.link}>Warranty</Link></li>
               <li><Link href="/policies/payment" className={styles.link}>Payment Policy</Link></li>
+              <li><Link href="/policies/cookies" className={styles.link}>Cookie Policy</Link></li>
+              <li>
+                <button type="button" onClick={openCookieSettings} className={styles.linkButton}>
+                  Cookie Settings
+                </button>
+              </li>
             </ul>
           </div>
+        </div>
+
+        <div className={styles.legalBar}>
+          <p className={styles.legalText}>
+            {COMPANY.tradingName} is a trading name of <strong>{COMPANY.legalName}</strong>, a company
+            registered in England and Wales (company no. {COMPANY.companyNumber}).
+            {" "}Registered office: {COMPANY.addressInline}.
+          </p>
+          <p className={styles.legalText}>
+            VAT is included in all product prices where applicable. {COMPANY.legalName} is the Merchant of
+            Record for orders placed on this website.
+          </p>
         </div>
 
         <div className={styles.bottom}>

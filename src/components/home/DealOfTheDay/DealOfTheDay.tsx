@@ -6,7 +6,8 @@ import { Link } from "@/i18n/routing";
 import { ArrowRight } from "lucide-react";
 import { motion, useInView } from "framer-motion";
 import { formatPrice } from "@/lib/utils/format-price";
-import { getProductImage, getProductImageFallback } from "@/lib/utils/product-image";
+import { useCurrency } from "@/providers/CurrencyProvider";
+import { getProductImage, getProductImageFallback, shouldUnoptimizeImage } from "@/lib/utils/product-image";
 import { getDiscountPercent, type HomepageProduct } from "@/lib/homepage-products";
 import styles from "./DealOfTheDay.module.css";
 
@@ -26,6 +27,7 @@ function getTimeUntilMidnight() {
 }
 
 export function DealOfTheDay({ product }: Props) {
+  const { currency, convert } = useCurrency();
   const [time, setTime] = useState(getTimeUntilMidnight);
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-60px" });
@@ -74,9 +76,9 @@ export function DealOfTheDay({ product }: Props) {
           Limited time offer — grab it before the deal expires!
         </p>
         <div className={styles.priceRow}>
-          <span className={styles.newPrice}>{formatPrice(Number(product.price))}</span>
+          <span className={styles.newPrice}>{formatPrice(convert(Number(product.price)), currency)}</span>
           {product.comparePrice && (
-            <span className={styles.oldPrice}>{formatPrice(Number(product.comparePrice))}</span>
+            <span className={styles.oldPrice}>{formatPrice(convert(Number(product.comparePrice)), currency)}</span>
           )}
           {discount > 0 && <span className={styles.discountTag}>-{discount}%</span>}
         </div>
@@ -100,6 +102,7 @@ export function DealOfTheDay({ product }: Props) {
             width={240}
             height={200}
             className={styles.productImage}
+            unoptimized={shouldUnoptimizeImage(imgUrl)}
             onError={(e) => {
               (e.target as HTMLImageElement).src = getProductImageFallback("240x200");
             }}

@@ -6,7 +6,8 @@ import { Link } from "@/i18n/routing";
 import { Flame, ChevronLeft, ChevronRight } from "lucide-react";
 import { motion, useInView } from "framer-motion";
 import { formatPrice } from "@/lib/utils/format-price";
-import { getProductImage, getProductImageFallback } from "@/lib/utils/product-image";
+import { useCurrency } from "@/providers/CurrencyProvider";
+import { getProductImage, getProductImageFallback, shouldUnoptimizeImage } from "@/lib/utils/product-image";
 import { getDiscountPercent, type HomepageProduct } from "@/lib/homepage-products";
 import styles from "./SaleStrip.module.css";
 
@@ -15,6 +16,7 @@ interface Props {
 }
 
 export function SaleStrip({ products }: Props) {
+  const { currency, convert } = useCurrency();
   const scrollRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-40px" });
@@ -80,6 +82,7 @@ export function SaleStrip({ products }: Props) {
                       width={120}
                       height={100}
                       className={styles.image}
+                      unoptimized={shouldUnoptimizeImage(imgUrl)}
                       onError={(e) => {
                         (e.target as HTMLImageElement).src = getProductImageFallback("120x100");
                       }}
@@ -87,9 +90,9 @@ export function SaleStrip({ products }: Props) {
                   </div>
                   <h4 className={styles.cardName}>{p.name}</h4>
                   <div className={styles.prices}>
-                    <span className={styles.newPrice}>{formatPrice(Number(p.price))}</span>
+                    <span className={styles.newPrice}>{formatPrice(convert(Number(p.price)), currency)}</span>
                     {p.comparePrice && (
-                      <span className={styles.oldPrice}>{formatPrice(Number(p.comparePrice))}</span>
+                      <span className={styles.oldPrice}>{formatPrice(convert(Number(p.comparePrice)), currency)}</span>
                     )}
                   </div>
                 </Link>

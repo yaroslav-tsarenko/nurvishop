@@ -22,3 +22,20 @@ export const PAYMENT_STATUSES = [
 ] as const;
 
 export const CURRENCIES = ["EUR", "USD", "GBP"] as const;
+
+export const VAT_RATE = 21;
+
+export const COMPANY = {
+  legalName: "AVONTRA LTD",
+  tradingName: "AvontShop",
+  companyNumber: "17245887",
+  addressLines: [
+    "Dept 6735, 196 High Road",
+    "Wood Green, London",
+    "United Kingdom, N22 8HH",
+  ],
+  addressInline:
+    "Dept 6735, 196 High Road, Wood Green, London, United Kingdom, N22 8HH",
+  phone: "+44 7360 545980",
+  email: "info@avontshop.com",
+} as const;

@@ -25,3 +25,13 @@ export function getProductImage(
 export function getProductImageFallback(size = "400x400"): string {
   return `${PLACEHOLDER_BASE}/${size}/E0E0E0/999999?text=No+Image`;
 }
+
+// Supplier-hosted images (pbplus.eu) block Vercel's Image Optimization fetches
+// from data-center IPs, which shows up as broken images in production. Loading
+// them unoptimized makes the browser fetch them directly, which works.
+const UNOPTIMIZED_HOSTS = ["pbplus.eu"];
+
+export function shouldUnoptimizeImage(src: string | null | undefined): boolean {
+  if (!src) return false;
+  return UNOPTIMIZED_HOSTS.some((host) => src.includes(host));
+}

@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { ShoppingCart, Heart, ImageOff } from "lucide-react";
 import { PriceDisplay } from "@/components/shared/PriceDisplay/PriceDisplay";
 import { useCart } from "@/providers/CartProvider";
+import { shouldUnoptimizeImage } from "@/lib/utils/product-image";
 import styles from "./ProductCard.module.css";
 
 interface ProductCardProps {
@@ -68,6 +69,7 @@ export function ProductCard({
               fill
               sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
               className={styles.image}
+              unoptimized={shouldUnoptimizeImage(imageUrl)}
             />
           </div>
         ) : (

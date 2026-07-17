@@ -16,7 +16,12 @@ import { useCurrency } from "@/providers/CurrencyProvider";
 import { checkoutSchema, type CheckoutFormData } from "@/lib/validators/checkout";
 import { formatPrice } from "@/lib/utils/format-price";
 import { COUNTRIES } from "@/lib/countries";
+import { COMPANY, VAT_RATE } from "@/lib/utils/constants";
+import { shouldUnoptimizeImage } from "@/lib/utils/product-image";
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs/Breadcrumbs";
+import visaLogo from "@/assets/visa-logo.svg";
+import mastercardLogo from "@/assets/mastercard-logo.svg";
+import pciDssLogo from "@/assets/pci-dss-compliant-logo-vector.svg";
 import { toast } from "sonner";
 import styles from "./checkout.module.css";
 import {
@@ -121,6 +126,8 @@ export default function CheckoutPage() {
   const [promoInput, setPromoInput] = useState("");
   const [promoError, setPromoError] = useState<string | null>(null);
   const [applyingPromo, setApplyingPromo] = useState(false);
+  const [agreed, setAgreed] = useState(false);
+  const [agreeError, setAgreeError] = useState(false);
 
   const {
     register,
@@ -159,8 +166,11 @@ export default function CheckoutPage() {
 
   const discountAmount = discount ? +(cart.subtotal * (discount.percent / 100)).toFixed(2) : 0;
   const discountedSubtotal = Math.max(cart.subtotal - discountAmount, 0);
-  const taxOnDiscounted = +(discountedSubtotal * 0.21).toFixed(2);
+  // Prices are VAT-inclusive, so VAT is the portion already contained in the
+  // product price rather than an amount added on top.
+  const vatIncluded = +(discountedSubtotal - discountedSubtotal / (1 + VAT_RATE / 100)).toFixed(2);
   const finalShipping = discountedSubtotal >= 100 && selectedMethod === "free" ? 0 : shippingPrice;
+  const orderTotal = +(discountedSubtotal + finalShipping).toFixed(2);
 
   useEffect(() => {
     let cancelled = false;
@@ -214,6 +224,11 @@ export default function CheckoutPage() {
   };
 
   const onSubmit = async (data: CheckoutFormData) => {
+    if (!agreed) {
+      setAgreeError(true);
+      toast.error("Please agree to the website policies before placing your order.");
+      return;
+    }
     setSubmitting(true);
     try {
       const res = await fetch("/api/checkout", {
@@ -590,7 +605,7 @@ export default function CheckoutPage() {
                         flexShrink: 0,
                       }}>
                         {item.imageUrl ? (
-                          <Image src={item.imageUrl} alt={item.name} fill sizes="56px" style={{ objectFit: "contain", padding: "4px" }} />
+                          <Image src={item.imageUrl} alt={item.name} fill sizes="56px" style={{ objectFit: "contain", padding: "4px" }} unoptimized={shouldUnoptimizeImage(item.imageUrl)} />
                         ) : (
                           <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--color-text-tertiary)" }}>
                             <ImageOff size={18} />
@@ -607,6 +622,56 @@ export default function CheckoutPage() {
                     </motion.div>
                   ))}
                 </div>
+
+                {/* Merchant of Record / legal disclosure */}
+                <div style={{
+                  marginTop: "0.75rem",
+                  padding: "0.875rem 1rem",
+                  borderRadius: "12px",
+                  background: "var(--color-bg-secondary)",
+                  fontSize: "0.75rem",
+                  lineHeight: 1.6,
+                  color: "var(--color-text-secondary)",
+                }}>
+                  <div style={{ fontWeight: 700, color: "var(--color-text)", marginBottom: "0.25rem" }}>
+                    Sold by {COMPANY.legalName} (trading as {COMPANY.tradingName})
+                  </div>
+                  <div>Registered office: {COMPANY.addressInline}</div>
+                  <div>Company no. {COMPANY.companyNumber} · VAT included in prices where applicable</div>
+                  <div style={{ marginTop: "0.375rem" }}>
+                    {COMPANY.legalName} is the Merchant of Record for this order.
+                  </div>
+                </div>
+
+                {/* Policy agreement */}
+                <label
+                  style={{
+                    display: "flex",
+                    alignItems: "flex-start",
+                    gap: "0.625rem",
+                    marginTop: "0.75rem",
+                    fontSize: "0.8125rem",
+                    color: "var(--color-text-secondary)",
+                    cursor: "pointer",
+                  }}
+                >
+                  <input
+                    type="checkbox"
+                    checked={agreed}
+                    onChange={(e) => { setAgreed(e.target.checked); setAgreeError(false); }}
+                    style={{ marginTop: "0.15rem", width: 16, height: 16, flexShrink: 0, accentColor: "var(--color-accent)" }}
+                  />
+                  <span>
+                    I have read and agree to the{" "}
+                    <Link href="/policies/terms" target="_blank" style={{ color: "var(--color-accent)", fontWeight: 600 }}>Terms &amp; Conditions</Link>,{" "}
+                    <Link href="/policies/privacy" target="_blank" style={{ color: "var(--color-accent)", fontWeight: 600 }}>Privacy Policy</Link>,{" "}
+                    <Link href="/policies/returns" target="_blank" style={{ color: "var(--color-accent)", fontWeight: 600 }}>Returns Policy</Link> and{" "}
+                    <Link href="/policies/payment" target="_blank" style={{ color: "var(--color-accent)", fontWeight: 600 }}>Payment Policy</Link>.
+                  </span>
+                </label>
+                {agreeError && (
+                  <span style={errorStyle}>You must agree to the website policies to continue.</span>
+                )}
 
                 <div style={{ display: "flex", gap: "0.75rem", marginTop: "0.5rem" }}>
                   <Button variant="bordered" size="lg" onPress={() => setStep(1)} style={{ flex: "0 0 auto" }}>
@@ -679,7 +744,7 @@ export default function CheckoutPage() {
                   flexShrink: 0,
                 }}>
                   {item.imageUrl ? (
-                    <Image src={item.imageUrl} alt={item.name} fill sizes="40px" style={{ objectFit: "contain", padding: "2px" }} />
+                    <Image src={item.imageUrl} alt={item.name} fill sizes="40px" style={{ objectFit: "contain", padding: "2px" }} unoptimized={shouldUnoptimizeImage(item.imageUrl)} />
                   ) : (
                     <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#ccc" }}>
                       <ImageOff size={14} />
@@ -799,8 +864,8 @@ export default function CheckoutPage() {
               </span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span style={{ color: "var(--color-text-secondary)" }}>Tax (21%)</span>
-              <span style={{ fontWeight: 500 }}>{formatPrice(convert(taxOnDiscounted), currency)}</span>
+              <span style={{ color: "var(--color-text-secondary)" }}>Includes VAT ({VAT_RATE}%)</span>
+              <span style={{ fontWeight: 500 }}>{formatPrice(convert(vatIncluded), currency)}</span>
             </div>
             <div style={{
               display: "flex",
@@ -812,8 +877,11 @@ export default function CheckoutPage() {
               marginTop: "0.375rem",
             }}>
               <span>Total</span>
-              <span>{formatPrice(convert(discountedSubtotal + taxOnDiscounted + finalShipping), currency)}</span>
+              <span>{formatPrice(convert(orderTotal), currency)}</span>
             </div>
+            <p style={{ fontSize: "0.6875rem", color: "var(--color-text-tertiary)", margin: "0.25rem 0 0" }}>
+              All prices include VAT where applicable.
+            </p>
           </div>
 
           <div style={{
@@ -833,7 +901,25 @@ export default function CheckoutPage() {
               <Lock size={14} />
               Your data is protected
             </div>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.75rem", marginTop: "0.5rem" }}>
+              <Image src={visaLogo} alt="Visa" height={22} style={{ height: 22, width: "auto" }} />
+              <Image src={mastercardLogo} alt="Mastercard" height={22} style={{ height: 22, width: "auto" }} />
+              <Image src={pciDssLogo} alt="PCI DSS Compliant" height={26} style={{ height: 26, width: "auto" }} />
+            </div>
           </div>
+
+          {/* Merchant of Record disclosure */}
+          <p style={{
+            fontSize: "0.6875rem",
+            lineHeight: 1.6,
+            color: "var(--color-text-tertiary)",
+            textAlign: "center",
+            marginTop: "1rem",
+          }}>
+            Merchant of Record: <strong>{COMPANY.legalName}</strong>
+            <br />
+            {COMPANY.addressInline}
+          </p>
         </motion.div>
       </div>
     </div>

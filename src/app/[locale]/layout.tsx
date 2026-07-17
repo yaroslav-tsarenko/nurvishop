@@ -9,6 +9,7 @@ import { CurrencyProvider } from "@/providers/CurrencyProvider";
 import { ToastProvider } from "@/providers/ToastProvider";
 import { Header } from "@/components/layout/Header/Header";
 import { Footer } from "@/components/layout/Footer/Footer";
+import { CookieConsent } from "@/components/shared/CookieConsent/CookieConsent";
 
 interface LocaleLayoutProps {
   children: React.ReactNode;
@@ -36,6 +37,7 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
                 <Footer />
               </div>
               <ToastProvider />
+              <CookieConsent />
             </CartProvider>
           </CurrencyProvider>
         </AuthProvider>
