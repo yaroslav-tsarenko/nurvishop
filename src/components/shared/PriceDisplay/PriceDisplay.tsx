@@ -27,10 +27,11 @@ export function PriceDisplay({
     <div style={{ display: "flex", alignItems: "baseline", gap: "0.5rem" }}>
       <span
         style={{
+          fontFamily: "var(--font-display)",
           fontSize: sizes[size].price,
-          fontWeight: 800,
+          fontWeight: 600,
           letterSpacing: "-0.02em",
-          color: isOnSale ? "var(--color-danger)" : "var(--color-text)",
+          color: isOnSale ? "var(--color-accent)" : "var(--color-text)",
         }}
       >
         {formatPrice(convert(price), currency)}

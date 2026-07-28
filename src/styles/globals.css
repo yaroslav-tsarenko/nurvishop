@@ -14,7 +14,7 @@ html {
 
 body {
   font-family: var(--font-sans);
-  background-color: var(--color-bg);
+  background-color: var(--color-page);
   color: var(--color-text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -74,16 +74,17 @@ img {
 }
 
 .section-title {
-  font-size: 1.75rem;
-  font-weight: 800;
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  font-weight: 700;
   letter-spacing: -0.03em;
   color: var(--color-text);
-  line-height: 1.15;
+  line-height: 1.1;
 }
 
 @media (min-width: 768px) {
   .section-title {
-    font-size: 2.25rem;
+    font-size: 2.5rem;
   }
 }
 
@@ -97,6 +98,95 @@ img {
 
 .gradient-text {
   color: var(--color-accent);
+}
+
+/* ── Soft-Pop brand helpers ─────────────────────────────── */
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+.eyebrow {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+/* Accent word: violet or a hand-drawn butter marker swipe */
+.accent-word {
+  color: var(--color-accent);
+}
+
+.marker-underline {
+  position: relative;
+  white-space: nowrap;
+}
+.marker-underline::after {
+  content: "";
+  position: absolute;
+  left: -0.08em;
+  right: -0.08em;
+  bottom: 0.05em;
+  height: 0.42em;
+  background: var(--color-pop);
+  border-radius: 0.4em;
+  z-index: -1;
+  transform: rotate(-1.2deg);
+  opacity: 0.9;
+}
+
+/* Signature organic backdrop for imagery / tiles / empty states */
+.blob {
+  border-radius: var(--radius-blob);
+}
+.blob-lilac { background: var(--color-lilac); }
+.blob-blush { background: var(--color-blush-tint); }
+.blob-butter { background: var(--color-pop-tint); }
+
+/* Alternating page bands */
+.band-mist { background: var(--color-bg-secondary); }
+.band-white { background: var(--color-bg); }
+
+/* Soft pill card */
+.pop-card {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card);
+  transition: transform var(--dur-base) var(--ease-back),
+    box-shadow var(--dur-base) var(--ease-out-expo),
+    border-color var(--dur-base) ease;
+}
+.pop-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-card-hover);
+  border-color: var(--color-accent);
+}
+
+/* Springy press micro-interaction for buttons */
+.pop-btn:hover:not(:disabled) {
+  filter: brightness(1.02);
+  transform: translateY(-1px);
+}
+.pop-btn:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+/* Lilac focus ring for interactive elements */
+.focus-ring:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--color-focus-ring);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 .glass {

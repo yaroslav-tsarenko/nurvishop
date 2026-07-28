@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import Image from "next/image";
 import { FaLinkedinIn, FaInstagram } from "react-icons/fa6";
-import { AvontLogo } from "../AvontLogo";
+import { NurviLogo } from "../NurviLogo";
 import { COMPANY } from "@/lib/utils/constants";
 import { openCookieSettings } from "@/components/shared/CookieConsent/CookieConsent";
 import visaLogo from "@/assets/visa-logo.svg";
@@ -23,11 +23,11 @@ export function Footer() {
         <div className={styles.topSection}>
           <div className={styles.brandCol}>
             <Link href="/" className={styles.logo}>
-              <AvontLogo size={28} />
-              <span>AvontShop</span>
+              <NurviLogo size={30} />
+              <span>nurvishop</span>
             </Link>
             <p className={styles.brandDesc}>
-              Your trusted source for electrical materials, wiring, and installation supplies. Professional quality delivered to your door.
+              Fresh finds, friendly prices. nurvishop brings you lifestyle goods, accessories and everyday favourites — polished enough to pay with confidence.
             </p>
             <div className={styles.socialRow}>
               {process.env.NEXT_PUBLIC_LINKEDIN_URL && (
@@ -96,7 +96,7 @@ export function Footer() {
 
         <div className={styles.bottom}>
           <p className={styles.copyright}>
-            {t("copyright", { year: currentYear, storeName: "AvontShop" })}
+            {t("copyright", { year: currentYear, storeName: "nurvishop" })}
           </p>
           <div className={styles.paymentMethods}>
             <span className={styles.paymentBadge}>

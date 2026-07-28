@@ -12,7 +12,7 @@ function getFrom(): string {
   return (
     process.env.RESEND_FROM_EMAIL ||
     process.env.RESEND_FROM ||
-    "AvontShop <noreply@avontshop.com>"
+    "nurvishop <noreply@nurvishop.com>"
   );
 }
 
@@ -73,22 +73,22 @@ function emailWrapper(content: string, options: { preheader?: string } = {}): st
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>AvontShop</title>
+  <title>nurvishop</title>
 </head>
 <body style="margin:0;padding:0;background:${BG_COLOR};font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:${TEXT_COLOR};">
   ${preheader}
   <div style="max-width:600px;margin:0 auto;padding:32px 16px;">
     <div style="text-align:center;margin-bottom:24px;">
       <a href="${getSiteUrl()}" style="text-decoration:none;">
-        <span style="font-size:24px;font-weight:900;color:${BRAND_COLOR};letter-spacing:-0.03em;">AvontShop</span>
+        <span style="font-size:24px;font-weight:900;color:${BRAND_COLOR};letter-spacing:-0.03em;">nurvishop</span>
       </a>
     </div>
     <div style="background:#fff;border-radius:12px;padding:32px;border:1px solid #e5e5e5;">
       ${content}
     </div>
     <div style="text-align:center;margin-top:24px;font-size:12px;color:#999;line-height:1.6;">
-      <p style="margin:0 0 4px;">&copy; ${new Date().getFullYear()} AvontShop. All rights reserved.</p>
-      <p style="margin:0;">AVONTRA LTD &middot; London, United Kingdom &middot; <a href="${getSiteUrl()}" style="color:${BRAND_COLOR};text-decoration:none;">avontshop.com</a></p>
+      <p style="margin:0 0 4px;">&copy; ${new Date().getFullYear()} nurvishop. All rights reserved.</p>
+      <p style="margin:0;">AVONTRA LTD &middot; London, United Kingdom &middot; <a href="${getSiteUrl()}" style="color:${BRAND_COLOR};text-decoration:none;">nurvishop.com</a></p>
       <p style="margin:8px 0 0;">
         <a href="${getSiteUrl()}/en/policies/privacy" style="color:#999;text-decoration:underline;margin:0 6px;">Privacy</a>
         <a href="${getSiteUrl()}/en/policies/terms" style="color:#999;text-decoration:underline;margin:0 6px;">Terms</a>
@@ -128,10 +128,10 @@ export async function sendWelcomeEmail(email: string, name?: string | null): Pro
 
   return send({
     to: email,
-    subject: "Welcome to AvontShop!",
+    subject: "Welcome to nurvishop!",
     html: emailWrapper(
       `
-      <h1 style="margin:0 0 16px;font-size:22px;font-weight:800;color:${TEXT_COLOR};">${greeting}, welcome to AvontShop!</h1>
+      <h1 style="margin:0 0 16px;font-size:22px;font-weight:800;color:${TEXT_COLOR};">${greeting}, welcome to nurvishop!</h1>
       <p style="color:${MUTED_COLOR};line-height:1.6;margin:0 0 16px;">
         Your account has been created successfully. You now have access to thousands of electrical materials and supplies at competitive prices.
       </p>
@@ -149,7 +149,7 @@ export async function sendWelcomeEmail(email: string, name?: string | null): Pro
         Standard 2-year EU warranty on all products
       </p>
     `,
-      { preheader: `${greeting}! Your AvontShop account is ready.` },
+      { preheader: `${greeting}! Your nurvishop account is ready.` },
     ),
   });
 }
@@ -402,7 +402,7 @@ export async function sendOrderInvoiceEmail(data: OrderEmailData): Promise<boole
 
       <p style="color:#999;font-size:12px;margin:24px 0 0;line-height:1.6;text-align:center;">
         VAT is included in the prices shown where applicable. This invoice serves as proof of purchase.<br />
-        For any questions, reply to this email or contact <a href="mailto:info@avontshop.com" style="color:${BRAND_COLOR};">info@avontshop.com</a>.
+        For any questions, reply to this email or contact <a href="mailto:info@nurvishop.com" style="color:${BRAND_COLOR};">info@nurvishop.com</a>.
       </p>
     `,
       { preheader: `Invoice for order #${id} — ${formatEur(toNum(data.total))}` },
@@ -532,12 +532,12 @@ export async function sendPasswordResetEmail(email: string, resetUrl: string, na
   const greeting = name ? `Hi ${escape(name)}` : "Hi there";
   return send({
     to: email,
-    subject: "Reset your AvontShop password",
+    subject: "Reset your nurvishop password",
     html: emailWrapper(
       `
       <h1 style="margin:0 0 16px;font-size:22px;font-weight:800;color:${TEXT_COLOR};">Reset your password</h1>
       <p style="color:${MUTED_COLOR};line-height:1.6;margin:0 0 16px;">
-        ${greeting}, we received a request to reset the password on your AvontShop account.
+        ${greeting}, we received a request to reset the password on your nurvishop account.
         Click the button below to choose a new password. This link expires in <strong>1 hour</strong>.
       </p>
       ${button(resetUrl, "Reset Password")}
@@ -550,7 +550,7 @@ export async function sendPasswordResetEmail(email: string, resetUrl: string, na
         If you didn&rsquo;t request this, you can safely ignore this email — your password won&rsquo;t change.
       </p>
     `,
-      { preheader: "Reset your AvontShop password — link expires in 1 hour." },
+      { preheader: "Reset your nurvishop password — link expires in 1 hour." },
     ),
   });
 }
@@ -602,7 +602,7 @@ export async function sendContactFormEmail(submission: ContactSubmission): Promi
 export async function sendContactAutoReplyEmail(submission: ContactSubmission): Promise<boolean> {
   return send({
     to: submission.email,
-    subject: "We received your message — AvontShop",
+    subject: "We received your message — nurvishop",
     html: emailWrapper(
       `
       <h1 style="margin:0 0 16px;font-size:22px;font-weight:800;color:${TEXT_COLOR};">Thanks for reaching out!</h1>

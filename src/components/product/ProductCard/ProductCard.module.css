@@ -12,13 +12,14 @@
 .card:hover {
   transform: translateY(-6px);
   box-shadow: var(--shadow-card-hover);
+  border-color: var(--color-accent);
 }
 
 .imageWrapper {
   position: relative;
   aspect-ratio: 1;
   overflow: hidden;
-  background: #fff;
+  background: var(--color-lilac);
 }
 
 .imageInner {
@@ -115,8 +116,8 @@
 }
 
 .saleBadge {
-  background: var(--color-danger);
-  color: white;
+  background: var(--color-pop);
+  color: var(--color-pop-ink);
 }
 
 .outOfStock {

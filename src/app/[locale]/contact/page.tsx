@@ -48,7 +48,7 @@ const errorStyle: React.CSSProperties = {
 };
 
 const CONTACT_INFO = [
-  { icon: Mail, title: "Email Us", detail: "info@avontshop.com", sub: "We reply within 24 hours" },
+  { icon: Mail, title: "Email Us", detail: "info@nurvishop.com", sub: "We reply within 24 hours" },
   { icon: Phone, title: "Call Us", detail: "+44 7360 545980", sub: "Mon-Fri 9:00-18:00 GMT" },
   { icon: MapPin, title: "Our Office", detail: "London, United Kingdom", sub: "AVONTRA LTD", tooltip: "Dept 6735, 196 High Road, Wood Green, London, N22 8HH, UK\nCompany No. 17245887" },
   { icon: Clock, title: "Working Hours", detail: "Mon-Fri 9:00-18:00", sub: "Sat 10:00-14:00" },

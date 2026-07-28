@@ -14,7 +14,7 @@ import { useCart } from "@/providers/CartProvider";
 import { useAuth } from "@/providers/AuthProvider";
 import { ThemeToggle } from "./ThemeToggle";
 import { AnimatePresence, motion } from "framer-motion";
-import { AvontLogo } from "../AvontLogo";
+import { NurviLogo } from "../NurviLogo";
 import { CurrencySwitcher } from "./CurrencySwitcher";
 import styles from "./Header.module.css";
 
@@ -116,8 +116,8 @@ export function Header() {
       <header className={`${styles.header} ${scrolled ? styles.headerScrolled : ""}`}>
         <div className={styles.container}>
           <Link href="/" className={styles.logo}>
-            <AvontLogo size={24} />
-            <span className={styles.logoText}>AvontShop</span>
+            <NurviLogo size={26} />
+            <span className={styles.logoText}>nurvishop</span>
           </Link>
 
           <nav className={styles.nav}>

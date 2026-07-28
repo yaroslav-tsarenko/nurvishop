@@ -1,0 +1,13 @@
+{
+  "name": "nurvishop",
+  "short_name": "nurvishop",
+  "description": "Fresh finds, friendly prices.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F4F3F6",
+  "theme_color": "#6D5AE6",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" },
+    { "src": "/icons/apple-touch-icon.svg", "sizes": "180x180", "type": "image/svg+xml" }
+  ]
+}

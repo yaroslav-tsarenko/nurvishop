@@ -1,10 +1,19 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Bricolage_Grotesque, DM_Sans, Geist_Mono } from "next/font/google";
 import "@/styles/globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const displayFont = Bricolage_Grotesque({
+  variable: "--font-display-brand",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
+});
+
+const uiFont = DM_Sans({
+  variable: "--font-ui-brand",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
 });
 
 const geistMono = Geist_Mono({
@@ -14,14 +23,22 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "AvontShop — Electrical Materials & Supplies",
-    template: "%s | AvontShop",
+    default: "nurvishop — Fresh finds, friendly prices",
+    template: "%s | nurvishop",
   },
-  description: "Your trusted source for electrical materials, wiring, and installation supplies. Professional quality delivered to your door.",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
+  description:
+    "nurvishop — a modern store for lifestyle goods, accessories and everyday favourites. Fresh, likable, and easy to trust.",
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
+  ),
+  icons: {
+    icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
+    apple: [{ url: "/icons/apple-touch-icon.svg" }],
+  },
+  manifest: "/site.webmanifest",
   openGraph: {
     type: "website",
-    siteName: "AvontShop",
+    siteName: "nurvishop",
   },
 };
 
@@ -34,7 +51,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${displayFont.variable} ${uiFont.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>

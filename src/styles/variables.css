@@ -1,93 +1,169 @@
+/* ============================================================
+   nurvishop — "Soft-Pop Modern" design tokens
+   Friendly, expressive, contemporary retail.
+   Every colour, radius, shadow and type step lives here.
+   ============================================================ */
+
 :root {
-  --color-primary: #000000;
+  /* ── Brand ─────────────────────────────────────────────── */
+  --color-primary: #221e2e;          /* ink used as primary in a few spots */
   --color-secondary: #ffffff;
-  --color-accent: #6C5CE7;
-  --color-accent-hover: #5A4BD1;
-  --color-accent-light: rgba(108, 92, 231, 0.08);
-  --color-accent-2: #00CECE;
-  --color-accent-3: #FF6B6B;
-  --color-success: #00C48C;
-  --color-warning: #FFB800;
-  --color-danger: #FF4757;
 
-  --gradient-primary: linear-gradient(135deg, #6C5CE7 0%, #a855f7 50%, #ec4899 100%);
-  --gradient-accent: linear-gradient(135deg, #6C5CE7 0%, #00CECE 100%);
-  --gradient-warm: linear-gradient(135deg, #FF6B6B 0%, #FFB800 100%);
-  --gradient-cool: linear-gradient(135deg, #00CECE 0%, #6C5CE7 100%);
-  --gradient-hero: linear-gradient(135deg, #f8f0ff 0%, #e8f4fd 35%, #fff0f5 70%, #f0fdf4 100%);
-  --gradient-card-hover: linear-gradient(135deg, rgba(108,92,231,0.04) 0%, rgba(0,206,206,0.04) 100%);
-  --gradient-badge: linear-gradient(135deg, #FF4757 0%, #FF6B6B 100%);
+  /* Rich lavender-violet — nav emphasis, links, primary buttons */
+  --color-accent: #6d5ae6;
+  --color-accent-hover: #5b48d6;
+  --color-accent-active: #4c3ac2;
+  /* Soft lilac tint — hover fills, selected chips */
+  --color-accent-light: #efecfc;
+  --color-lilac: #efecfc;
+  --color-lilac-strong: #e2ddf9;
 
-  --color-bg: #ffffff;
-  --color-bg-secondary: #F8F9FC;
-  --color-bg-tertiary: #F1F3F8;
-  --color-bg-warm: #FFF8F0;
+  /* Signature "pop" accent — butter-yellow, used sparingly */
+  --color-pop: #ffc94d;
+  --color-pop-hover: #f5b92e;
+  --color-pop-tint: #fff4d9;
+  --color-pop-ink: #221e2e;          /* AA-legible text on butter */
 
-  --color-text: #1A1A2E;
-  --color-text-secondary: #64668B;
-  --color-text-tertiary: #9E9EB8;
+  /* Support accent — soft blush */
+  --color-blush: #f5a3b7;
+  --color-blush-tint: #fdecf1;
 
-  --color-border: #E8EAF0;
-  --color-border-hover: #D0D3DC;
+  /* Legacy aliases kept so existing components keep working */
+  --color-accent-2: #f5a3b7;
+  --color-accent-3: #ffc94d;
 
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.06), 0 2px 4px rgba(0, 0, 0, 0.03);
-  --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.04);
-  --shadow-xl: 0 24px 60px rgba(0, 0, 0, 0.1), 0 8px 20px rgba(0, 0, 0, 0.05);
-  --shadow-accent: 0 8px 30px rgba(108, 92, 231, 0.2);
-  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.04), 0 0 1px rgba(0, 0, 0, 0.06);
-  --shadow-card-hover: 0 12px 32px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.04);
+  /* ── Status ────────────────────────────────────────────── */
+  --color-success: #3fbf7f;
+  --color-success-tint: #e6f7ef;
+  --color-warning: #f5a623;
+  --color-warning-tint: #fdf0da;
+  --color-danger: #ef5350;
+  --color-danger-tint: #fdeaea;
 
-  --radius-sm: 0.5rem;
-  --radius-md: 0.75rem;
-  --radius-lg: 1rem;
-  --radius-xl: 1.25rem;
-  --radius-2xl: 1.5rem;
+  /* ── Gradients ─────────────────────────────────────────── */
+  --gradient-primary: linear-gradient(135deg, #6d5ae6 0%, #8b78f0 55%, #f5a3b7 100%);
+  --gradient-accent: linear-gradient(135deg, #6d5ae6 0%, #f5a3b7 100%);
+  --gradient-warm: linear-gradient(135deg, #ffc94d 0%, #f5a3b7 100%);
+  --gradient-cool: linear-gradient(135deg, #efecfc 0%, #6d5ae6 100%);
+  --gradient-hero: linear-gradient(135deg, #efecfc 0%, #f4f3f6 40%, #fdecf1 72%, #fff4d9 100%);
+  --gradient-card-hover: linear-gradient(135deg, rgba(109, 90, 230, 0.05) 0%, rgba(245, 163, 183, 0.05) 100%);
+  --gradient-badge: linear-gradient(135deg, #ffc94d 0%, #ffb733 100%);
+
+  /* ── Surfaces ──────────────────────────────────────────── */
+  --color-bg: #ffffff;               /* cards / key surfaces / header */
+  --color-bg-secondary: #f4f3f6;     /* soft warm-grey mist — page & bands */
+  --color-bg-tertiary: #ece9f2;      /* deeper mist for wells */
+  --color-bg-warm: #fff4d9;          /* butter tint block */
+  --color-page: #f4f3f6;             /* body background */
+
+  /* ── Text ──────────────────────────────────────────────── */
+  --color-text: #221e2e;             /* deep violet-charcoal ink */
+  --color-text-secondary: #6e6880;   /* muted */
+  --color-text-tertiary: #9a93ac;
+
+  /* ── Borders ───────────────────────────────────────────── */
+  --color-border: #e4e1ec;           /* cool light lavender-grey */
+  --color-border-hover: #d5d0e2;
+  --color-focus-ring: rgba(109, 90, 230, 0.35);
+
+  /* ── Elevation — soft & minimal ────────────────────────── */
+  --shadow-sm: 0 1px 2px rgba(34, 30, 46, 0.05);
+  --shadow-md: 0 6px 20px rgba(34, 30, 46, 0.06);
+  --shadow-lg: 0 16px 44px rgba(34, 30, 46, 0.08);
+  --shadow-xl: 0 28px 68px rgba(34, 30, 46, 0.1);
+  --shadow-accent: 0 10px 28px rgba(109, 90, 230, 0.28);
+  --shadow-pop: 0 10px 26px rgba(255, 201, 77, 0.35);
+  --shadow-card: 0 1px 2px rgba(34, 30, 46, 0.04), 0 0 1px rgba(34, 30, 46, 0.06);
+  --shadow-card-hover: 0 16px 40px rgba(109, 90, 230, 0.14), 0 4px 10px rgba(34, 30, 46, 0.05);
+
+  /* ── Radius — generously rounded ───────────────────────── */
+  --radius-sm: 0.625rem;   /* 10px */
+  --radius-md: 0.875rem;   /* 14px */
+  --radius-lg: 1rem;       /* 16px — cards */
+  --radius-xl: 1.25rem;    /* 20px — cards */
+  --radius-2xl: 1.5rem;    /* 24px */
+  --radius-blob: 42% 58% 63% 37% / 41% 44% 56% 59%;
   --radius-pill: 9999px;
 
+  /* ── Layout ────────────────────────────────────────────── */
   --max-width: 1320px;
-  --header-height: 64px;
-  --announcement-height: 36px;
+  --header-height: 68px;
+  --announcement-height: 38px;
 
-  --font-sans: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  /* ── Type ──────────────────────────────────────────────── */
+  --font-display: var(--font-display-brand), var(--font-geist-sans), system-ui, sans-serif;
+  --font-sans: var(--font-ui-brand), var(--font-geist-sans), system-ui, -apple-system, sans-serif;
   --font-mono: var(--font-geist-mono), monospace;
 
+  /* ── Motion — springy but disciplined ──────────────────── */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-back: cubic-bezier(0.34, 1.4, 0.6, 1);
+  --dur-fast: 180ms;
+  --dur-base: 220ms;
+  --dur-slow: 320ms;
 
-  --promo-bg-blue: #F0F4FF;
-  --promo-bg-warm: #FFF8F0;
-  --promo-bg-green: #F0FFF4;
+  /* ── Promo block tints (cohesive, not rainbow) ─────────── */
+  --promo-bg-blue: #efecfc;   /* lilac  */
+  --promo-bg-warm: #fff4d9;   /* butter */
+  --promo-bg-green: #fdecf1;  /* blush  */
 }
 
 [data-theme="dark"] {
-  --color-primary: #ffffff;
-  --color-secondary: #000000;
-  --color-accent-light: rgba(108, 92, 231, 0.15);
+  --color-primary: #f4f1fa;
+  --color-secondary: #191621;
 
-  --gradient-hero: linear-gradient(135deg, #1a1028 0%, #0d1b2a 35%, #1a0d1e 70%, #0d1a14 100%);
-  --gradient-card-hover: linear-gradient(135deg, rgba(108,92,231,0.08) 0%, rgba(0,206,206,0.08) 100%);
+  --color-accent: #8f7df2;
+  --color-accent-hover: #a293f5;
+  --color-accent-active: #b6a9f8;
+  --color-accent-light: rgba(143, 125, 242, 0.16);
+  --color-lilac: #2a2440;
+  --color-lilac-strong: #352d4f;
 
-  --color-bg: #0a0a0f;
-  --color-bg-secondary: #12121a;
-  --color-bg-tertiary: #1a1a28;
-  --color-bg-warm: #1a150f;
+  --color-pop: #ffd166;
+  --color-pop-hover: #ffdb85;
+  --color-pop-tint: #332a17;
+  --color-pop-ink: #221e2e;
 
-  --color-text: #f0f0f8;
-  --color-text-secondary: #9898b0;
-  --color-text-tertiary: #6b6b82;
+  --color-blush: #f5a3b7;
+  --color-blush-tint: #33222a;
+  --color-accent-2: #f5a3b7;
+  --color-accent-3: #ffd166;
 
-  --color-border: #25253a;
-  --color-border-hover: #38385a;
+  --color-success: #4fcf8f;
+  --color-success-tint: #14271e;
+  --color-warning: #f5b942;
+  --color-warning-tint: #2c2314;
+  --color-danger: #f2716e;
+  --color-danger-tint: #2c1818;
 
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.25);
-  --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.3);
-  --shadow-xl: 0 24px 60px rgba(0, 0, 0, 0.35);
-  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.15), 0 0 1px rgba(0, 0, 0, 0.2);
-  --shadow-card-hover: 0 12px 32px rgba(0, 0, 0, 0.3);
+  --gradient-hero: linear-gradient(135deg, #221e2e 0%, #191621 45%, #241a26 75%, #2a2417 100%);
+  --gradient-card-hover: linear-gradient(135deg, rgba(143, 125, 242, 0.1) 0%, rgba(245, 163, 183, 0.08) 100%);
 
-  --promo-bg-blue: #1a1a30;
-  --promo-bg-warm: #1a1510;
-  --promo-bg-green: #0f1a14;
+  --color-bg: #221e2e;               /* cards */
+  --color-bg-secondary: #191621;     /* base */
+  --color-bg-tertiary: #241f31;
+  --color-bg-warm: #2a2417;
+  --color-page: #191621;
+
+  --color-text: #f2eff8;
+  --color-text-secondary: #a49dba;
+  --color-text-tertiary: #766e88;
+
+  --color-border: #322c44;
+  --color-border-hover: #443c5c;
+  --color-focus-ring: rgba(143, 125, 242, 0.45);
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 16px 44px rgba(0, 0, 0, 0.5);
+  --shadow-xl: 0 28px 68px rgba(0, 0, 0, 0.55);
+  --shadow-accent: 0 10px 28px rgba(143, 125, 242, 0.35);
+  --shadow-pop: 0 10px 26px rgba(255, 209, 102, 0.25);
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.35), 0 0 1px rgba(0, 0, 0, 0.4);
+  --shadow-card-hover: 0 16px 40px rgba(0, 0, 0, 0.5);
+
+  --promo-bg-blue: #241f36;
+  --promo-bg-warm: #2a2417;
+  --promo-bg-green: #2c1f28;
 }

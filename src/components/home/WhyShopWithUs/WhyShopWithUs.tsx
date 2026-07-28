@@ -48,7 +48,7 @@ export function WhyShopWithUs() {
     <section className={`section-padding ${styles.section}`}>
       <div className="section-container">
         <div className={styles.header}>
-          <h2 className="section-title">Why choose AvontShop</h2>
+          <h2 className="section-title">Why choose nurvishop</h2>
           <p className="section-subtitle" style={{ margin: "0.5rem auto 0" }}>
             Professional-grade electrical materials with expert support and fast delivery
           </p>

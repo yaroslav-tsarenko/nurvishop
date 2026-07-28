@@ -39,7 +39,7 @@ export function ContactBlock() {
         <br />
         Phone: +44 7360 545980
         <br />
-        Email: info@avontshop.com
+        Email: info@nurvishop.com
       </p>
     </div>
   );
