@@ -2,7 +2,6 @@
 
 import { Shield, Zap, Heart, RefreshCw, Award, Headphones } from "lucide-react";
 import { motion } from "framer-motion";
-import styles from "./WhyShopWithUs.module.css";
 
 const reasons = [
   {
@@ -45,30 +44,30 @@ const reasons = [
 
 export function WhyShopWithUs() {
   return (
-    <section className={`section-padding ${styles.section}`}>
+    <section className="section-padding bg-mist">
       <div className="section-container">
-        <div className={styles.header}>
+        <div className="mb-12 text-center">
           <h2 className="section-title">Why choose nurvishop</h2>
           <p className="section-subtitle" style={{ margin: "0.5rem auto 0" }}>
             Professional-grade electrical materials with expert support and fast delivery
           </p>
         </div>
 
-        <div className={styles.grid}>
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {reasons.map((reason, i) => (
             <motion.div
               key={reason.title}
-              className={styles.card}
+              className="rounded-xl border border-line bg-surface p-8 transition-[transform,box-shadow] duration-300 ease-out-expo hover:-translate-y-1 hover:shadow-lg"
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.08, duration: 0.5 }}
             >
-              <div className={styles.iconWrap} style={{ background: reason.gradient }}>
+              <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-lg text-white" style={{ background: reason.gradient }}>
                 {reason.icon}
               </div>
-              <h3 className={styles.cardTitle}>{reason.title}</h3>
-              <p className={styles.cardDesc}>{reason.desc}</p>
+              <h3 className="mb-2 text-[1.0625rem] font-bold text-ink">{reason.title}</h3>
+              <p className="text-sm leading-[1.6] text-muted">{reason.desc}</p>
             </motion.div>
           ))}
         </div>

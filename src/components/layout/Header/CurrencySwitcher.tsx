@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useCurrency, type Currency } from "@/providers/CurrencyProvider";
-import styles from "./Header.module.css";
+import { iconButtonClass } from "./iconButtonClass";
 
 const CURRENCIES: { code: Currency; symbol: string; label: string }[] = [
   { code: "EUR", symbol: "€", label: "EUR (€)" },
@@ -28,7 +28,7 @@ export function CurrencySwitcher() {
   return (
     <div ref={ref} style={{ position: "relative" }}>
       <button
-        className={styles.iconButton}
+        className={iconButtonClass}
         onClick={() => setOpen(!open)}
         aria-label="Currency"
         style={{ fontSize: "0.8125rem", fontWeight: 700, width: "auto", padding: "0 0.5rem" }}

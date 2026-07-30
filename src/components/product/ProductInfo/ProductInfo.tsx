@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import clsx from "clsx";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/Button";
 import { Heart, ShoppingCart, Shield, Truck, RotateCcw, Lock } from "lucide-react";
@@ -11,7 +12,6 @@ import { useCurrency } from "@/providers/CurrencyProvider";
 import { formatPrice } from "@/lib/utils/format-price";
 import { useRouter } from "@/i18n/routing";
 import { toast } from "sonner";
-import styles from "./ProductInfo.module.css";
 
 const WARRANTY_OPTIONS = [
   { key: "none", years: 0, percent: 0, min: 0 },
@@ -136,34 +136,43 @@ export function ProductInfo({
     : 0;
 
   return (
-    <div className={styles.info}>
+    <div className="flex flex-col gap-4 sm:gap-5">
       <div>
-        <h1 className={styles.name}>{name}</h1>
-        <div className={styles.metaRow}>
-          <span className={styles.sku}>{t("sku")}: {sku}</span>
-          {ean && <span className={styles.sku}>{t("ean")}: {ean}</span>}
+        <h1 className="break-words text-xl font-extrabold leading-[1.15] tracking-[-0.02em] text-ink [overflow-wrap:anywhere] sm:text-[1.375rem] md:text-[1.75rem]">
+          {name}
+        </h1>
+        <div className="flex flex-wrap items-center gap-4">
+          <span className="text-xs text-subtle">{t("sku")}: {sku}</span>
+          {ean && <span className="text-xs text-subtle">{t("ean")}: {ean}</span>}
           {reviewCount > 0 && (
-            <span className={styles.ratingBadge}>
+            <span className="inline-flex items-center gap-1 text-[0.8125rem] font-semibold text-warning">
               {"★".repeat(Math.round(avgRating))}{"☆".repeat(5 - Math.round(avgRating))}
-              <span className={styles.ratingCount}>({reviewCount})</span>
+              <span className="font-normal text-subtle">({reviewCount})</span>
             </span>
           )}
         </div>
       </div>
 
-      {shortDescription && <p className={styles.shortDesc}>{shortDescription}</p>}
+      {shortDescription && <p className="text-[0.9375rem] leading-[1.65] text-muted">{shortDescription}</p>}
 
-      <hr className={styles.divider} />
+      <hr className="m-0 h-px border-none bg-line" />
 
-      <div className={styles.priceBlock}>
+      <div className="flex items-center gap-4">
         <PriceDisplay price={price} comparePrice={comparePrice} size="lg" />
-        {isOnSale && <span className={styles.saveBadge}>-{savingsPercent}%</span>}
+        {isOnSale && (
+          <span className="rounded-pill bg-danger px-2.5 py-1 text-xs font-bold text-white">-{savingsPercent}%</span>
+        )}
       </div>
 
       <p
-        className={`${styles.stock} ${
-          outOfStock ? styles.stockOut : lowStock ? styles.stockLow : styles.stockInStock
-        }`}
+        className={clsx(
+          "inline-flex items-center gap-1.5 rounded-pill px-3 py-1.5 text-[0.8125rem] font-semibold",
+          outOfStock
+            ? "bg-danger-tint text-danger"
+            : lowStock
+              ? "bg-warning-tint text-warning"
+              : "bg-success-tint text-success",
+        )}
       >
         {outOfStock
           ? t("outOfStock")
@@ -172,26 +181,31 @@ export function ProductInfo({
             : t("inStock")}
       </p>
 
-      <hr className={styles.divider} />
+      <hr className="m-0 h-px border-none bg-line" />
 
-      <div className={styles.guaranteeSection}>
-        <span className={styles.guaranteeLabel}>
+      <div className="flex flex-col gap-2">
+        <span className="flex items-center gap-1.5 text-[0.8125rem] font-bold text-ink">
           <Shield size={14} /> {t("warranty")}
         </span>
-        <p style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)", marginBottom: "0.5rem" }}>
+        <p className="mb-2 text-xs text-muted">
           {t("warrantyStandard")}
         </p>
         {warrantyAvailable && (
-          <div className={styles.guaranteeOptions}>
+          <div className="grid grid-cols-2 gap-2">
             {WARRANTY_OPTIONS.map((opt, idx) => (
               <button
                 key={opt.key}
-                className={`${styles.guaranteeOption} ${idx === selectedWarranty ? styles.guaranteeOptionActive : ""}`}
+                className={clsx(
+                  "flex flex-col items-center gap-0.5 rounded-lg border-2 bg-surface px-2 py-2.5 text-center text-[0.8125rem] font-semibold text-ink transition-all duration-200 hover:border-accent hover:bg-lilac focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40",
+                  idx === selectedWarranty
+                    ? "border-accent bg-lilac shadow-[0_0_0_1px_var(--color-accent)]"
+                    : "border-line",
+                )}
                 onClick={() => setSelectedWarranty(idx)}
               >
                 {idx === 0 ? t("noWarranty") : t(`warrantyOption${opt.years}year` as "warrantyOption1year" | "warrantyOption2year" | "warrantyOption3year")}
                 {opt.percent > 0 && (
-                  <span className={styles.guaranteePrice}>+{formatPrice(convert(calcWarrantyPrice(price, opt)), currency)}</span>
+                  <span className="text-[0.6875rem] font-normal text-muted">+{formatPrice(convert(calcWarrantyPrice(price, opt)), currency)}</span>
                 )}
               </button>
             ))}
@@ -199,7 +213,7 @@ export function ProductInfo({
         )}
       </div>
 
-      <div className={styles.actions}>
+      <div className="flex flex-wrap items-center gap-2 sm:gap-3">
         <QuantitySelector
           quantity={qty}
           maxQuantity={stockQuantity}
@@ -211,7 +225,7 @@ export function ProductInfo({
           onPress={handleAddToCart}
           isDisabled={outOfStock}
           startContent={<ShoppingCart size={18} />}
-          style={{ flex: 1 }}
+          className="flex-1"
         >
           {selectedWarranty > 0 ? t("addToCartWithWarranty") : t("addToCart")}
         </Button>
@@ -220,7 +234,7 @@ export function ProductInfo({
           size="lg"
           onPress={handleBuyNow}
           isDisabled={outOfStock}
-          className={styles.buyNowBtn}
+          className="flex-[0.6] !bg-ink font-bold !text-surface hover:opacity-85"
         >
           {t("buyNow")}
         </Button>
@@ -235,44 +249,44 @@ export function ProductInfo({
         </Button>
       </div>
 
-      <div className={styles.details}>
+      <div className="border-t border-line pt-4">
         {brand && (
-          <div className={styles.detailRow}>
-            <span className={styles.detailLabel}>{t("brand")}</span>
-            <span className={styles.detailValue}>{brand}</span>
+          <div className="flex justify-between border-b border-well py-2 text-sm">
+            <span className="text-muted">{t("brand")}</span>
+            <span className="font-semibold text-ink">{brand}</span>
           </div>
         )}
-        <div className={styles.detailRow}>
-          <span className={styles.detailLabel}>{t("condition")}</span>
-          <span className={styles.detailValue}>{condition}</span>
+        <div className="flex justify-between border-b border-well py-2 text-sm">
+          <span className="text-muted">{t("condition")}</span>
+          <span className="font-semibold text-ink">{condition}</span>
         </div>
-        <div className={styles.detailRow}>
-          <span className={styles.detailLabel}>{t("sku")}</span>
-          <span className={styles.detailValue}>{sku}</span>
+        <div className="flex justify-between border-b border-well py-2 text-sm last:border-b-0">
+          <span className="text-muted">{t("sku")}</span>
+          <span className="font-semibold text-ink">{sku}</span>
         </div>
         {ean && (
-          <div className={styles.detailRow}>
-            <span className={styles.detailLabel}>{t("ean")}</span>
-            <span className={styles.detailValue}>{ean}</span>
+          <div className="flex justify-between border-b border-well py-2 text-sm last:border-b-0">
+            <span className="text-muted">{t("ean")}</span>
+            <span className="font-semibold text-ink">{ean}</span>
           </div>
         )}
       </div>
 
-      <div className={styles.trustBadges}>
-        <div className={styles.trustBadge}>
-          <Truck size={18} className={styles.trustBadgeIcon} />
-          <span className={styles.trustBadgeTitle}>{t("freeShipping")}</span>
-          <span className={styles.trustBadgeDesc}>{t("freeShippingDesc")}</span>
+      <div className="grid grid-cols-3 gap-2 pt-2 sm:gap-3">
+        <div className="flex flex-col items-center gap-1 rounded-lg bg-mist p-2.5 text-center sm:p-3">
+          <Truck size={18} className="text-accent" />
+          <span className="text-[0.6875rem] font-bold text-ink">{t("freeShipping")}</span>
+          <span className="text-[0.625rem] text-subtle">{t("freeShippingDesc")}</span>
         </div>
-        <div className={styles.trustBadge}>
-          <RotateCcw size={18} className={styles.trustBadgeIcon} />
-          <span className={styles.trustBadgeTitle}>{t("easyReturns")}</span>
-          <span className={styles.trustBadgeDesc}>{t("easyReturnsDesc")}</span>
+        <div className="flex flex-col items-center gap-1 rounded-lg bg-mist p-2.5 text-center sm:p-3">
+          <RotateCcw size={18} className="text-accent" />
+          <span className="text-[0.6875rem] font-bold text-ink">{t("easyReturns")}</span>
+          <span className="text-[0.625rem] text-subtle">{t("easyReturnsDesc")}</span>
         </div>
-        <div className={styles.trustBadge}>
-          <Lock size={18} className={styles.trustBadgeIcon} />
-          <span className={styles.trustBadgeTitle}>{t("securePayment")}</span>
-          <span className={styles.trustBadgeDesc}>{t("securePaymentDesc")}</span>
+        <div className="flex flex-col items-center gap-1 rounded-lg bg-mist p-2.5 text-center sm:p-3">
+          <Lock size={18} className="text-accent" />
+          <span className="text-[0.6875rem] font-bold text-ink">{t("securePayment")}</span>
+          <span className="text-[0.625rem] text-subtle">{t("securePaymentDesc")}</span>
         </div>
       </div>
     </div>

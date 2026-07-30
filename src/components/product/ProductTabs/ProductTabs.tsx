@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import clsx from "clsx";
 import { useTranslations } from "next-intl";
-import styles from "./ProductTabs.module.css";
 
 interface Review {
   id: string;
@@ -32,11 +32,19 @@ export function ProductTabs({ description, characteristics, reviews }: ProductTa
     ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
     : 0;
 
+  const tabClass = (active: boolean) =>
+    clsx(
+      "-mb-0.5 flex-shrink-0 whitespace-nowrap border-b-2 px-4 py-3.5 text-sm font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 sm:px-7 sm:py-4 sm:text-[0.9375rem]",
+      active ? "border-accent text-accent" : "border-transparent text-muted hover:text-ink",
+    );
+
+  const noContentClass = "py-8 text-center text-[0.9375rem] text-subtle";
+
   return (
-    <div className={styles.container}>
-      <div className={styles.tabList} role="tablist">
+    <div className="mt-8 md:mt-12">
+      <div className="flex gap-0 overflow-x-auto border-b-2 border-line [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" role="tablist">
         <button
-          className={`${styles.tab} ${activeTab === "description" ? styles.tabActive : ""}`}
+          className={tabClass(activeTab === "description")}
           onClick={() => setActiveTab("description")}
           role="tab"
           aria-selected={activeTab === "description"}
@@ -44,18 +52,18 @@ export function ProductTabs({ description, characteristics, reviews }: ProductTa
           {t("description")}
         </button>
         <button
-          className={`${styles.tab} ${activeTab === "characteristics" ? styles.tabActive : ""}`}
+          className={tabClass(activeTab === "characteristics")}
           onClick={() => setActiveTab("characteristics")}
           role="tab"
           aria-selected={activeTab === "characteristics"}
         >
           {t("characteristics")}
           {totalCharCount > 0 && (
-            <span className={styles.tabBadge}>({totalCharCount})</span>
+            <span className="ml-1 text-xs font-normal text-subtle">({totalCharCount})</span>
           )}
         </button>
         <button
-          className={`${styles.tab} ${activeTab === "reviews" ? styles.tabActive : ""}`}
+          className={tabClass(activeTab === "reviews")}
           onClick={() => setActiveTab("reviews")}
           role="tab"
           aria-selected={activeTab === "reviews"}
@@ -64,31 +72,31 @@ export function ProductTabs({ description, characteristics, reviews }: ProductTa
         </button>
       </div>
 
-      <div className={styles.tabContent} role="tabpanel">
+      <div className="py-5 sm:py-8" role="tabpanel">
         {activeTab === "description" && (
           description ? (
-            <div className={styles.description}>
+            <div className="max-w-[80ch] text-[0.9375rem] leading-[1.8] text-muted [&>p]:mb-4">
               {description.split("\n").map((paragraph, i) => (
                 <p key={i}>{paragraph}</p>
               ))}
             </div>
           ) : (
-            <p className={styles.noContent}>-</p>
+            <p className={noContentClass}>-</p>
           )
         )}
 
         {activeTab === "characteristics" && (
           groups.length > 0 ? (
-            <div className={styles.charGrid}>
+            <div className="grid grid-cols-1 gap-x-12 gap-y-8 md:grid-cols-2">
               {groups.map(([groupName, entries]) => (
-                <div key={groupName} className={styles.charGroup}>
-                  <h3 className={styles.charGroupTitle}>{groupName}</h3>
-                  <table className={styles.characteristicsTable}>
+                <div key={groupName} className="flex flex-col">
+                  <h3 className="mb-3 border-b-2 border-line pb-2 text-[1.0625rem] font-extrabold text-ink">{groupName}</h3>
+                  <table className="w-full border-collapse">
                     <tbody>
                       {Object.entries(entries).map(([key, value]) => (
-                        <tr key={key}>
-                          <td className={styles.charLabel}>{key}</td>
-                          <td className={styles.charValue}>{value}</td>
+                        <tr key={key} className="even:bg-mist">
+                          <td className="w-[55%] border-b border-line px-3 py-2.5 align-top text-sm font-normal text-muted">{key}</td>
+                          <td className="border-b border-line px-3 py-2.5 align-top text-sm font-bold text-ink">{value}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -97,37 +105,37 @@ export function ProductTabs({ description, characteristics, reviews }: ProductTa
               ))}
             </div>
           ) : (
-            <p className={styles.noContent}>-</p>
+            <p className={noContentClass}>-</p>
           )
         )}
 
         {activeTab === "reviews" && (
           reviews.length > 0 ? (
             <>
-              <div className={styles.ratingSummary}>
-                <div className={styles.ratingBig}>
-                  <div className={styles.ratingNumber}>{avgRating.toFixed(1)}</div>
-                  <div className={styles.ratingStarsBig}>
+              <div className="mb-6 flex items-center gap-8 rounded-xl bg-mist p-5 sm:p-6">
+                <div className="text-center">
+                  <div className="text-[2rem] font-extrabold leading-none text-ink sm:text-[2.5rem]">{avgRating.toFixed(1)}</div>
+                  <div className="mt-1 text-lg text-warning">
                     {"★".repeat(Math.round(avgRating))}{"☆".repeat(5 - Math.round(avgRating))}
                   </div>
-                  <div className={styles.ratingLabel}>{reviews.length} {t("reviews", { count: reviews.length }).toLowerCase().replace(/\(\d+\)/, "").trim()}</div>
+                  <div className="mt-1 text-[0.8125rem] text-subtle">{reviews.length} {t("reviews", { count: reviews.length }).toLowerCase().replace(/\(\d+\)/, "").trim()}</div>
                 </div>
               </div>
-              <div className={styles.reviewsGrid}>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-[repeat(auto-fill,minmax(280px,1fr))]">
                 {reviews.map((review) => (
-                  <div key={review.id} className={styles.reviewCard}>
-                    <div className={styles.reviewHeader}>
-                      <span className={styles.reviewAuthor}>
+                  <div key={review.id} className="rounded-xl border border-line bg-surface p-5 transition-shadow duration-200 hover:shadow-md sm:p-6">
+                    <div className="mb-3 flex items-center justify-between">
+                      <span className="text-[0.9375rem] font-bold text-ink">
                         {review.user.name || "Anonymous"}
                       </span>
-                      <span className={styles.reviewStars}>
+                      <span className="text-sm tracking-[1px] text-warning">
                         {"★".repeat(review.rating)}{"☆".repeat(5 - review.rating)}
                       </span>
                     </div>
                     {review.comment && (
-                      <p className={styles.reviewComment}>{review.comment}</p>
+                      <p className="text-sm leading-[1.65] text-muted">{review.comment}</p>
                     )}
-                    <div className={styles.reviewDate}>
+                    <div className="mt-3 text-xs text-subtle">
                       {new Date(review.createdAt).toLocaleDateString()}
                     </div>
                   </div>
@@ -135,7 +143,7 @@ export function ProductTabs({ description, characteristics, reviews }: ProductTa
               </div>
             </>
           ) : (
-            <p className={styles.noContent}>{t("noReviews")}</p>
+            <p className={noContentClass}>{t("noReviews")}</p>
           )
         )}
       </div>

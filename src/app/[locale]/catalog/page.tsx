@@ -10,7 +10,7 @@ import { ProductSort } from "@/components/product/ProductSort/ProductSort";
 import { ProductSkeleton } from "@/components/product/ProductSkeleton/ProductSkeleton";
 import { EmptyState } from "@/components/shared/EmptyState/EmptyState";
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs/Breadcrumbs";
-import styles from "./catalog.module.css";
+import clsx from "clsx";
 
 export default function CatalogPage() {
   const t = useTranslations("product");
@@ -98,7 +98,7 @@ export default function CatalogPage() {
   const activeFilterCount = [category, minPrice, maxPrice, inStock, onSale, selectedBrand].filter(Boolean).length;
 
   return (
-    <div className={styles.wrapper}>
+    <div className="mx-auto max-w-container px-4">
       <Breadcrumbs
         items={[
           { label: nav("home"), href: "/" },
@@ -106,31 +106,31 @@ export default function CatalogPage() {
         ]}
       />
 
-      <div className={styles.header}>
+      <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className={styles.title}>{nav("catalog")}</h1>
-          <p className={styles.headerSub}>
+          <h1 className="text-[1.75rem] font-extrabold tracking-tight max-[480px]:text-[1.375rem]">{nav("catalog")}</h1>
+          <p className="mt-1 text-sm text-muted">
             {t("showing", { count: products.length, total })}
           </p>
         </div>
-        <div className={styles.headerActions}>
+        <div className="flex items-center gap-3 max-[480px]:w-full max-[480px]:justify-between max-[480px]:gap-2">
           <button
             onClick={() => setMobileFiltersOpen(true)}
-            className={styles.filtersBtn}
+            className="hidden items-center gap-1.5 rounded-pill border border-line bg-surface px-4 py-2 text-[0.8125rem] font-semibold text-muted hover:border-accent hover:text-accent max-[1024px]:inline-flex"
             type="button"
           >
             <SlidersHorizontal size={16} />
             Filters
             {activeFilterCount > 0 && (
-              <span className={styles.filterBadge}>{activeFilterCount}</span>
+              <span className="rounded-pill bg-accent px-1.5 py-px text-[0.6875rem] font-bold text-white">{activeFilterCount}</span>
             )}
           </button>
           <ProductSort value={sort} onChange={(v) => updateParams({ sort: v, page: "1" })} />
         </div>
       </div>
 
-      <div className={styles.layout}>
-        <aside className={styles.sidebar}>
+      <div className="grid grid-cols-[260px_1fr] gap-8 max-[1024px]:grid-cols-1">
+        <aside className="sticky top-[calc(var(--header-height)+var(--announcement-height)+1rem)] self-start max-[1024px]:hidden">
           <ProductFilters
             categories={categories}
             selectedCategory={category}
@@ -149,7 +149,7 @@ export default function CatalogPage() {
           />
         </aside>
 
-        <div className={styles.content}>
+        <div className="min-w-0">
           {loading ? (
             <ProductSkeleton count={12} />
           ) : products.length === 0 ? (
@@ -163,11 +163,14 @@ export default function CatalogPage() {
             <>
               <ProductGrid products={products} />
               {totalPages > 1 && (
-                <div className={styles.pagination}>
+                <div className="mt-10 flex flex-wrap items-center justify-center gap-1.5 pb-12">
                   <button
                     onClick={() => updateParams({ page: String(page - 1) })}
                     disabled={page <= 1}
-                    className={`${styles.pageBtn} ${styles.pageBtnEdge} ${page <= 1 ? styles.pageBtnDisabled : ""}`}
+                    className={clsx(
+                      "flex h-9 items-center justify-center rounded-lg border border-line bg-surface px-4 text-[0.8125rem] font-medium text-ink",
+                      page <= 1 && "cursor-not-allowed opacity-50"
+                    )}
                   >
                     Prev
                   </button>
@@ -186,12 +189,17 @@ export default function CatalogPage() {
                     }
                     return pages.map((p) =>
                       typeof p === "string" ? (
-                        <span key={p} className={styles.pageEllipsis}>…</span>
+                        <span key={p} className="flex h-9 w-9 items-center justify-center text-[0.8125rem] text-muted">…</span>
                       ) : (
                         <button
                           key={p}
                           onClick={() => updateParams({ page: String(p) })}
-                          className={`${styles.pageBtn} ${p === page ? styles.pageBtnActive : ""}`}
+                          className={clsx(
+                            "flex h-9 w-9 items-center justify-center rounded-lg text-[0.8125rem]",
+                            p === page
+                              ? "border-0 bg-accent font-bold text-white"
+                              : "border border-line bg-surface font-medium text-ink"
+                          )}
                         >
                           {p}
                         </button>
@@ -201,7 +209,10 @@ export default function CatalogPage() {
                   <button
                     onClick={() => updateParams({ page: String(page + 1) })}
                     disabled={page >= totalPages}
-                    className={`${styles.pageBtn} ${styles.pageBtnEdge} ${page >= totalPages ? styles.pageBtnDisabled : ""}`}
+                    className={clsx(
+                      "flex h-9 items-center justify-center rounded-lg border border-line bg-surface px-4 text-[0.8125rem] font-medium text-ink",
+                      page >= totalPages && "cursor-not-allowed opacity-50"
+                    )}
                   >
                     Next
                   </button>
@@ -214,14 +225,14 @@ export default function CatalogPage() {
 
       {/* Mobile filters overlay */}
       {mobileFiltersOpen && (
-        <div className={styles.overlay}>
-          <div className={styles.overlayBackdrop} onClick={() => setMobileFiltersOpen(false)} />
-          <div className={styles.overlaySheet}>
-            <div className={styles.overlayHeader}>
-              <span className={styles.overlayTitle}>Filters</span>
+        <div className="fixed inset-0 z-[200]">
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-[4px]" onClick={() => setMobileFiltersOpen(false)} />
+          <div className="absolute bottom-0 left-0 right-0 flex max-h-[85vh] flex-col overflow-auto rounded-t-2xl bg-surface p-6">
+            <div className="mb-4 flex items-center justify-between">
+              <span className="text-lg font-bold">Filters</span>
               <button
                 onClick={() => setMobileFiltersOpen(false)}
-                className={styles.overlayClose}
+                className="flex h-8 w-8 items-center justify-center rounded-lg border-0 bg-well text-ink"
                 aria-label="Close filters"
               >
                 <X size={18} />

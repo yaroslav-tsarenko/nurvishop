@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { Lock, Eye, EyeOff, ShoppingBag, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
-import styles from "../auth.module.css";
+import * as s from "../auth-classes";
 
 export default function ResetPasswordPage() {
   const t = useTranslations("auth");
@@ -60,21 +60,21 @@ export default function ResetPasswordPage() {
 
   if (!token) {
     return (
-      <div className={styles.authPage}>
+      <div className={s.authPage}>
         <motion.div
-          className={styles.authCard}
+          className={s.authCard}
           initial={{ opacity: 0, y: 24, scale: 0.98 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
         >
-          <div className={styles.authHeader}>
-            <div className={styles.logoIcon}>
+          <div className={s.authHeader}>
+            <div className={s.logoIcon}>
               <ShoppingBag size={24} />
             </div>
-            <h1 className={styles.authTitle}>{t("invalidResetLink")}</h1>
-            <p className={styles.authSubtitle}>{t("invalidResetLinkDesc")}</p>
+            <h1 className={s.authTitle}>{t("invalidResetLink")}</h1>
+            <p className={s.authSubtitle}>{t("invalidResetLinkDesc")}</p>
           </div>
-          <p className={styles.authFooter}>
+          <p className={s.authFooter}>
             <Link href="/auth/forgot-password">{t("requestNewLink")}</Link>
           </p>
         </motion.div>
@@ -83,23 +83,23 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <div className={styles.authPage}>
+    <div className={s.authPage}>
       <motion.div
-        className={styles.authCard}
+        className={s.authCard}
         initial={{ opacity: 0, y: 24, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
       >
-        <motion.div className={styles.authHeader} custom={0} variants={fadeUp} initial="hidden" animate="visible">
-          <div className={styles.logoIcon}>
+        <motion.div className={s.authHeader} custom={0} variants={fadeUp} initial="hidden" animate="visible">
+          <div className={s.logoIcon}>
             <ShoppingBag size={24} />
           </div>
-          <h1 className={styles.authTitle}>{t("resetPasswordTitle")}</h1>
-          <p className={styles.authSubtitle}>{t("resetPasswordSubtitle")}</p>
+          <h1 className={s.authTitle}>{t("resetPasswordTitle")}</h1>
+          <p className={s.authSubtitle}>{t("resetPasswordSubtitle")}</p>
         </motion.div>
 
         {success ? (
-          <motion.div className={styles.magicLinkSent} custom={1} variants={fadeUp} initial="hidden" animate="visible">
+          <motion.div className={s.magicLinkSent} custom={1} variants={fadeUp} initial="hidden" animate="visible">
             <CheckCircle size={32} />
             <p>{t("passwordResetSuccess")}</p>
             <p style={{ marginTop: "1rem" }}>
@@ -107,22 +107,22 @@ export default function ResetPasswordPage() {
             </p>
           </motion.div>
         ) : (
-          <form onSubmit={handleSubmit} className={styles.form}>
-            <motion.div className={styles.inputGroup} custom={1} variants={fadeUp} initial="hidden" animate="visible">
-              <label className={styles.inputLabel}>{t("newPassword")}</label>
-              <div className={styles.inputWrapper}>
-                <Lock size={16} className={styles.inputIcon} />
+          <form onSubmit={handleSubmit} className={s.form}>
+            <motion.div className={s.inputGroup} custom={1} variants={fadeUp} initial="hidden" animate="visible">
+              <label className={s.inputLabel}>{t("newPassword")}</label>
+              <div className={s.inputWrapper}>
+                <Lock size={16} className={s.inputIcon} />
                 <input
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   placeholder="Min 6 characters"
-                  className={`${styles.input} ${styles.inputWithToggle}`}
+                  className={`${s.input} ${s.inputWithToggle}`}
                 />
                 <button
                   type="button"
-                  className={styles.inputToggle}
+                  className={s.inputToggle}
                   onClick={() => setShowPassword(!showPassword)}
                   tabIndex={-1}
                 >
@@ -131,21 +131,21 @@ export default function ResetPasswordPage() {
               </div>
             </motion.div>
 
-            <motion.div className={styles.inputGroup} custom={2} variants={fadeUp} initial="hidden" animate="visible">
-              <label className={styles.inputLabel}>{t("confirmPassword")}</label>
-              <div className={styles.inputWrapper}>
-                <Lock size={16} className={styles.inputIcon} />
+            <motion.div className={s.inputGroup} custom={2} variants={fadeUp} initial="hidden" animate="visible">
+              <label className={s.inputLabel}>{t("confirmPassword")}</label>
+              <div className={s.inputWrapper}>
+                <Lock size={16} className={s.inputIcon} />
                 <input
                   type={showConfirmPassword ? "text" : "password"}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
                   placeholder="Confirm your new password"
-                  className={`${styles.input} ${styles.inputWithToggle}`}
+                  className={`${s.input} ${s.inputWithToggle}`}
                 />
                 <button
                   type="button"
-                  className={styles.inputToggle}
+                  className={s.inputToggle}
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   tabIndex={-1}
                 >
@@ -154,7 +154,7 @@ export default function ResetPasswordPage() {
               </div>
             </motion.div>
 
-            <motion.div custom={3} variants={fadeUp} initial="hidden" animate="visible" className={styles.submitButton}>
+            <motion.div custom={3} variants={fadeUp} initial="hidden" animate="visible" className={s.submitButton}>
               <Button type="submit" color="primary" fullWidth isLoading={loading}>
                 {t("resetPassword")}
               </Button>

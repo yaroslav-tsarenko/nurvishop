@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { Link } from "@/i18n/routing";
+import clsx from "clsx";
 import {
   ShoppingCart, Search, Menu, X, User, Shield,
   ChevronRight, Heart, ChevronDown,
@@ -16,7 +17,6 @@ import { ThemeToggle } from "./ThemeToggle";
 import { AnimatePresence, motion } from "framer-motion";
 import { NurviLogo } from "../NurviLogo";
 import { CurrencySwitcher } from "./CurrencySwitcher";
-import styles from "./Header.module.css";
 
 interface Category {
   id: string;
@@ -59,6 +59,15 @@ function getIconForCategory(name: string) {
   }
   return LayoutGrid;
 }
+
+const iconButton =
+  "relative flex h-9 w-9 cursor-pointer items-center justify-center rounded-md border-none bg-transparent text-muted no-underline transition-colors duration-150 hover:bg-mist hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40";
+
+const navLink =
+  "flex cursor-pointer items-center gap-1 whitespace-nowrap rounded-md border-none bg-transparent px-2.5 py-1.5 text-[0.8125rem] font-medium text-muted transition-colors duration-150 hover:bg-mist hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40";
+
+const drawerNavLink =
+  "flex items-center justify-between rounded-md p-3 text-[0.9375rem] font-medium text-ink no-underline transition-colors duration-150 hover:bg-mist focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40";
 
 export function Header() {
   const t = useTranslations("nav");
@@ -113,51 +122,65 @@ export function Header() {
 
   return (
     <>
-      <header className={`${styles.header} ${scrolled ? styles.headerScrolled : ""}`}>
-        <div className={styles.container}>
-          <Link href="/" className={styles.logo}>
+      <header
+        className={clsx(
+          "sticky top-0 z-50 h-[60px] border-b border-line bg-surface/90 backdrop-blur transition-shadow duration-200",
+          scrolled && "shadow-md"
+        )}
+      >
+        <div className="mx-auto flex h-full max-w-container items-center gap-6 px-4 lg:px-6">
+          <Link
+            href="/"
+            className="flex flex-shrink-0 items-center gap-2 whitespace-nowrap font-display text-2xl font-bold tracking-[-0.03em] text-ink no-underline"
+          >
             <NurviLogo size={26} />
-            <span className={styles.logoText}>nurvishop</span>
+            <span className="font-bold text-ink">nurvishop</span>
           </Link>
 
-          <nav className={styles.nav}>
-            <Link href="/" className={styles.navLink}>
+          <nav className="hidden flex-shrink-0 items-center gap-0.5 lg:flex">
+            <Link href="/" className={navLink}>
               {t("home")}
             </Link>
 
             <div
-              className={styles.navItem}
+              className="relative"
               ref={megaRef}
               onMouseEnter={openMega}
               onMouseLeave={closeMega}
             >
-              <button className={styles.navLink} onClick={() => setMegaOpen(!megaOpen)}>
+              <button className={navLink} onClick={() => setMegaOpen(!megaOpen)}>
                 {t("catalog")}
                 <ChevronDown size={14} style={{ transition: "transform 0.2s", transform: megaOpen ? "rotate(180deg)" : undefined }} />
               </button>
             </div>
 
-            <Link href="/contact" className={styles.navLink}>
+            <Link href="/contact" className={navLink}>
               {t("contact")}
             </Link>
           </nav>
 
-          <form className={styles.searchBar} onSubmit={handleSearch}>
-            <Search size={16} className={styles.searchIcon} />
+          <form
+            className="relative hidden h-[38px] max-w-[500px] flex-1 items-center overflow-hidden rounded-pill border border-line bg-surface transition-shadow focus-within:ring-2 focus-within:ring-accent/40 md:flex"
+            onSubmit={handleSearch}
+          >
+            <Search size={16} className="pointer-events-none absolute left-3.5 text-subtle" />
             <input
               type="text"
-              className={styles.searchInput}
+              className="h-full flex-1 border-none bg-transparent py-0 pl-9 pr-3 text-[0.8125rem] text-ink outline-none placeholder:text-subtle"
               placeholder="Search products..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <button type="submit" className={styles.searchBtn}>
+            <button
+              type="submit"
+              className="h-full cursor-pointer whitespace-nowrap border-none bg-accent px-5 text-[0.8125rem] font-semibold text-white transition-colors duration-150 hover:bg-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+            >
               Search
             </button>
           </form>
 
-          <div className={styles.actions}>
-            <Link href="/search" className={`${styles.iconButton} ${styles.mobileSearchBtn}`} aria-label={t("search")}>
+          <div className="ml-auto flex flex-shrink-0 items-center gap-0.5">
+            <Link href="/search" className={clsx(iconButton, "flex md:hidden")} aria-label={t("search")}>
               <Search size={20} />
             </Link>
 
@@ -165,17 +188,17 @@ export function Header() {
             <CurrencySwitcher />
 
             {user && (
-              <Link href="/account/wishlist" className={styles.iconButton} aria-label="Wishlist">
+              <Link href="/account/wishlist" className={iconButton} aria-label="Wishlist">
                 <Heart size={20} />
               </Link>
             )}
 
-            <Link href="/cart" className={`${styles.iconButton} ${styles.cartButton}`} aria-label={t("cart")}>
+            <Link href="/cart" className={clsx(iconButton, "relative")} aria-label={t("cart")}>
               <ShoppingCart size={20} />
               {itemCount > 0 && (
                 <motion.span
                   key={cartBounce}
-                  className={styles.cartBadge}
+                  className="absolute -right-[3px] -top-[3px] flex h-[1.125rem] min-w-[1.125rem] items-center justify-center rounded-pill border-2 border-surface bg-accent px-1 text-[0.625rem] font-bold text-white"
                   initial={cartBounce > 0 ? { scale: 0.5 } : false}
                   animate={{ scale: 1 }}
                   transition={{ type: "spring", damping: 10, stiffness: 400 }}
@@ -186,23 +209,23 @@ export function Header() {
             </Link>
 
             {user && (role === "ADMIN" || role === "SUPER_ADMIN") && (
-              <a href="/admin" className={styles.iconButton} aria-label="Admin">
+              <a href="/admin" className={iconButton} aria-label="Admin">
                 <Shield size={20} />
               </a>
             )}
 
             {user ? (
-              <Link href="/account" className={styles.iconButton} aria-label={t("account")}>
+              <Link href="/account" className={iconButton} aria-label={t("account")}>
                 <User size={20} />
               </Link>
             ) : (
-              <Link href="/auth/login" className={styles.iconButton} aria-label={t("login")}>
+              <Link href="/auth/login" className={iconButton} aria-label={t("login")}>
                 <User size={20} />
               </Link>
             )}
 
             <button
-              className={`${styles.iconButton} ${styles.mobileMenuButton}`}
+              className={clsx(iconButton, "flex lg:hidden")}
               onClick={() => setMobileOpen(true)}
               aria-label="Menu"
             >
@@ -217,7 +240,7 @@ export function Header() {
         {megaOpen && (
           <>
             <motion.div
-              className={styles.megaOverlay}
+              className="fixed inset-0 top-[60px] z-40 bg-black/45"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -225,7 +248,7 @@ export function Header() {
               onClick={() => setMegaOpen(false)}
             />
             <motion.div
-              className={styles.megaMenu}
+              className="fixed inset-x-0 top-[60px] z-[45] max-h-[30vh] overflow-y-auto border-b border-line bg-surface shadow-lg"
               initial={{ opacity: 0, y: -8 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
@@ -233,21 +256,21 @@ export function Header() {
               onMouseEnter={openMega}
               onMouseLeave={closeMega}
             >
-              <div className={styles.megaInner}>
+              <div className="mx-auto max-w-container px-6 pb-4 pt-5">
                 {categories.length === 0 ? (
-                  <div className={styles.megaSkeleton}>
+                  <div className="grid grid-cols-3 gap-2 min-[1201px]:grid-cols-5">
                     {Array.from({ length: 10 }).map((_, i) => (
-                      <div key={i} className={styles.megaSkeletonCard}>
-                        <div className={styles.megaSkeletonIcon} />
-                        <div className={styles.megaSkeletonText}>
-                          <div className={styles.megaSkeletonBar} style={{ width: `${55 + (i * 17) % 35}%` }} />
-                          <div className={styles.megaSkeletonBar} style={{ width: "40%" }} />
+                      <div key={i} className="flex items-center gap-3 rounded-md px-3 py-2.5">
+                        <div className="h-9 w-9 flex-shrink-0 animate-pulse rounded-md bg-well" />
+                        <div className="flex flex-1 flex-col gap-1.5">
+                          <div className="h-2.5 animate-pulse rounded-sm bg-well" style={{ width: `${55 + (i * 17) % 35}%` }} />
+                          <div className="h-2.5 animate-pulse rounded-sm bg-well" style={{ width: "40%" }} />
                         </div>
                       </div>
                     ))}
                   </div>
                 ) : (
-                <div className={styles.megaGrid}>
+                <div className="grid grid-cols-3 gap-2 min-[1201px]:grid-cols-5">
                   {[...categories]
                     .sort((a, b) => subtreeCount(b) - subtreeCount(a))
                     .slice(0, 10)
@@ -258,26 +281,26 @@ export function Header() {
                         <Link
                           key={cat.id}
                           href={`/catalog/${cat.slug}`}
-                          className={styles.megaCard}
+                          className="group flex items-center gap-3 rounded-md px-3 py-2.5 text-ink no-underline transition-colors duration-150 hover:bg-mist focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
                           onClick={() => setMegaOpen(false)}
                         >
-                          <div className={styles.megaCardIcon}>
+                          <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-md bg-accent-light text-accent transition-colors duration-150 group-hover:bg-accent group-hover:text-white">
                             <Icon size={20} />
                           </div>
-                          <div className={styles.megaCardText}>
-                            <span className={styles.megaCardName}>{cat.name}</span>
-                            <span className={styles.megaCardCount}>{count} products</span>
+                          <div className="flex min-w-0 flex-col">
+                            <span className="overflow-hidden text-ellipsis whitespace-nowrap text-[0.8rem] font-semibold leading-tight">{cat.name}</span>
+                            <span className="text-[0.675rem] text-subtle">{count} products</span>
                           </div>
-                          <ChevronRight size={14} className={styles.megaCardArrow} />
+                          <ChevronRight size={14} className="ml-auto flex-shrink-0 text-subtle opacity-0 transition-[opacity,transform] duration-150 group-hover:translate-x-0.5 group-hover:opacity-100" />
                         </Link>
                       );
                     })}
                 </div>
                 )}
-                <div className={styles.megaFooter}>
+                <div className="mt-3 flex items-center border-t border-line pt-2.5">
                   <Link
                     href="/catalog"
-                    className={styles.megaFooterLink}
+                    className="flex items-center gap-1 text-[0.8125rem] font-semibold text-accent no-underline transition-[gap] duration-150 hover:gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
                     onClick={() => setMegaOpen(false)}
                   >
                     Browse all categories <ChevronRight size={14} />
@@ -293,70 +316,73 @@ export function Header() {
         {mobileOpen && (
           <>
             <motion.div
-              className={styles.mobileOverlay}
+              className="fixed inset-0 z-[90] bg-black/40"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setMobileOpen(false)}
             />
             <motion.div
-              className={styles.mobileDrawer}
+              className="fixed inset-y-0 right-0 z-[100] flex w-[min(85vw,380px)] flex-col rounded-l-2xl bg-surface shadow-lg"
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 30, stiffness: 300 }}
             >
-              <div className={styles.drawerHeader}>
-                <span className={styles.drawerTitle}>Menu</span>
-                <button className={styles.drawerClose} onClick={() => setMobileOpen(false)}>
+              <div className="flex items-center justify-between border-b border-line px-5 py-4">
+                <span className="text-[1.125rem] font-bold text-ink">Menu</span>
+                <button
+                  className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-md border-none bg-transparent text-muted hover:bg-mist hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+                  onClick={() => setMobileOpen(false)}
+                >
                   <X size={20} />
                 </button>
               </div>
 
-              <div className={styles.drawerBody}>
-                <nav className={styles.drawerNav}>
-                  <Link href="/" className={styles.drawerNavLink} onClick={() => setMobileOpen(false)}>
+              <div className="flex-1 overflow-y-auto px-5 py-4">
+                <nav className="flex flex-col gap-1">
+                  <Link href="/" className={drawerNavLink} onClick={() => setMobileOpen(false)}>
                     {t("home")} <ChevronRight size={18} />
                   </Link>
-                  <Link href="/catalog" className={styles.drawerNavLink} onClick={() => setMobileOpen(false)}>
+                  <Link href="/catalog" className={drawerNavLink} onClick={() => setMobileOpen(false)}>
                     {t("catalog")} <ChevronRight size={18} />
                   </Link>
-                  <Link href="/catalog?sort=newest" className={styles.drawerNavLink} onClick={() => setMobileOpen(false)}>
+                  <Link href="/catalog?sort=newest" className={drawerNavLink} onClick={() => setMobileOpen(false)}>
                     New Arrivals <ChevronRight size={18} />
                   </Link>
-                  <Link href="/catalog?onSale=true" className={styles.drawerNavLink} onClick={() => setMobileOpen(false)}>
+                  <Link href="/catalog?onSale=true" className={drawerNavLink} onClick={() => setMobileOpen(false)}>
                     Deals <ChevronRight size={18} />
                   </Link>
 
-                  <div className={styles.drawerDivider} />
+                  <div className="my-2 h-px bg-line" />
 
-                  <Link href="/contact" className={styles.drawerNavLink} onClick={() => setMobileOpen(false)}>
+                  <Link href="/contact" className={drawerNavLink} onClick={() => setMobileOpen(false)}>
                     {t("contact")} <ChevronRight size={18} />
                   </Link>
                   {user && (role === "ADMIN" || role === "SUPER_ADMIN") && (
-                    <a href="/admin" className={styles.drawerNavLink} onClick={() => setMobileOpen(false)}>
+                    <a href="/admin" className={drawerNavLink} onClick={() => setMobileOpen(false)}>
                       Admin Panel <ChevronRight size={18} />
                     </a>
                   )}
                 </nav>
               </div>
 
-              <div className={styles.drawerFooter}>
+              <div className="flex flex-col gap-3 border-t border-line px-5 py-4">
                 {user ? (
                   <Link href="/account" onClick={() => setMobileOpen(false)}>
-                    <div className={`${styles.drawerBtn} ${styles.drawerBtnPrimary}`}>
+                    <div className="flex items-center justify-center rounded-md bg-accent p-3 text-sm font-semibold text-white">
                       My Account
                     </div>
                   </Link>
                 ) : (
                   <>
                     <Link href="/auth/login" onClick={() => setMobileOpen(false)}>
-                      <div className={`${styles.drawerBtn} ${styles.drawerBtnPrimary}`}>
+                      <div className="flex items-center justify-center rounded-md bg-accent p-3 text-sm font-semibold text-white">
                         Sign In
                       </div>
                     </Link>
                     <Link href="/auth/register" onClick={() => setMobileOpen(false)}>
-                      <div className={`${styles.drawerBtn} ${styles.drawerBtnSecondary}`}>
+                      <div className="flex items-center justify-center rounded-md bg-mist p-3 text-sm font-semibold text-ink">
                         Create Account
                       </div>
                     </Link>

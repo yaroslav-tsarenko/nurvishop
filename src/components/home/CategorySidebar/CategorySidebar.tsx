@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "@/i18n/routing";
 import { ChevronRight, ChevronDown, Menu, X } from "lucide-react";
-import styles from "./CategorySidebar.module.css";
+import clsx from "clsx";
 
 interface Category {
   id: string;
@@ -20,18 +20,21 @@ function CategoryItem({ cat, depth = 0, onNavigate }: { cat: Category; depth?: n
 
   return (
     <>
-      <div className={styles.item} style={{ paddingLeft: `${0.75 + depth * 0.75}rem` }}>
+      <div
+        className="flex items-center border-b border-line last:border-b-0"
+        style={{ paddingLeft: `${0.75 + depth * 0.75}rem` }}
+      >
         <Link
           href={`/catalog/${cat.slug}`}
-          className={styles.itemLink}
+          className="flex min-w-0 flex-1 items-center gap-2 py-2 pl-0 pr-1 text-[0.8125rem] text-ink no-underline transition-colors duration-200 hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
           onClick={onNavigate}
         >
-          <span className={styles.name}>{cat.name}</span>
-          {count > 0 && <span className={styles.count}>{count}</span>}
+          <span className="min-w-0 flex-1 overflow-hidden text-ellipsis whitespace-nowrap">{cat.name}</span>
+          {count > 0 && <span className="flex-shrink-0 text-[0.6875rem] text-subtle">{count}</span>}
         </Link>
         {hasChildren && (
           <button
-            className={styles.expandBtn}
+            className="mr-1 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-sm text-subtle transition-[background,color] duration-200 hover:bg-well hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
             onClick={(e) => { e.preventDefault(); setExpanded(!expanded); }}
             aria-label={expanded ? "Collapse" : "Expand"}
           >
@@ -62,7 +65,7 @@ export function CategorySidebar() {
   return (
     <>
       <button
-        className={styles.mobileToggle}
+        className="hidden items-center gap-2 rounded-lg border-none bg-ink px-4 py-2 text-sm font-semibold text-white max-lg:flex focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
         onClick={() => setMobileOpen(true)}
         aria-label="Open categories"
       >
@@ -71,30 +74,36 @@ export function CategorySidebar() {
       </button>
 
       {mobileOpen && (
-        <div className={styles.overlay} onClick={closeMobile} />
+        <div className="fixed inset-0 z-[999] hidden bg-black/40 max-lg:block" onClick={closeMobile} />
       )}
 
-      <aside className={`${styles.sidebar} ${mobileOpen ? styles.open : ""}`}>
-        <div className={styles.header}>
-          <h3 className={styles.title}>
+      <aside
+        className={clsx(
+          "h-fit w-60 flex-shrink-0 overflow-hidden rounded-lg border border-line bg-surface",
+          "max-lg:fixed max-lg:top-0 max-lg:z-[1000] max-lg:h-screen max-lg:w-[280px] max-lg:overflow-y-auto max-lg:rounded-none max-lg:border-none max-lg:transition-[left] max-lg:duration-[250ms] max-lg:ease-out",
+          mobileOpen ? "max-lg:left-0" : "max-lg:-left-[300px]",
+        )}
+      >
+        <div className="flex items-center justify-between bg-ink px-4 py-3 text-white">
+          <h3 className="m-0 flex items-center gap-2 text-sm font-bold uppercase tracking-wide">
             <Menu size={16} />
             Catalog
           </h3>
           <button
-            className={styles.closeBtn}
+            className="hidden cursor-pointer border-none bg-transparent p-0.5 text-white max-lg:block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
             onClick={closeMobile}
             aria-label="Close categories"
           >
             <X size={20} />
           </button>
         </div>
-        <nav className={styles.list}>
+        <nav className="flex max-h-[70vh] flex-col overflow-y-auto">
           {categories.length === 0 ? (
-            <div className={styles.skeleton}>
+            <div className="flex flex-col gap-0">
               {Array.from({ length: 10 }).map((_, i) => (
-                <div key={i} className={styles.skeletonItem}>
-                  <div className={styles.skeletonBar} style={{ width: `${55 + (i * 17) % 35}%`, flexShrink: 0 }} />
-                  <div className={styles.skeletonBar} style={{ width: "24px", marginLeft: "auto" }} />
+                <div key={i} className="flex items-center gap-2 border-b border-line px-3 py-2.5 last:border-b-0">
+                  <div className="animate-shimmer h-3 rounded-[6px]" style={{ width: `${55 + (i * 17) % 35}%`, flexShrink: 0 }} />
+                  <div className="animate-shimmer h-3 rounded-[6px]" style={{ width: "24px", marginLeft: "auto" }} />
                 </div>
               ))}
             </div>

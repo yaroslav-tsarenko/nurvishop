@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import clsx from "clsx";
 import { useTranslations } from "next-intl";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import styles from "./ProductFilters.module.css";
 
 interface Category {
   id: string;
@@ -30,15 +30,22 @@ interface ProductFiltersProps {
   onBrandChange: (value: string) => void;
 }
 
+const categoryItemBase =
+  "cursor-pointer rounded-md px-2.5 py-2 text-sm text-muted transition-colors duration-150 hover:bg-well hover:text-ink";
+const categoryItemActive = "bg-lilac font-semibold text-accent";
+
 function FilterSection({ title, defaultOpen = true, children }: { title: string; defaultOpen?: boolean; children: React.ReactNode }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <div className={styles.section}>
-      <button className={styles.sectionHeader} onClick={() => setOpen(!open)}>
-        <h3 className={styles.sectionTitle}>{title}</h3>
+    <div className="border-b border-line last:border-b-0">
+      <button
+        className="flex w-full items-center justify-between px-5 py-4 text-muted transition-colors duration-150 hover:bg-well focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+        onClick={() => setOpen(!open)}
+      >
+        <h3 className="text-[0.8125rem] font-bold uppercase tracking-wide text-ink">{title}</h3>
         {open ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
       </button>
-      {open && <div className={styles.sectionContent}>{children}</div>}
+      {open && <div className="px-5 pb-4">{children}</div>}
     </div>
   );
 }
@@ -62,27 +69,22 @@ function CategoryItem({
   return (
     <>
       <li
-        className={`${styles.categoryItem} ${isActive ? styles.categoryItemActive : ""}`}
+        className={clsx("flex items-center", categoryItemBase, isActive && categoryItemActive)}
         style={{ paddingLeft: `${0.75 + depth * 1}rem` }}
       >
         <span
           onClick={() => onCategoryChange(cat.slug)}
-          style={{ flex: 1, cursor: "pointer" }}
+          className="flex-1 cursor-pointer"
         >
           {cat.name}
           {count > 0 && (
-            <span style={{ color: "var(--color-text-tertiary)", fontSize: "0.75rem", marginLeft: "0.25rem" }}>
-              ({count})
-            </span>
+            <span className="ml-1 text-xs text-subtle">({count})</span>
           )}
         </span>
         {hasChildren && (
           <button
             onClick={(e) => { e.stopPropagation(); setExpanded(!expanded); }}
-            style={{
-              background: "none", border: "none", cursor: "pointer",
-              color: "var(--color-text-tertiary)", padding: "0.125rem", display: "flex",
-            }}
+            className="flex cursor-pointer border-none bg-transparent p-0.5 text-subtle"
           >
             {expanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
           </button>
@@ -121,21 +123,21 @@ export function ProductFilters({
   const nav = useTranslations("nav");
 
   return (
-    <aside className={styles.filters}>
+    <aside className="flex flex-col overflow-hidden rounded-xl border border-line bg-surface">
       <FilterSection title={t("filterBy")}>
         {categories.length === 0 ? (
-          <div style={{ display: "flex", flexDirection: "column" }}>
+          <div className="flex flex-col">
             {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className={styles.skeletonItem}>
-                <div className={styles.skeletonBar} style={{ width: `${50 + (i * 19) % 40}%`, flex: 1 }} />
-                <div className={styles.skeletonBar} style={{ width: "20px" }} />
+              <div key={i} className="flex items-center gap-2 px-2.5 py-2">
+                <div className="h-3 flex-1 animate-pulse rounded-md bg-well" style={{ width: `${50 + (i * 19) % 40}%` }} />
+                <div className="h-3 w-5 animate-pulse rounded-md bg-well" />
               </div>
             ))}
           </div>
         ) : (
-          <ul className={styles.categoryList}>
+          <ul className="m-0 flex max-h-[220px] list-none flex-col gap-0.5 overflow-y-auto p-0">
             <li
-              className={`${styles.categoryItem} ${!selectedCategory ? styles.categoryItemActive : ""}`}
+              className={clsx(categoryItemBase, !selectedCategory && categoryItemActive)}
               onClick={() => onCategoryChange("")}
             >
               {nav("allCategories")}
@@ -154,36 +156,36 @@ export function ProductFilters({
       </FilterSection>
 
       <FilterSection title={t("priceRange")}>
-        <div className={styles.priceInputs}>
+        <div className="mb-3 flex items-center gap-2">
           <input
             type="number"
             placeholder="Min"
             value={minPrice}
             onChange={(e) => onMinPriceChange(e.target.value)}
-            className={styles.priceInput}
+            className="w-full rounded-md border border-line bg-surface px-3 py-2 text-sm text-ink transition-colors duration-200 focus:border-accent focus:outline-none"
           />
-          <span className={styles.priceSep}>–</span>
+          <span className="flex-shrink-0 text-subtle">–</span>
           <input
             type="number"
             placeholder="Max"
             value={maxPrice}
             onChange={(e) => onMaxPriceChange(e.target.value)}
-            className={styles.priceInput}
+            className="w-full rounded-md border border-line bg-surface px-3 py-2 text-sm text-ink transition-colors duration-200 focus:border-accent focus:outline-none"
           />
         </div>
-        <div className={styles.pricePresets}>
-          <button className={styles.presetBtn} onClick={() => { onMinPriceChange(""); onMaxPriceChange("25"); }}>Under €25</button>
-          <button className={styles.presetBtn} onClick={() => { onMinPriceChange("25"); onMaxPriceChange("50"); }}>€25–€50</button>
-          <button className={styles.presetBtn} onClick={() => { onMinPriceChange("50"); onMaxPriceChange("100"); }}>€50–€100</button>
-          <button className={styles.presetBtn} onClick={() => { onMinPriceChange("100"); onMaxPriceChange(""); }}>€100+</button>
+        <div className="grid grid-cols-2 gap-1.5">
+          <button className="rounded-md border border-line bg-surface p-[0.4375rem] text-xs font-medium text-muted transition-[background-color,color,border-color] duration-150 hover:border-accent hover:bg-lilac hover:text-accent" onClick={() => { onMinPriceChange(""); onMaxPriceChange("25"); }}>Under €25</button>
+          <button className="rounded-md border border-line bg-surface p-[0.4375rem] text-xs font-medium text-muted transition-[background-color,color,border-color] duration-150 hover:border-accent hover:bg-lilac hover:text-accent" onClick={() => { onMinPriceChange("25"); onMaxPriceChange("50"); }}>€25–€50</button>
+          <button className="rounded-md border border-line bg-surface p-[0.4375rem] text-xs font-medium text-muted transition-[background-color,color,border-color] duration-150 hover:border-accent hover:bg-lilac hover:text-accent" onClick={() => { onMinPriceChange("50"); onMaxPriceChange("100"); }}>€50–€100</button>
+          <button className="rounded-md border border-line bg-surface p-[0.4375rem] text-xs font-medium text-muted transition-[background-color,color,border-color] duration-150 hover:border-accent hover:bg-lilac hover:text-accent" onClick={() => { onMinPriceChange("100"); onMaxPriceChange(""); }}>€100+</button>
         </div>
       </FilterSection>
 
       {brands.length > 0 && (
         <FilterSection title="Brand" defaultOpen={false}>
-          <ul className={styles.categoryList}>
+          <ul className="m-0 flex max-h-[220px] list-none flex-col gap-0.5 overflow-y-auto p-0">
             <li
-              className={`${styles.categoryItem} ${!selectedBrand ? styles.categoryItemActive : ""}`}
+              className={clsx(categoryItemBase, !selectedBrand && categoryItemActive)}
               onClick={() => onBrandChange("")}
             >
               All Brands
@@ -191,7 +193,7 @@ export function ProductFilters({
             {brands.map((brand) => (
               <li
                 key={brand}
-                className={`${styles.categoryItem} ${selectedBrand === brand ? styles.categoryItemActive : ""}`}
+                className={clsx(categoryItemBase, selectedBrand === brand && categoryItemActive)}
                 onClick={() => onBrandChange(brand)}
               >
                 {brand}
@@ -202,12 +204,12 @@ export function ProductFilters({
       )}
 
       <FilterSection title={t("availability")} defaultOpen={false}>
-        <label className={styles.checkbox}>
-          <input type="checkbox" checked={inStock} onChange={(e) => onInStockChange(e.target.checked)} />
+        <label className="flex cursor-pointer items-center gap-2 py-1.5 text-sm text-muted">
+          <input type="checkbox" checked={inStock} onChange={(e) => onInStockChange(e.target.checked)} className="h-4 w-4 accent-accent" />
           <span>{t("inStock")}</span>
         </label>
-        <label className={styles.checkbox}>
-          <input type="checkbox" checked={onSale} onChange={(e) => onSaleChange(e.target.checked)} />
+        <label className="flex cursor-pointer items-center gap-2 py-1.5 text-sm text-muted">
+          <input type="checkbox" checked={onSale} onChange={(e) => onSaleChange(e.target.checked)} className="h-4 w-4 accent-accent" />
           <span>On Sale</span>
         </label>
       </FilterSection>

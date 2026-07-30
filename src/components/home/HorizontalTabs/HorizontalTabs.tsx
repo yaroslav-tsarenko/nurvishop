@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import { Link } from "@/i18n/routing";
+import clsx from "clsx";
 import {
   Flame, Apple, Wind, Gift, Smartphone, Gamepad2,
   Lightbulb, Sparkles, Tag, Package, Star, Zap,
 } from "lucide-react";
-import styles from "./HorizontalTabs.module.css";
 
 const ICON_MAP: Record<string, React.ElementType> = {
   Flame, Apple, Wind, Gift, Smartphone, Gamepad2,
@@ -31,15 +31,20 @@ export function HorizontalTabs({ tabs }: Props) {
   if (!tabs.length) return null;
 
   return (
-    <div className={styles.wrapper}>
-      <div className={styles.tabs}>
+    <div className="mb-3 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <div className="flex min-w-max gap-1">
         {tabs.map((tab, i) => {
           const Icon = tab.icon ? ICON_MAP[tab.icon] : Tag;
           return (
             <Link
               key={tab.id}
               href={tab.linkUrl}
-              className={`${styles.tab} ${i === active ? styles.active : ""}`}
+              className={clsx(
+                "flex items-center gap-1.5 whitespace-nowrap rounded-md border px-3 py-[0.4rem] text-[0.8125rem] font-medium text-ink no-underline transition-[border-color,box-shadow] duration-200 hover:border-line-hover hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40",
+                i === active
+                  ? "border-[#E53935] bg-[#FFF5F5]"
+                  : "border-line bg-surface",
+              )}
               onClick={() => setActive(i)}
             >
               <Icon size={15} style={{ color: tab.color }} />

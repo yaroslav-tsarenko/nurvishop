@@ -13,7 +13,6 @@ import {
   Mail, Phone, MapPin, Clock, Send,
   CheckCircle, MessageSquare, HelpCircle, ShieldCheck,
 } from "lucide-react";
-import styles from "./contact.module.css";
 
 const inputStyle: React.CSSProperties = {
   width: "100%",
@@ -91,7 +90,7 @@ export default function ContactPage() {
   };
 
   return (
-    <div className={styles.wrapper}>
+    <div className="mx-auto max-w-container px-4 pb-16">
       <style>{`
         .contact-input:focus {
           border-color: var(--color-accent) !important;
@@ -104,12 +103,12 @@ export default function ContactPage() {
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className={styles.hero}
+        className="mb-12 text-center max-[640px]:mb-8"
       >
-        <h1 className={styles.title}>
+        <h1 className="mb-3 text-4xl font-extrabold tracking-tight max-[640px]:text-[1.625rem]">
           {t("title")}
         </h1>
-        <p className={styles.subtitle}>
+        <p className="mx-auto max-w-[480px] text-[1.0625rem] text-muted max-[640px]:text-[0.9375rem]">
           {t("subtitle")}. We&apos;re here to help with orders, products, and any questions you may have.
         </p>
       </motion.div>
@@ -119,7 +118,7 @@ export default function ContactPage() {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className={styles.infoGrid}
+        className="mb-12 grid grid-cols-4 gap-4 max-[900px]:grid-cols-2 max-[480px]:mb-8 max-[480px]:gap-3"
       >
         {CONTACT_INFO.map((info, i) => (
           <motion.div
@@ -127,7 +126,7 @@ export default function ContactPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15 + i * 0.05 }}
-            className={styles.infoCard}
+            className="rounded-lg border border-line bg-surface p-6 text-center max-[480px]:px-3 max-[480px]:py-4"
             whileHover={{ y: -4, boxShadow: "0 8px 24px rgba(0,0,0,0.08)" }}
           >
             <div style={{
@@ -151,13 +150,13 @@ export default function ContactPage() {
       </motion.div>
 
       {/* Main Content: Form + Map/Info */}
-      <div className={styles.layout}>
+      <div className="grid grid-cols-[1fr_380px] items-start gap-10 max-[1024px]:grid-cols-1 max-[1024px]:gap-6">
         {/* Contact Form */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2 }}
-          className={styles.formCard}
+          className="rounded-xl border border-line bg-surface p-8 max-[640px]:rounded-lg max-[640px]:p-5"
         >
           <AnimatePresence mode="wait">
             {submitted ? (
@@ -201,7 +200,7 @@ export default function ContactPage() {
                 {/* Topic Selector */}
                 <div>
                   <label style={labelStyle}>What can we help with?</label>
-                  <div className={styles.topicGrid}>
+                  <div className="grid grid-cols-2 gap-2 max-[380px]:grid-cols-1">
                     {TOPICS.map((topic) => {
                       const isActive = selectedTopic === topic.value;
                       return (
@@ -235,7 +234,7 @@ export default function ContactPage() {
                   </div>
                 </div>
 
-                <div className={styles.twoCol}>
+                <div className="grid grid-cols-2 gap-4 max-[480px]:grid-cols-1">
                   <div>
                     <label style={labelStyle}>{t("name")}</label>
                     <input
@@ -307,7 +306,7 @@ export default function ContactPage() {
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.3 }}
-          className={styles.sidebar}
+          className="flex flex-col gap-5"
         >
           {/* FAQ Teaser */}
           <div style={{

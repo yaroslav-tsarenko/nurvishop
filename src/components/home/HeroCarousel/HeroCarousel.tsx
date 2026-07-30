@@ -4,10 +4,10 @@ import { useState, useEffect, useCallback } from "react";
 import Image, { type StaticImageData } from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "@/i18n/routing";
+import clsx from "clsx";
 import banner1 from "@/assets/banner1.png";
 import banner2 from "@/assets/banner2.png";
 import banner3 from "@/assets/banner3.png";
-import styles from "./HeroCarousel.module.css";
 
 interface SlideData {
   id: string;
@@ -116,10 +116,10 @@ export function HeroCarousel({ slides, deals }: Props) {
     : bgImageMap[slide.id] || null;
 
   return (
-    <div className={styles.heroArea}>
-      <div className={styles.carousel}>
+    <div className="mb-4 flex gap-3">
+      <div className="relative min-h-[320px] flex-1 overflow-hidden rounded-md max-[640px]:min-h-[240px]">
         <div
-          className={styles.slide}
+          className="absolute inset-0 flex items-center transition-opacity duration-[400ms] ease-out"
           style={bgImage ? { color: "#fff" } : { background: slide.bgColor, color: slide.textColor }}
         >
           {bgImage && (
@@ -129,20 +129,23 @@ export function HeroCarousel({ slides, deals }: Props) {
                 alt=""
                 fill
                 sizes="(max-width: 1024px) 100vw, 75vw"
-                className={styles.bgImg}
+                className="z-0 object-cover object-[center_right]"
                 priority={current === 0}
               />
-              <div className={styles.overlay} />
+              <div className="absolute inset-0 z-[1] bg-[linear-gradient(to_right,rgba(0,0,0,0.6)_0%,rgba(0,0,0,0.35)_50%,rgba(0,0,0,0.05)_100%)]" />
             </>
           )}
-          <div className={styles.slideContent}>
+          <div className="relative z-[2] max-w-[500px] p-10 max-[640px]:p-6">
             {slide.badgeText && (
-              <span className={styles.badge}>{slide.badgeText}</span>
+              <span className="mb-4 inline-block rounded-sm px-3 py-1 text-[0.7rem] font-bold uppercase tracking-wide text-white">{slide.badgeText}</span>
             )}
-            <h2 className={styles.slideTitle}>{slide.title}</h2>
-            {slide.subtitle && <p className={styles.slideSubtitle}>{slide.subtitle}</p>}
+            <h2 className="m-0 mb-3 font-display text-[1.75rem] font-extrabold leading-[1.15] tracking-[-0.02em] max-[640px]:text-xl">{slide.title}</h2>
+            {slide.subtitle && <p className="m-0 mb-6 text-[0.9375rem] leading-[1.5] opacity-85">{slide.subtitle}</p>}
             {slide.linkUrl && (
-              <Link href={slide.linkUrl} className={styles.slideCta}>
+              <Link
+                href={slide.linkUrl}
+                className="inline-block rounded-md px-6 py-2.5 text-sm font-semibold text-white no-underline transition-opacity duration-200 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+              >
                 {slide.ctaLabel || "Shop Now"}
               </Link>
             )}
@@ -151,17 +154,28 @@ export function HeroCarousel({ slides, deals }: Props) {
 
         {activeSlides.length > 1 && (
           <>
-            <button className={`${styles.arrow} ${styles.arrowLeft}`} onClick={prev} aria-label="Previous slide">
+            <button
+              className="absolute left-3 top-1/2 z-[2] flex h-9 w-9 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-line bg-surface text-ink transition-colors duration-200 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+              onClick={prev}
+              aria-label="Previous slide"
+            >
               <ChevronLeft size={20} />
             </button>
-            <button className={`${styles.arrow} ${styles.arrowRight}`} onClick={next} aria-label="Next slide">
+            <button
+              className="absolute right-3 top-1/2 z-[2] flex h-9 w-9 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-line bg-surface text-ink transition-colors duration-200 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+              onClick={next}
+              aria-label="Next slide"
+            >
               <ChevronRight size={20} />
             </button>
-            <div className={styles.dots}>
+            <div className="absolute bottom-3.5 left-1/2 z-[2] flex -translate-x-1/2 gap-1.5">
               {activeSlides.map((_, i) => (
                 <button
                   key={i}
-                  className={`${styles.dot} ${i === current ? styles.dotActive : ""}`}
+                  className={clsx(
+                    "h-2 cursor-pointer border-none transition-[background] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40",
+                    i === current ? "w-5 rounded-sm bg-white" : "w-2 rounded-full bg-white/40",
+                  )}
                   onClick={() => setCurrent(i)}
                   aria-label={`Slide ${i + 1}`}
                 />
@@ -172,23 +186,27 @@ export function HeroCarousel({ slides, deals }: Props) {
       </div>
 
       {deals.length > 0 && (
-        <div className={styles.sideDeals}>
+        <div className="flex w-[220px] flex-shrink-0 flex-col gap-3 max-lg:hidden">
           {deals.map((deal) => (
-            <Link key={deal.id} href={deal.linkUrl || "/catalog"} className={styles.dealCard}>
+            <Link
+              key={deal.id}
+              href={deal.linkUrl || "/catalog"}
+              className="relative flex flex-1 flex-col rounded-lg border border-line bg-surface p-4 text-ink no-underline transition-[border-color,box-shadow] duration-200 hover:border-line-hover hover:shadow-card-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+            >
               {deal.discountText && (
-                <span className={styles.dealDiscount}>{deal.discountText}</span>
+                <span className="absolute right-2 top-2 rounded-sm bg-[#E53935] px-1.5 py-0.5 text-[0.7rem] font-bold text-white">{deal.discountText}</span>
               )}
-              <div className={styles.dealImage}>
+              <div className="mb-3 flex justify-center">
                 {deal.imageUrl ? (
-                  <img src={deal.imageUrl} alt={deal.title} className={styles.dealImg} />
+                  <img src={deal.imageUrl} alt={deal.title} className="h-20 w-20 rounded-lg object-contain" />
                 ) : (
-                  <div className={styles.dealImagePlaceholder} />
+                  <div className="h-20 w-20 rounded-lg bg-well" />
                 )}
               </div>
-              <h4 className={styles.dealTitle}>{deal.title}</h4>
-              <div className={styles.dealPrices}>
-                {deal.oldPrice && <span className={styles.dealOld}>{deal.oldPrice}</span>}
-                {deal.newPrice && <span className={styles.dealNew}>{deal.newPrice}</span>}
+              <h4 className="m-0 mb-2 text-[0.8125rem] font-semibold leading-[1.3]">{deal.title}</h4>
+              <div className="mt-auto flex items-center gap-2">
+                {deal.oldPrice && <span className="text-xs text-subtle line-through">{deal.oldPrice}</span>}
+                {deal.newPrice && <span className="text-[0.9375rem] font-bold text-[#E53935]">{deal.newPrice}</span>}
               </div>
             </Link>
           ))}

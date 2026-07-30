@@ -4,7 +4,7 @@ import { useLocale } from "next-intl";
 import { useRouter, usePathname } from "@/i18n/routing";
 import { Globe } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
-import styles from "./Header.module.css";
+import { iconButtonClass } from "./iconButtonClass";
 
 const LOCALE_LABELS: Record<string, string> = {
   en: "EN",
@@ -37,7 +37,7 @@ export function LanguageSwitcher() {
   return (
     <div ref={ref} style={{ position: "relative" }}>
       <button
-        className={styles.iconButton}
+        className={iconButtonClass}
         onClick={() => setOpen(!open)}
         aria-label="Change language"
       >

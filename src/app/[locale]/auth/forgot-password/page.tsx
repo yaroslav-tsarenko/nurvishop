@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { Mail, ShoppingBag, ArrowLeft, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
-import styles from "../auth.module.css";
+import * as s from "../auth-classes";
 
 export default function ForgotPasswordPage() {
   const t = useTranslations("auth");
@@ -46,44 +46,44 @@ export default function ForgotPasswordPage() {
   } as const;
 
   return (
-    <div className={styles.authPage}>
+    <div className={s.authPage}>
       <motion.div
-        className={styles.authCard}
+        className={s.authCard}
         initial={{ opacity: 0, y: 24, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
       >
-        <motion.div className={styles.authHeader} custom={0} variants={fadeUp} initial="hidden" animate="visible">
-          <div className={styles.logoIcon}>
+        <motion.div className={s.authHeader} custom={0} variants={fadeUp} initial="hidden" animate="visible">
+          <div className={s.logoIcon}>
             <ShoppingBag size={24} />
           </div>
-          <h1 className={styles.authTitle}>{t("forgotPasswordTitle")}</h1>
-          <p className={styles.authSubtitle}>{t("forgotPasswordSubtitle")}</p>
+          <h1 className={s.authTitle}>{t("forgotPasswordTitle")}</h1>
+          <p className={s.authSubtitle}>{t("forgotPasswordSubtitle")}</p>
         </motion.div>
 
         {sent ? (
-          <motion.div className={styles.magicLinkSent} custom={1} variants={fadeUp} initial="hidden" animate="visible">
+          <motion.div className={s.magicLinkSent} custom={1} variants={fadeUp} initial="hidden" animate="visible">
             <CheckCircle size={32} />
             <p>{t("resetEmailSent")}</p>
           </motion.div>
         ) : (
-          <form onSubmit={handleSubmit} className={styles.form}>
-            <motion.div className={styles.inputGroup} custom={1} variants={fadeUp} initial="hidden" animate="visible">
-              <label className={styles.inputLabel}>{t("email")}</label>
-              <div className={styles.inputWrapper}>
-                <Mail size={16} className={styles.inputIcon} />
+          <form onSubmit={handleSubmit} className={s.form}>
+            <motion.div className={s.inputGroup} custom={1} variants={fadeUp} initial="hidden" animate="visible">
+              <label className={s.inputLabel}>{t("email")}</label>
+              <div className={s.inputWrapper}>
+                <Mail size={16} className={s.inputIcon} />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   placeholder="you@example.com"
-                  className={styles.input}
+                  className={s.input}
                 />
               </div>
             </motion.div>
 
-            <motion.div custom={2} variants={fadeUp} initial="hidden" animate="visible" className={styles.submitButton}>
+            <motion.div custom={2} variants={fadeUp} initial="hidden" animate="visible" className={s.submitButton}>
               <Button type="submit" color="primary" fullWidth isLoading={loading}>
                 {t("sendResetLink")}
               </Button>
@@ -91,7 +91,7 @@ export default function ForgotPasswordPage() {
           </form>
         )}
 
-        <motion.p className={styles.authFooter} custom={3} variants={fadeUp} initial="hidden" animate="visible">
+        <motion.p className={s.authFooter} custom={3} variants={fadeUp} initial="hidden" animate="visible">
           <Link href="/auth/login" style={{ display: "inline-flex", alignItems: "center", gap: "0.25rem" }}>
             <ArrowLeft size={14} />
             {t("backToLogin")}

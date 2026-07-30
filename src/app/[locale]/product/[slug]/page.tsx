@@ -6,7 +6,6 @@ import { ProductInfo } from "@/components/product/ProductInfo/ProductInfo";
 import { ProductTabs } from "@/components/product/ProductTabs/ProductTabs";
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs/Breadcrumbs";
 import { JsonLd } from "@/components/shared/SEO/JsonLd";
-import styles from "./product.module.css";
 
 export const revalidate = 60;
 
@@ -122,13 +121,13 @@ export default async function ProductPage({ params }: ProductPageProps) {
   ];
 
   return (
-    <div className={styles.wrapper}>
+    <div className="mx-auto max-w-container px-4 pb-16">
       <JsonLd data={jsonLd} />
 
       <Breadcrumbs items={breadcrumbItems} />
 
-      <div className={styles.layout}>
-        <div className={styles.gallerySticky}>
+      <div className="mt-2 grid grid-cols-2 items-start gap-12 max-[1024px]:gap-8 max-[768px]:grid-cols-1 max-[768px]:gap-6">
+        <div className="sticky top-[calc(var(--header-height)+1rem)] max-[768px]:static">
           <ProductGallery images={product.images} productName={product.name} />
         </div>
         <ProductInfo

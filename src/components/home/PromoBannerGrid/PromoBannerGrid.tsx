@@ -1,7 +1,6 @@
 "use client";
 
 import { Link } from "@/i18n/routing";
-import styles from "./PromoBannerGrid.module.css";
 
 interface BannerData {
   id: string;
@@ -36,15 +35,26 @@ export function PromoBannerGrid({ smallBanners, wideBanners }: Props) {
   const wide = wideBanners.length > 0 ? wideBanners : defaultWide;
 
   return (
-    <div className={styles.wrapper}>
+    <div className="mb-6 flex flex-col gap-3">
       {small.length > 0 && (
-        <div className={styles.grid}>
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
           {small.map((b) => (
-            <Link key={b.id} href={b.linkUrl || "#"} className={styles.small} style={{ background: b.bgColor, color: b.textColor }}>
-              {b.badgeText && <span className={styles.label}>{b.badgeText}</span>}
-              <h3 className={styles.smallTitle}>{b.title}</h3>
-              {b.subtitle && <span className={styles.subtitle}>{b.subtitle}</span>}
-              <span className={styles.link}>Shop now &rarr;</span>
+            <Link
+              key={b.id}
+              href={b.linkUrl || "#"}
+              className="flex flex-col rounded-md border border-line p-5 text-ink no-underline transition-[box-shadow,transform] duration-200 hover:-translate-y-px hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+              style={{ background: b.bgColor, color: b.textColor }}
+            >
+              {b.badgeText && (
+                <span className="mb-1.5 text-[0.7rem] font-bold uppercase tracking-[0.05em]">
+                  {b.badgeText}
+                </span>
+              )}
+              <h3 className="mb-1 text-base font-bold leading-tight">{b.title}</h3>
+              {b.subtitle && (
+                <span className="mb-3 text-[0.8125rem] text-muted">{b.subtitle}</span>
+              )}
+              <span className="mt-auto text-[0.8125rem] font-semibold">Shop now &rarr;</span>
             </Link>
           ))}
         </div>
@@ -53,15 +63,23 @@ export function PromoBannerGrid({ smallBanners, wideBanners }: Props) {
         <Link
           key={b.id}
           href={b.linkUrl || "#"}
-          className={styles.wide}
+          className="flex flex-col items-center gap-4 rounded-md p-5 text-center no-underline transition-opacity duration-200 hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 md:flex-row md:justify-between md:gap-0 md:px-8 md:py-6 md:text-left"
           style={{ background: b.bgColor, color: b.textColor }}
         >
-          <div className={styles.wideContent}>
-            {b.badgeText && <span className={styles.wideLabel}>{b.badgeText}</span>}
-            <h3 className={styles.wideTitle}>{b.title}</h3>
-            {b.subtitle && <p className={styles.wideSubtitle}>{b.subtitle}</p>}
+          <div className="flex-1">
+            {b.badgeText && (
+              <span className="mb-2 inline-block rounded-[4px] px-2 py-[0.2rem] text-[0.65rem] font-bold uppercase tracking-[0.05em] text-white">
+                {b.badgeText}
+              </span>
+            )}
+            <h3 className="mb-1.5 text-xl font-extrabold text-inherit">{b.title}</h3>
+            {b.subtitle && <p className="m-0 text-[0.8125rem] opacity-70">{b.subtitle}</p>}
           </div>
-          {b.ctaLabel && <span className={styles.wideCta}>{b.ctaLabel}</span>}
+          {b.ctaLabel && (
+            <span className="flex-shrink-0 rounded-md px-6 py-2.5 text-sm font-semibold text-white md:ml-8">
+              {b.ctaLabel}
+            </span>
+          )}
         </Link>
       ))}
     </div>

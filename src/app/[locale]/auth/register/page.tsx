@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { COUNTRIES } from "@/lib/countries";
-import styles from "../auth.module.css";
+import * as s from "../auth-classes";
 
 function getPasswordStrength(password: string): { level: number; label: string; color: string } {
   if (password.length === 0) return { level: 0, label: "", color: "transparent" };
@@ -177,20 +177,20 @@ export default function RegisterPage() {
     ) : null;
 
   return (
-    <div className={styles.authPage}>
+    <div className={s.authPage}>
       <motion.div
-        className={styles.authCard}
+        className={s.authCard}
         style={{ maxWidth: 480 }}
         initial={{ opacity: 0, y: 24, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
       >
-        <div className={styles.authHeader}>
-          <div className={styles.logoIcon}>
+        <div className={s.authHeader}>
+          <div className={s.logoIcon}>
             <ShoppingBag size={24} />
           </div>
-          <h1 className={styles.authTitle}>{t("registerTitle")}</h1>
-          <p className={styles.authSubtitle}>{t("registerSubtitle")}</p>
+          <h1 className={s.authTitle}>{t("registerTitle")}</h1>
+          <p className={s.authSubtitle}>{t("registerSubtitle")}</p>
         </div>
 
         {/* Step indicator */}
@@ -273,56 +273,56 @@ export default function RegisterPage() {
                 animate="center"
                 exit="exit"
                 transition={{ duration: 0.2 }}
-                className={styles.form}
+                className={s.form}
               >
-                <div className={styles.inputGroup}>
-                  <label className={styles.inputLabel}>First Name *</label>
-                  <div className={styles.inputWrapper}>
-                    <User size={16} className={styles.inputIcon} />
+                <div className={s.inputGroup}>
+                  <label className={s.inputLabel}>First Name *</label>
+                  <div className={s.inputWrapper}>
+                    <User size={16} className={s.inputIcon} />
                     <input
                       type="text"
                       value={form.firstName}
                       onChange={set("firstName")}
                       placeholder="John"
-                      className={styles.input}
+                      className={s.input}
                       style={errors.firstName ? { borderColor: "var(--color-danger)" } : undefined}
                     />
                   </div>
                   {renderError("firstName")}
                 </div>
 
-                <div className={styles.inputGroup}>
-                  <label className={styles.inputLabel}>Last Name *</label>
-                  <div className={styles.inputWrapper}>
-                    <User size={16} className={styles.inputIcon} />
+                <div className={s.inputGroup}>
+                  <label className={s.inputLabel}>Last Name *</label>
+                  <div className={s.inputWrapper}>
+                    <User size={16} className={s.inputIcon} />
                     <input
                       type="text"
                       value={form.lastName}
                       onChange={set("lastName")}
                       placeholder="Doe"
-                      className={styles.input}
+                      className={s.input}
                       style={errors.lastName ? { borderColor: "var(--color-danger)" } : undefined}
                     />
                   </div>
                   {renderError("lastName")}
                 </div>
 
-                <div className={styles.inputGroup}>
-                  <label className={styles.inputLabel}>Date of Birth *</label>
-                  <div className={styles.inputWrapper}>
-                    <Calendar size={16} className={styles.inputIcon} />
+                <div className={s.inputGroup}>
+                  <label className={s.inputLabel}>Date of Birth *</label>
+                  <div className={s.inputWrapper}>
+                    <Calendar size={16} className={s.inputIcon} />
                     <input
                       type="date"
                       value={form.dateOfBirth}
                       onChange={set("dateOfBirth")}
-                      className={styles.input}
+                      className={s.input}
                       style={errors.dateOfBirth ? { borderColor: "var(--color-danger)" } : undefined}
                     />
                   </div>
                   {renderError("dateOfBirth")}
                 </div>
 
-                <div className={styles.submitButton}>
+                <div className={s.submitButton}>
                   <Button type="button" color="primary" fullWidth onPress={goNext}>
                     Continue <ChevronRight size={16} />
                   </Button>
@@ -338,34 +338,34 @@ export default function RegisterPage() {
                 animate="center"
                 exit="exit"
                 transition={{ duration: 0.2 }}
-                className={styles.form}
+                className={s.form}
               >
-                <div className={styles.inputGroup}>
-                  <label className={styles.inputLabel}>{t("email")} *</label>
-                  <div className={styles.inputWrapper}>
-                    <Mail size={16} className={styles.inputIcon} />
+                <div className={s.inputGroup}>
+                  <label className={s.inputLabel}>{t("email")} *</label>
+                  <div className={s.inputWrapper}>
+                    <Mail size={16} className={s.inputIcon} />
                     <input
                       type="email"
                       value={form.email}
                       onChange={set("email")}
                       placeholder="you@example.com"
-                      className={styles.input}
+                      className={s.input}
                       style={errors.email ? { borderColor: "var(--color-danger)" } : undefined}
                     />
                   </div>
                   {renderError("email")}
                 </div>
 
-                <div className={styles.inputGroup}>
-                  <label className={styles.inputLabel}>Phone *</label>
-                  <div className={styles.inputWrapper}>
-                    <Phone size={16} className={styles.inputIcon} />
+                <div className={s.inputGroup}>
+                  <label className={s.inputLabel}>Phone *</label>
+                  <div className={s.inputWrapper}>
+                    <Phone size={16} className={s.inputIcon} />
                     <input
                       type="tel"
                       value={form.phone}
                       onChange={set("phone")}
                       placeholder={`${phoneHint} XX XXX XXXX`}
-                      className={styles.input}
+                      className={s.input}
                       style={errors.phone ? { borderColor: "var(--color-danger)" } : undefined}
                     />
                   </div>
@@ -377,7 +377,7 @@ export default function RegisterPage() {
                   )}
                 </div>
 
-                <div style={{ display: "flex", gap: "0.75rem" }} className={styles.submitButton}>
+                <div style={{ display: "flex", gap: "0.75rem" }} className={s.submitButton}>
                   <Button type="button" variant="bordered" onPress={goBack}>
                     <ChevronLeft size={16} /> Back
                   </Button>
@@ -396,26 +396,26 @@ export default function RegisterPage() {
                 animate="center"
                 exit="exit"
                 transition={{ duration: 0.2 }}
-                className={styles.form}
+                className={s.form}
               >
-                <div className={styles.inputGroup}>
-                  <label className={styles.inputLabel}>Street Address *</label>
-                  <div className={styles.inputWrapper}>
-                    <MapPin size={16} className={styles.inputIcon} />
+                <div className={s.inputGroup}>
+                  <label className={s.inputLabel}>Street Address *</label>
+                  <div className={s.inputWrapper}>
+                    <MapPin size={16} className={s.inputIcon} />
                     <input
                       type="text"
                       value={form.street}
                       onChange={set("street")}
                       placeholder="123 Main Street, Apt 4B"
-                      className={styles.input}
+                      className={s.input}
                       style={errors.street ? { borderColor: "var(--color-danger)" } : undefined}
                     />
                   </div>
                   {renderError("street")}
                 </div>
 
-                <div className={styles.inputGroup}>
-                  <label className={styles.inputLabel}>City *</label>
+                <div className={s.inputGroup}>
+                  <label className={s.inputLabel}>City *</label>
                   <input
                     type="text"
                     value={form.city}
@@ -429,8 +429,8 @@ export default function RegisterPage() {
                   {renderError("city")}
                 </div>
 
-                <div className={styles.inputGroup}>
-                  <label className={styles.inputLabel}>Country *</label>
+                <div className={s.inputGroup}>
+                  <label className={s.inputLabel}>Country *</label>
                   <select
                     value={form.country}
                     onChange={set("country")}
@@ -448,8 +448,8 @@ export default function RegisterPage() {
                   {renderError("country")}
                 </div>
 
-                <div className={styles.inputGroup}>
-                  <label className={styles.inputLabel}>Postal Code *</label>
+                <div className={s.inputGroup}>
+                  <label className={s.inputLabel}>Postal Code *</label>
                   <input
                     type="text"
                     value={form.postalCode}
@@ -463,7 +463,7 @@ export default function RegisterPage() {
                   {renderError("postalCode")}
                 </div>
 
-                <div style={{ display: "flex", gap: "0.75rem" }} className={styles.submitButton}>
+                <div style={{ display: "flex", gap: "0.75rem" }} className={s.submitButton}>
                   <Button type="button" variant="bordered" onPress={goBack}>
                     <ChevronLeft size={16} /> Back
                   </Button>
@@ -482,23 +482,23 @@ export default function RegisterPage() {
                 animate="center"
                 exit="exit"
                 transition={{ duration: 0.2 }}
-                className={styles.form}
+                className={s.form}
               >
-                <div className={styles.inputGroup}>
-                  <label className={styles.inputLabel}>{t("password")} *</label>
-                  <div className={styles.inputWrapper}>
-                    <Lock size={16} className={styles.inputIcon} />
+                <div className={s.inputGroup}>
+                  <label className={s.inputLabel}>{t("password")} *</label>
+                  <div className={s.inputWrapper}>
+                    <Lock size={16} className={s.inputIcon} />
                     <input
                       type={showPassword ? "text" : "password"}
                       value={form.password}
                       onChange={set("password")}
                       placeholder="Min 6 characters"
-                      className={`${styles.input} ${styles.inputWithToggle}`}
+                      className={`${s.input} ${s.inputWithToggle}`}
                       style={errors.password ? { borderColor: "var(--color-danger)" } : undefined}
                     />
                     <button
                       type="button"
-                      className={styles.inputToggle}
+                      className={s.inputToggle}
                       onClick={() => setShowPassword(!showPassword)}
                       tabIndex={-1}
                     >
@@ -516,21 +516,21 @@ export default function RegisterPage() {
                   )}
                 </div>
 
-                <div className={styles.inputGroup}>
-                  <label className={styles.inputLabel}>{t("confirmPassword")} *</label>
-                  <div className={styles.inputWrapper}>
-                    <Lock size={16} className={styles.inputIcon} />
+                <div className={s.inputGroup}>
+                  <label className={s.inputLabel}>{t("confirmPassword")} *</label>
+                  <div className={s.inputWrapper}>
+                    <Lock size={16} className={s.inputIcon} />
                     <input
                       type={showConfirmPassword ? "text" : "password"}
                       value={form.confirmPassword}
                       onChange={set("confirmPassword")}
                       placeholder="Confirm your password"
-                      className={`${styles.input} ${styles.inputWithToggle}`}
+                      className={`${s.input} ${s.inputWithToggle}`}
                       style={errors.confirmPassword ? { borderColor: "var(--color-danger)" } : undefined}
                     />
                     <button
                       type="button"
-                      className={styles.inputToggle}
+                      className={s.inputToggle}
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                       tabIndex={-1}
                     >
@@ -540,13 +540,13 @@ export default function RegisterPage() {
                   {renderError("confirmPassword")}
                 </div>
 
-                <p className={styles.termsText}>
+                <p className={s.termsText}>
                   By creating an account, you agree to our{" "}
                   <Link href="/policies/terms">Terms of Service</Link> and{" "}
                   <Link href="/policies/privacy">Privacy Policy</Link>.
                 </p>
 
-                <div style={{ display: "flex", gap: "0.75rem" }} className={styles.submitButton}>
+                <div style={{ display: "flex", gap: "0.75rem" }} className={s.submitButton}>
                   <Button type="button" variant="bordered" onPress={goBack}>
                     <ChevronLeft size={16} /> Back
                   </Button>
@@ -559,7 +559,7 @@ export default function RegisterPage() {
           </AnimatePresence>
         </form>
 
-        <p className={styles.authFooter}>
+        <p className={s.authFooter}>
           {t("hasAccount")}{" "}
           <Link href="/auth/login">{t("signIn")}</Link>
         </p>

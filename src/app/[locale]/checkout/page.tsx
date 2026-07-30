@@ -23,7 +23,6 @@ import visaLogo from "@/assets/visa-logo.svg";
 import mastercardLogo from "@/assets/mastercard-logo.svg";
 import pciDssLogo from "@/assets/pci-dss-compliant-logo-vector.svg";
 import { toast } from "sonner";
-import styles from "./checkout.module.css";
 import {
   Mail, Phone, MapPin, Truck, CreditCard,
   ChevronRight, ShieldCheck, Lock, Check, ImageOff, UserPlus, Tag, X as XIcon,
@@ -285,13 +284,13 @@ export default function CheckoutPage() {
   const amountToFreeShipping = freeShippingThreshold - subtotalConverted;
 
   return (
-    <div className={styles.wrapper}>
+    <div className="mx-auto max-w-container px-4 pb-16">
       <Breadcrumbs items={[{ label: nav("home"), href: "/" }, { label: nav("cart"), href: "/cart" }, { label: t("title") }]} />
 
       <motion.h1
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className={styles.title}
+        className="mb-4 text-[1.75rem] font-extrabold tracking-tight max-[480px]:mb-3 max-[480px]:text-[1.375rem]"
       >
         {t("title")}
       </motion.h1>
@@ -333,7 +332,7 @@ export default function CheckoutPage() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className={styles.stepIndicator}
+        className="mb-8 flex items-center gap-0 rounded-lg bg-mist p-1 max-[480px]:mb-6"
       >
         {steps.map((s, i) => {
           const Icon = stepIcons[i];
@@ -368,13 +367,13 @@ export default function CheckoutPage() {
               ) : (
                 <Icon size={16} />
               )}
-              <span className={styles.stepLabel}>{s}</span>
+              <span className="inline max-[480px]:hidden">{s}</span>
             </button>
           );
         })}
       </motion.div>
 
-      <div className={styles.layout}>
+      <div className="grid grid-cols-[1fr_380px] items-start gap-10 max-[1024px]:grid-cols-1 max-[1024px]:gap-6">
         {/* Form Section */}
         <form onSubmit={handleSubmit(onSubmit)}>
           <AnimatePresence mode="wait">
@@ -386,7 +385,7 @@ export default function CheckoutPage() {
                 animate="center"
                 exit="exit"
                 transition={{ duration: 0.25 }}
-                className={styles.formCard}
+                className="flex flex-col gap-5 rounded-xl border border-line bg-surface p-8 max-[640px]:gap-4 max-[640px]:rounded-lg max-[640px]:p-5"
               >
                 <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem" }}>
                   <div style={{ width: "2rem", height: "2rem", borderRadius: "10px", background: "var(--color-accent-light)", color: "var(--color-accent)", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -434,7 +433,7 @@ export default function CheckoutPage() {
                 animate="center"
                 exit="exit"
                 transition={{ duration: 0.25 }}
-                className={styles.formCard}
+                className="flex flex-col gap-5 rounded-xl border border-line bg-surface p-8 max-[640px]:gap-4 max-[640px]:rounded-lg max-[640px]:p-5"
               >
                 <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem" }}>
                   <div style={{ width: "2rem", height: "2rem", borderRadius: "10px", background: "var(--color-accent-light)", color: "var(--color-accent)", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -443,7 +442,7 @@ export default function CheckoutPage() {
                   <h2 style={{ fontSize: "1.125rem", fontWeight: 700 }}>{t("shipping")}</h2>
                 </div>
 
-                <div className={styles.twoCol}>
+                <div className="grid grid-cols-2 gap-4 max-[480px]:grid-cols-1">
                   <div>
                     <label style={labelStyle}>{t("firstName")} *</label>
                     <input style={{ ...inputPlainStyle, borderColor: errors.shipping?.firstName ? "var(--color-danger)" : undefined }} placeholder="John" {...register("shipping.firstName")} />
@@ -465,7 +464,7 @@ export default function CheckoutPage() {
                   <input style={inputPlainStyle} placeholder="Apt 4B (optional)" {...register("shipping.address2")} />
                 </div>
 
-                <div className={styles.twoCol}>
+                <div className="grid grid-cols-2 gap-4 max-[480px]:grid-cols-1">
                   <div>
                     <label style={labelStyle}>{t("city")} *</label>
                     <input style={{ ...inputPlainStyle, borderColor: errors.shipping?.city ? "var(--color-danger)" : undefined }} placeholder="Riga" {...register("shipping.city")} />
@@ -477,7 +476,7 @@ export default function CheckoutPage() {
                   </div>
                 </div>
 
-                <div className={styles.twoCol}>
+                <div className="grid grid-cols-2 gap-4 max-[480px]:grid-cols-1">
                   <div>
                     <label style={labelStyle}>{t("postalCode")} *</label>
                     <input style={{ ...inputPlainStyle, borderColor: errors.shipping?.postalCode ? "var(--color-danger)" : undefined }} placeholder="LV-1001" {...register("shipping.postalCode")} />
@@ -569,7 +568,7 @@ export default function CheckoutPage() {
                 animate="center"
                 exit="exit"
                 transition={{ duration: 0.25 }}
-                className={styles.formCard}
+                className="flex flex-col gap-5 rounded-xl border border-line bg-surface p-8 max-[640px]:gap-4 max-[640px]:rounded-lg max-[640px]:p-5"
               >
                 <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem" }}>
                   <div style={{ width: "2rem", height: "2rem", borderRadius: "10px", background: "var(--color-accent-light)", color: "var(--color-accent)", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -700,7 +699,7 @@ export default function CheckoutPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className={styles.sidebar}
+          className="sticky top-[calc(var(--header-height)+var(--announcement-height)+1rem)] h-fit rounded-xl border border-line bg-surface p-7 max-[1024px]:static max-[1024px]:order-[-1] max-[640px]:rounded-lg max-[640px]:p-5"
         >
           <h3 style={{ fontWeight: 700, fontSize: "1.0625rem", marginBottom: "1.25rem" }}>{t("orderSummary")}</h3>
 

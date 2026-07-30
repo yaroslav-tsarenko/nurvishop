@@ -2,7 +2,6 @@
 
 import { Link } from "@/i18n/routing";
 import { MapPin, Phone, Globe, Info, HelpCircle, Truck, RotateCcw, CreditCard, Package } from "lucide-react";
-import styles from "./TopBar.module.css";
 
 const ICON_MAP: Record<string, React.ElementType> = {
   MapPin, Phone, Globe, Info, HelpCircle, Truck, RotateCcw, CreditCard, Package,
@@ -34,25 +33,28 @@ export function TopBar({ links }: Props) {
   const leftLinks = items.filter((l) => l.position === "left");
   const rightLinks = items.filter((l) => l.position === "right");
 
+  const linkClass =
+    "flex items-center gap-1 whitespace-nowrap text-[#aaa] no-underline transition-colors duration-200 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40";
+
   return (
-    <div className={styles.topBar}>
-      <div className={styles.container}>
-        <nav className={styles.left}>
+    <div className="hidden border-b border-white/[0.08] bg-[#1A1A2E] text-xs text-[#ccc] md:block">
+      <div className="mx-auto flex h-8 max-w-[1400px] items-center justify-between px-4">
+        <nav className="flex items-center gap-4">
           {leftLinks.map((link) => {
             const Icon = link.icon ? ICON_MAP[link.icon] : null;
             return (
-              <Link key={link.id} href={link.linkUrl} className={styles.link}>
+              <Link key={link.id} href={link.linkUrl} className={linkClass}>
                 {Icon && <Icon size={13} />}
                 <span>{link.label}</span>
               </Link>
             );
           })}
         </nav>
-        <div className={styles.right}>
+        <div className="flex items-center gap-4">
           {rightLinks.map((link) => {
             const Icon = link.icon ? ICON_MAP[link.icon] : null;
             return (
-              <Link key={link.id} href={link.linkUrl} className={styles.link}>
+              <Link key={link.id} href={link.linkUrl} className={linkClass}>
                 {Icon && <Icon size={13} />}
                 <span>{link.label}</span>
               </Link>

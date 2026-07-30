@@ -12,7 +12,6 @@ import { PriceDisplay } from "@/components/shared/PriceDisplay/PriceDisplay";
 import { EmptyState } from "@/components/shared/EmptyState/EmptyState";
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs/Breadcrumbs";
 import { formatPrice } from "@/lib/utils/format-price";
-import styles from "./cart.module.css";
 
 export default function CartPage() {
   const t = useTranslations("cart");
@@ -24,13 +23,13 @@ export default function CartPage() {
   const subtotalConverted = convert(cart.subtotal);
 
   return (
-    <div className={styles.wrapper}>
+    <div className="mx-auto max-w-container px-4 pb-16">
       <Breadcrumbs items={[{ label: nav("home"), href: "/" }, { label: t("title") }]} />
 
       <motion.h1
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className={styles.title}
+        className="mb-6 text-[1.75rem] font-extrabold tracking-tight max-[480px]:mb-4 max-[480px]:text-[1.375rem]"
       >
         {t("title")}{" "}
         {cart.items.length > 0 && (
@@ -51,10 +50,10 @@ export default function CartPage() {
           />
         </motion.div>
       ) : (
-        <div className={styles.layout}>
+        <div className="grid grid-cols-[1fr_380px] items-start gap-10 max-[1024px]:grid-cols-1 max-[1024px]:gap-5">
           {/* Cart Items */}
-          <div className={styles.itemsBlock}>
-            <div className={styles.itemsHeader}>
+          <div className="overflow-hidden rounded-xl border border-line bg-surface">
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-line bg-mist px-6 py-4 max-[480px]:px-4 max-[480px]:py-3 max-[480px]:text-[0.8125rem]">
               <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                 <Package size={16} style={{ color: "var(--color-text-secondary)" }} />
                 <span style={{ fontSize: "0.8125rem", fontWeight: 600, color: "var(--color-text-secondary)" }}>
@@ -78,9 +77,9 @@ export default function CartPage() {
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 20, height: 0, padding: 0, margin: 0 }}
                   transition={{ delay: index * 0.05, duration: 0.25 }}
-                  className={styles.itemRow}
+                  className="flex items-center gap-5 px-6 py-5 [&+&]:border-t [&+&]:border-line max-[640px]:items-start max-[640px]:gap-3.5 max-[640px]:p-4"
                 >
-                  <div className={styles.itemImage}>
+                  <div className="relative h-[100px] w-[100px] flex-shrink-0 overflow-hidden rounded-lg border border-line bg-white max-[640px]:h-[72px] max-[640px]:w-[72px]">
                     {item.imageUrl ? (
                       <Image
                         src={item.imageUrl}
@@ -96,8 +95,8 @@ export default function CartPage() {
                     )}
                   </div>
 
-                  <div className={styles.itemContent}>
-                    <Link href={`/product/${item.slug}`} className={styles.itemName}>
+                  <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+                    <Link href={`/product/${item.slug}`} className="line-clamp-2 break-words text-[0.9375rem] font-semibold text-ink no-underline [overflow-wrap:anywhere] max-[640px]:text-sm">
                       {item.name}
                     </Link>
                     {item.variantName && (
@@ -109,13 +108,13 @@ export default function CartPage() {
                       SKU: {item.sku}
                     </span>
 
-                    <div className={styles.itemFooter}>
+                    <div className="mt-auto flex items-center justify-between gap-3 pt-2 max-[480px]:flex-wrap max-[480px]:gap-2.5 max-[480px]:pt-1">
                       <QuantitySelector
                         quantity={item.quantity}
                         maxQuantity={item.maxQuantity}
                         onChange={(qty) => updateQuantity(item.productId, qty, item.variantId)}
                       />
-                      <div className={styles.itemPriceRow}>
+                      <div className="flex items-center gap-4 max-[480px]:ml-auto max-[480px]:gap-2">
                         <PriceDisplay price={item.price * item.quantity} size="sm" />
                         <motion.button
                           whileHover={{ scale: 1.1 }}
@@ -153,7 +152,7 @@ export default function CartPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className={styles.summary}
+            className="sticky top-[calc(var(--header-height)+var(--announcement-height)+1rem)] h-fit rounded-xl border border-line bg-surface p-7 max-[1024px]:static max-[640px]:rounded-lg max-[640px]:p-5"
           >
             <h2 style={{ fontSize: "1.125rem", fontWeight: 700, marginBottom: "1.25rem" }}>
               Order Summary
@@ -210,7 +209,7 @@ export default function CartPage() {
             </div>
 
             <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-              <Link href="/checkout" className={styles.checkoutBtn}>
+              <Link href="/checkout" className="flex w-full items-center justify-center gap-2 rounded-xl bg-accent p-4 text-base font-bold text-white no-underline shadow-[0_4px_14px_rgba(229,57,53,0.3)] transition-[transform,box-shadow] duration-150 hover:-translate-y-px hover:shadow-[0_6px_18px_rgba(229,57,53,0.4)]">
                 {t("checkout")} <ArrowRight size={18} />
               </Link>
             </motion.div>

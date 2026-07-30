@@ -13,7 +13,6 @@ import { SaleStrip } from "../SaleStrip/SaleStrip";
 import { DealOfTheDay } from "../DealOfTheDay/DealOfTheDay";
 import { NewsletterBanner } from "../NewsletterBanner/NewsletterBanner";
 import { TrustStrip } from "../TrustStrip/TrustStrip";
-import styles from "./MarketplaceHome.module.css";
 import type { HomepageProduct, CategorySection, BrandSection } from "@/lib/homepage-products";
 
 interface BannerData {
@@ -118,18 +117,18 @@ export function MarketplaceHome({ data }: Props) {
   } = data;
 
   return (
-    <div className={styles.marketplace}>
+    <div className="min-h-screen bg-mist">
       <TopBar links={utilityLinks} />
       <PromoStrip items={promoStripItems} />
 
-      <div className={styles.container}>
-        <div className={styles.mainLayout}>
-          <div className={styles.sidebarDesktop}>
+      <div className="mx-auto max-w-[1400px] px-4 pb-12 pt-4 max-[640px]:px-2 max-[640px]:pb-8 max-[640px]:pt-3">
+        <div className="flex items-start gap-4">
+          <div className="sticky top-20 block max-lg:hidden">
             <CategorySidebar />
           </div>
 
-          <div className={styles.content}>
-            <div className={styles.mobileCategories}>
+          <div className="min-w-0 flex-1">
+            <div className="mb-3 hidden max-lg:block">
               <CategorySidebar />
             </div>
 

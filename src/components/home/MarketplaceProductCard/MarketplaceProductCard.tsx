@@ -1,13 +1,13 @@
 "use client";
 
 import Image from "next/image";
+import clsx from "clsx";
 import { Link } from "@/i18n/routing";
 import { Heart, ShoppingCart, Star, Eye } from "lucide-react";
 import { useCart } from "@/providers/CartProvider";
 import { useCurrency } from "@/providers/CurrencyProvider";
 import { formatPrice } from "@/lib/utils/format-price";
 import { getProductImage, getProductImageFallback, shouldUnoptimizeImage } from "@/lib/utils/product-image";
-import styles from "./MarketplaceProductCard.module.css";
 
 interface Props {
   product: {
@@ -56,33 +56,42 @@ export function MarketplaceProductCard({ product }: Props) {
   };
 
   return (
-    <Link href={`/product/${product.slug}`} className={styles.card}>
-      <div className={styles.imageWrap}>
+    <Link
+      href={`/product/${product.slug}`}
+      className="group flex flex-col overflow-hidden rounded-xl border border-line bg-surface text-ink no-underline shadow-card transition-[border-color,box-shadow,transform] duration-200 ease-back hover:-translate-y-1 hover:border-accent-light hover:shadow-card-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+    >
+      <div className="relative flex aspect-square items-center justify-center overflow-hidden bg-mist p-3">
         <Image
           src={imgSrc}
           alt={product.images?.[0]?.alt || product.name}
           width={200}
           height={200}
-          className={styles.image}
+          className="max-h-full max-w-full object-contain transition-transform duration-200 group-hover:scale-[1.03]"
           unoptimized={shouldUnoptimizeImage(imgSrc)}
           onError={(e) => {
             (e.target as HTMLImageElement).src = getProductImageFallback();
           }}
         />
         {hasDiscount && (
-          <span className={styles.discountBadge}>-{discountPercent}%</span>
+          <span className="absolute left-2 top-2 rounded-pill bg-pop px-1.5 py-0.5 text-[0.7rem] font-bold uppercase tracking-wide text-pop-ink">
+            -{discountPercent}%
+          </span>
         )}
-        {!inStock && <span className={styles.oosOverlay}>Out of Stock</span>}
-        <div className={styles.actions}>
+        {!inStock && (
+          <span className="absolute inset-0 flex items-center justify-center bg-surface/75 text-[0.8125rem] font-semibold text-muted">
+            Out of Stock
+          </span>
+        )}
+        <div className="absolute right-2 top-2 flex flex-col gap-1 opacity-100 transition-opacity duration-150 sm:opacity-0 sm:group-hover:opacity-100">
           <button
-            className={styles.actionBtn}
+            className="flex h-[30px] w-[30px] items-center justify-center rounded-md border border-line bg-surface text-muted transition-colors duration-100 hover:border-accent hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
             onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
             aria-label="Add to wishlist"
           >
             <Heart size={15} />
           </button>
           <button
-            className={styles.actionBtn}
+            className="flex h-[30px] w-[30px] items-center justify-center rounded-md border border-line bg-surface text-muted transition-colors duration-100 hover:border-accent hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
             onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
             aria-label="Quick view"
           >
@@ -90,26 +99,31 @@ export function MarketplaceProductCard({ product }: Props) {
           </button>
         </div>
       </div>
-      <div className={styles.content}>
+      <div className="flex flex-1 flex-col px-3 pb-3 pt-2.5">
         {category && (
-          <span className={styles.category}>{category.name}</span>
+          <span className="mb-1 text-xs uppercase tracking-wide text-muted">{category.name}</span>
         )}
-        <h4 className={styles.name}>{product.name}</h4>
-        <div className={styles.rating}>
+        <h4 className="mb-1.5 line-clamp-2 text-[0.8125rem] font-semibold leading-[1.35] text-ink sm:text-[0.8125rem]">
+          {product.name}
+        </h4>
+        <div className="mb-2 flex items-center gap-px">
           {[1,2,3,4,5].map((s) => (
             <Star key={s} size={11} fill={s <= 4 ? "#FF9800" : "none"} stroke={s <= 4 ? "#FF9800" : "#ccc"} />
           ))}
-          <span className={styles.ratingCount}>(12)</span>
+          <span className="ml-1 text-[0.65rem] text-muted">(12)</span>
         </div>
-        <div className={styles.priceRow}>
-          <div className={styles.prices}>
-            <span className={styles.price}>{formatPrice(convert(price), currency)}</span>
+        <div className="mb-1.5 mt-auto flex items-center justify-between">
+          <div className="flex items-baseline gap-1.5">
+            <span className="font-display text-base font-medium text-ink">{formatPrice(convert(price), currency)}</span>
             {hasDiscount && (
-              <span className={styles.oldPrice}>{formatPrice(convert(comparePrice), currency)}</span>
+              <span className="text-xs text-muted line-through">{formatPrice(convert(comparePrice), currency)}</span>
             )}
           </div>
           <button
-            className={`${styles.cartBtn} ${!inStock ? styles.cartBtnDisabled : ""}`}
+            className={clsx(
+              "flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-pill text-white transition-colors duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40",
+              inStock ? "bg-accent hover:bg-accent-hover" : "cursor-not-allowed bg-well text-subtle",
+            )}
             onClick={handleAddToCart}
             disabled={!inStock}
             aria-label="Add to cart"
@@ -118,9 +132,9 @@ export function MarketplaceProductCard({ product }: Props) {
           </button>
         </div>
         {inStock ? (
-          <span className={styles.stockIn}>In stock</span>
+          <span className="text-[0.65rem] font-medium text-success">In stock</span>
         ) : (
-          <span className={styles.stockOut}>Out of stock</span>
+          <span className="text-[0.65rem] font-medium text-danger">Out of stock</span>
         )}
       </div>
     </Link>
