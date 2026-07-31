@@ -13,6 +13,9 @@ import { SaleStrip } from "../SaleStrip/SaleStrip";
 import { DealOfTheDay } from "../DealOfTheDay/DealOfTheDay";
 import { NewsletterBanner } from "../NewsletterBanner/NewsletterBanner";
 import { TrustStrip } from "../TrustStrip/TrustStrip";
+import { MaterialsBand } from "../MaterialsBand/MaterialsBand";
+import { EditorialQuote } from "../EditorialQuote/EditorialQuote";
+import { Testimonials } from "../Testimonials/Testimonials";
 import type { HomepageProduct, CategorySection, BrandSection } from "@/lib/homepage-products";
 
 interface BannerData {
@@ -152,6 +155,9 @@ export function MarketplaceHome({ data }: Props) {
               />
             )}
 
+            {/* Materials editorial band */}
+            <MaterialsBand />
+
             {/* Top categories by product count */}
             {categorySections.slice(0, 3).map((cs, i) => (
               <ProductSection
@@ -178,6 +184,9 @@ export function MarketplaceHome({ data }: Props) {
               <DealOfTheDay product={saleProducts[0]} />
             )}
 
+            {/* Editorial philosophy quote */}
+            <EditorialQuote />
+
             {/* 3 more top categories after deal */}
             {categorySections.slice(3, 6).map((cs, i) => (
               <ProductSection
@@ -195,6 +204,9 @@ export function MarketplaceHome({ data }: Props) {
 
             {/* Brand Strip */}
             {brands.length > 0 && <BrandStrip brands={brands} />}
+
+            {/* Customer testimonials */}
+            <Testimonials />
 
             {/* Admin-configured sections */}
             {sections.map((section) => {
