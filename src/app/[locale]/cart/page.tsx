@@ -61,7 +61,7 @@ export default function CartPage() {
                 </span>
               </div>
               {subtotalConverted >= freeShippingThreshold && (
-                <div style={{ display: "flex", alignItems: "center", gap: "0.375rem", fontSize: "0.75rem", fontWeight: 600, color: "#2E7D32" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.375rem", fontSize: "0.75rem", fontWeight: 600, color: "var(--color-success)" }}>
                   <Truck size={14} />
                   Free shipping
                 </div>
@@ -87,6 +87,7 @@ export default function CartPage() {
                         fill
                         sizes="100px"
                         style={{ objectFit: "contain", padding: "8px" }}
+                        unoptimized
                       />
                     ) : (
                       <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--color-text-tertiary)" }}>
@@ -165,7 +166,7 @@ export default function CartPage() {
               </div>
               <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.875rem" }}>
                 <span style={{ color: "var(--color-text-secondary)" }}>{t("shipping")}</span>
-                <span style={{ fontWeight: 600, color: cart.shippingCost === 0 ? "#2E7D32" : undefined }}>
+                <span style={{ fontWeight: 600, color: cart.shippingCost === 0 ? "var(--color-success)" : undefined }}>
                   {cart.shippingCost > 0 ? formatPrice(convert(cart.shippingCost), currency) : "Free"}
                 </span>
               </div>

@@ -4,7 +4,7 @@ import { useState } from "react";
 import clsx from "clsx";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/Button";
-import { Heart, ShoppingCart, Shield, Truck, RotateCcw, Lock } from "lucide-react";
+import { Heart, ShoppingCart, Shield, Leaf, RotateCcw, Lock } from "lucide-react";
 import { PriceDisplay } from "@/components/shared/PriceDisplay/PriceDisplay";
 import { QuantitySelector } from "@/components/shared/QuantitySelector/QuantitySelector";
 import { useCart } from "@/providers/CartProvider";
@@ -274,7 +274,7 @@ export function ProductInfo({
 
       <div className="grid grid-cols-3 gap-2 pt-2 sm:gap-3">
         <div className="flex flex-col items-center gap-1 rounded-lg bg-mist p-2.5 text-center sm:p-3">
-          <Truck size={18} className="text-accent" />
+          <Leaf size={18} className="text-accent" />
           <span className="text-[0.6875rem] font-bold text-ink">{t("freeShipping")}</span>
           <span className="text-[0.625rem] text-subtle">{t("freeShippingDesc")}</span>
         </div>

@@ -125,24 +125,29 @@ async function getHomeData() {
 
     const brandSections = getBrandSections(products, TOP_BRANDS, 8);
 
-    const categoryShowcase = categoriesWithChildren.map((c) => {
-      const directCount = c._count.products;
-      const childSlugs = c.children.map((ch) => ch.slug);
-      const childProductCount = childSlugs.length > 0
-        ? products.filter((p: { categories?: { category: { slug: string } }[] }) =>
-            p.categories?.some((pc) => childSlugs.includes(pc.category.slug))
-          ).length
-        : 0;
+    // Surface subcategories of a single empty root (e.g. "Home & Cooking")
+    // so the showcase highlights real rooms instead of one umbrella category.
+    const showcaseSource =
+      categoriesWithChildren.length === 1 &&
+      categoriesWithChildren[0]._count.products === 0 &&
+      categoriesWithChildren[0].children.length > 0
+        ? categoriesWithChildren[0].children.map((ch) => ({ id: ch.id, name: ch.name, slug: ch.slug }))
+        : categoriesWithChildren.map((c) => ({ id: c.id, name: c.name, slug: c.slug }));
+
+    const categoryShowcase = showcaseSource.map((c) => {
+      const productCount = products.filter((p: { categories?: { category: { slug: string } }[] }) =>
+        p.categories?.some((pc) => pc.category.slug === c.slug)
+      ).length;
       return {
         id: c.id,
         name: c.name,
         slug: c.slug,
         imageUrl: null as string | null,
-        productCount: directCount + childProductCount,
+        productCount,
       };
     }).filter((c) => c.productCount > 0)
       .sort((a, b) => b.productCount - a.productCount)
-      .slice(0, 8);
+      .slice(0, 12);
 
     return serialize({
       heroSlides,
@@ -189,7 +194,7 @@ export default async function HomePage() {
           "@type": "Organization",
           name: "nurvishop",
           url: siteUrl,
-          description: "Your trusted source for electrical materials, wiring, and installation supplies.",
+          description: "Warm, naturally made home goods — linen, clay, oak and stoneware for a softer home.",
         }}
       />
       {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}

@@ -53,7 +53,7 @@ export function Button({
   const variantStyles: Record<string, React.CSSProperties> = {
     primary: { background: "var(--color-accent)", color: "#fff", border: "none", boxShadow: "var(--shadow-accent)" },
     delight: { background: "var(--color-pop)", color: "var(--color-pop-ink)", border: "none", boxShadow: "var(--shadow-pop)" },
-    secondary: { background: "transparent", color: "var(--color-accent)", border: "1.5px solid var(--color-accent)" },
+    secondary: { background: "transparent", color: "var(--sage)", border: "1.5px solid var(--sage)" },
     tertiary: { background: "transparent", color: "var(--color-text-secondary)", border: "none" },
     outline: { background: "transparent", color: "var(--color-text)", border: "1.5px solid var(--color-border)" },
     ghost: { background: "transparent", color: "var(--color-text)", border: "none" },

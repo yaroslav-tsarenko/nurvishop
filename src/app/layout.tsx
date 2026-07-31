@@ -1,15 +1,16 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, DM_Sans, Geist_Mono } from "next/font/google";
+import { Fraunces, Inter, Geist_Mono } from "next/font/google";
 import "@/styles/globals.css";
 
-const displayFont = Bricolage_Grotesque({
+const displayFont = Fraunces({
   variable: "--font-display-brand",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
+  weight: ["400", "500", "600", "700"],
+  style: ["normal", "italic"],
   display: "swap",
 });
 
-const uiFont = DM_Sans({
+const uiFont = Inter({
   variable: "--font-ui-brand",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],

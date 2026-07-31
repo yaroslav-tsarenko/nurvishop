@@ -1,11 +1,11 @@
 "use client";
 
 import { useRef } from "react";
-import { Truck, ShieldCheck, RotateCcw, Headphones } from "lucide-react";
+import { Leaf, ShieldCheck, RotateCcw, Headphones } from "lucide-react";
 import { motion, useInView } from "framer-motion";
 
 const items = [
-  { icon: Truck, label: "Free Shipping", desc: "On orders over €100", tint: "bg-lilac", iconColor: "text-accent" },
+  { icon: Leaf, label: "Natural Materials", desc: "Linen, clay & oak", tint: "bg-lilac", iconColor: "text-accent" },
   { icon: ShieldCheck, label: "Secure Payment", desc: "100% protected checkout", tint: "bg-success-tint", iconColor: "text-success" },
   { icon: RotateCcw, label: "Easy Returns", desc: "30-day return policy", tint: "bg-pop-tint", iconColor: "text-warning" },
   { icon: Headphones, label: "24/7 Support", desc: "We're always here to help", tint: "bg-blush-tint", iconColor: "text-blush" },

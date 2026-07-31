@@ -62,10 +62,19 @@ export function CategorySidebar() {
 
   const closeMobile = () => setMobileOpen(false);
 
+  // If the tree is a single empty root (e.g. "Home & Cooking"), surface its
+  // subcategories directly so as many categories as possible are visible.
+  const displayCategories =
+    categories.length === 1 &&
+    (categories[0]._count?.products || 0) === 0 &&
+    (categories[0].children?.length || 0) > 0
+      ? categories[0].children!
+      : categories;
+
   return (
     <>
       <button
-        className="hidden items-center gap-2 rounded-lg border-none bg-ink px-4 py-2 text-sm font-semibold text-white max-lg:flex focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+        className="hidden items-center gap-2 rounded-lg border-none bg-inverse px-4 py-2 text-sm font-semibold text-inverse-fg max-lg:flex focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
         onClick={() => setMobileOpen(true)}
         aria-label="Open categories"
       >
@@ -84,20 +93,20 @@ export function CategorySidebar() {
           mobileOpen ? "max-lg:left-0" : "max-lg:-left-[300px]",
         )}
       >
-        <div className="flex items-center justify-between bg-ink px-4 py-3 text-white">
+        <div className="flex items-center justify-between bg-inverse px-4 py-3 text-inverse-fg">
           <h3 className="m-0 flex items-center gap-2 text-sm font-bold uppercase tracking-wide">
             <Menu size={16} />
             Catalog
           </h3>
           <button
-            className="hidden cursor-pointer border-none bg-transparent p-0.5 text-white max-lg:block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+            className="hidden cursor-pointer border-none bg-transparent p-0.5 text-inverse-fg max-lg:block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
             onClick={closeMobile}
             aria-label="Close categories"
           >
             <X size={20} />
           </button>
         </div>
-        <nav className="flex max-h-[70vh] flex-col overflow-y-auto">
+        <nav className="flex max-h-[78vh] flex-col overflow-y-auto">
           {categories.length === 0 ? (
             <div className="flex flex-col gap-0">
               {Array.from({ length: 10 }).map((_, i) => (
@@ -108,7 +117,7 @@ export function CategorySidebar() {
               ))}
             </div>
           ) : (
-            categories.map((cat) => (
+            displayCategories.map((cat) => (
               <CategoryItem key={cat.id} cat={cat} onNavigate={closeMobile} />
             ))
           )}

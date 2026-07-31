@@ -23,7 +23,7 @@ interface Props {
 }
 
 const defaultItems: PromoItem[] = [
-  { id: "1", icon: "Truck", title: "Free Delivery", subtitle: "Orders over €100" },
+  { id: "1", icon: "Heart", title: "Thoughtfully Made", subtitle: "Warm, tactile design" },
   { id: "2", icon: "RotateCcw", title: "Easy Returns", subtitle: "30-day policy" },
   { id: "3", icon: "Shield", title: "2-Year Warranty", subtitle: "On all products" },
   { id: "4", icon: "Gift", title: "Gift Cards", subtitle: "Available now" },
@@ -44,7 +44,7 @@ export function PromoStrip({ items }: Props) {
               key={b.id}
               className="flex flex-shrink-0 cursor-default items-center gap-2 whitespace-nowrap rounded-md px-3 py-1.5 transition-colors duration-200 hover:bg-mist"
             >
-              <Icon size={18} className="flex-shrink-0 text-[#E53935]" />
+              <Icon size={18} className="flex-shrink-0 text-accent" />
               <div className="flex flex-col">
                 <span className="text-xs font-semibold text-ink">{b.title}</span>
                 {b.subtitle && (

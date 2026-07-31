@@ -25,10 +25,10 @@ function getSiteUrl(): string {
   return raw.replace(/\/+$/, "");
 }
 
-const BRAND_COLOR = "#E53935";
-const BG_COLOR = "#f7f7f7";
-const TEXT_COLOR = "#1A1A2E";
-const MUTED_COLOR = "#666";
+const BRAND_COLOR = "#B85C38";
+const BG_COLOR = "#f5f1ea";
+const TEXT_COLOR = "#2b241d";
+const MUTED_COLOR = "#8a7d6d";
 
 interface SendArgs {
   to: string;

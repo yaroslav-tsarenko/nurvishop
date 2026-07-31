@@ -53,7 +53,17 @@ export default function CatalogPage() {
   useEffect(() => {
     fetch("/api/categories")
       .then((res) => res.json())
-      .then((data) => setCategories(Array.isArray(data) ? data : []))
+      .then((data) => {
+        if (!Array.isArray(data)) return setCategories([]);
+        // Surface subcategories of a single empty root (e.g. "Home & Cooking").
+        const unwrapped =
+          data.length === 1 &&
+          (data[0]?._count?.products || 0) === 0 &&
+          (data[0]?.children?.length || 0) > 0
+            ? data[0].children
+            : data;
+        setCategories(unwrapped);
+      })
       .catch(console.error);
     fetch("/api/products/brands")
       .then((res) => res.json())

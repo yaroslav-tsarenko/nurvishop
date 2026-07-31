@@ -40,7 +40,7 @@ export const inputIcon =
 
 export const input =
   "w-full rounded-lg border border-line bg-surface py-2.5 pl-10 pr-3 text-sm text-ink outline-none transition-[border-color,box-shadow] " +
-  "placeholder:text-subtle hover:border-line-hover focus:border-[#6C5CE7] focus:shadow-[0_0_0_3px_rgba(108,92,231,0.15)]";
+  "placeholder:text-subtle hover:border-line-hover focus:border-accent focus:shadow-[0_0_0_3px_var(--color-accent-light)]";
 
 export const inputWithToggle = "pr-10";
 

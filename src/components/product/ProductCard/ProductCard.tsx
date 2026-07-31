@@ -63,7 +63,7 @@ export function ProductCard({
       href={`/product/${slug}`}
       className="group flex min-w-0 flex-col overflow-hidden rounded-xl border border-line bg-surface shadow-card transition-[transform,box-shadow,border-color] duration-300 ease-out-expo hover:-translate-y-1.5 hover:border-accent hover:shadow-card-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
     >
-      <div className="relative aspect-square overflow-hidden bg-lilac">
+      <div className="relative aspect-square overflow-hidden bg-[#FEFEFE]">
         {imageUrl ? (
           <div className="absolute inset-1.5 sm:inset-3">
             <Image
@@ -104,7 +104,7 @@ export function ProductCard({
 
       <div className="flex flex-1 flex-col gap-1 p-3 sm:gap-1.5 sm:p-4">
         {category && (
-          <span className="text-[0.625rem] font-semibold uppercase tracking-wide text-accent sm:text-[0.6875rem]">
+          <span className="text-[0.625rem] font-semibold uppercase tracking-[0.12em] text-muted sm:text-[0.6875rem]">
             {category}
           </span>
         )}
@@ -117,8 +117,8 @@ export function ProductCard({
             className={clsx(
               "flex h-8 w-8 items-center justify-center rounded-lg transition-[background-color,transform] duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 sm:h-9 sm:w-9",
               outOfStock
-                ? "cursor-not-allowed bg-lilac text-accent opacity-40"
-                : "bg-lilac text-accent hover:scale-[1.08] hover:bg-accent hover:text-white active:scale-95",
+                ? "cursor-not-allowed bg-accent-light text-accent opacity-40"
+                : "bg-accent-light text-accent hover:scale-[1.08] hover:bg-accent hover:text-white active:scale-95",
             )}
             onClick={handleAddToCart}
             disabled={outOfStock}

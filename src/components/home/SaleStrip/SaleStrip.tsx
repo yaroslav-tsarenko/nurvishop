@@ -42,17 +42,17 @@ export function SaleStrip({ products }: Props) {
             animate={isInView ? { scale: [1, 1.2, 1] } : {}}
             transition={{ duration: 0.6, delay: 0.3, repeat: Infinity, repeatDelay: 3 }}
           >
-            <Flame size={18} className="text-[#E53935]" />
+            <Flame size={18} className="text-danger" />
           </motion.div>
           <h2 className="m-0 text-base font-extrabold text-ink">Hot Deals</h2>
-          <span className="rounded-[4px] bg-[#E53935] px-2 py-0.5 text-[0.65rem] font-bold uppercase text-white">
+          <span className="rounded-[4px] bg-danger px-2 py-0.5 text-[0.65rem] font-bold uppercase text-white">
             Sale
           </span>
         </div>
         <div className="flex items-center gap-2">
           <Link
             href="/catalog?sort=price-asc&onSale=true"
-            className="flex items-center gap-0.5 whitespace-nowrap text-[0.8125rem] font-semibold text-[#E53935] no-underline transition-opacity duration-200 hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+            className="flex items-center gap-0.5 whitespace-nowrap text-[0.8125rem] font-semibold text-danger no-underline transition-opacity duration-200 hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
           >
             View all <ChevronRight size={14} />
           </Link>
@@ -94,11 +94,11 @@ export function SaleStrip({ products }: Props) {
                   className="relative flex w-[160px] flex-shrink-0 flex-col rounded-md border border-line bg-surface p-3 text-ink no-underline transition-[border-color,box-shadow] duration-200 hover:border-line-hover hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 max-[480px]:w-[140px]"
                 >
                   {discount > 0 && (
-                    <span className="absolute left-1.5 top-1.5 z-[1] rounded-[4px] bg-[#E53935] px-1.5 py-0.5 text-[0.65rem] font-bold text-white">
+                    <span className="absolute left-1.5 top-1.5 z-[1] rounded-[4px] bg-danger px-1.5 py-0.5 text-[0.65rem] font-bold text-white">
                       -{discount}%
                     </span>
                   )}
-                  <div className="relative mb-2 flex h-[100px] items-center justify-center max-[480px]:h-20">
+                  <div className="relative mb-2 flex h-[100px] items-center justify-center rounded-[6px] bg-[#FEFEFE] max-[480px]:h-20">
                     <Image
                       src={imgUrl}
                       alt={p.name}
@@ -115,7 +115,7 @@ export function SaleStrip({ products }: Props) {
                     {p.name}
                   </h4>
                   <div className="mt-auto flex items-baseline gap-1.5">
-                    <span className="text-[0.9375rem] font-extrabold text-[#E53935]">
+                    <span className="text-[0.9375rem] font-extrabold text-danger">
                       {formatPrice(convert(Number(p.price)), currency)}
                     </span>
                     {p.comparePrice && (

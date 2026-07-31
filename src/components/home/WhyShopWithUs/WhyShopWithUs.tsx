@@ -1,6 +1,6 @@
 "use client";
 
-import { Shield, Zap, Heart, RefreshCw, Award, Headphones } from "lucide-react";
+import { Shield, Leaf, Heart, RefreshCw, Award, Headphones } from "lucide-react";
 import { motion } from "framer-motion";
 
 const reasons = [
@@ -8,37 +8,37 @@ const reasons = [
     icon: <Shield size={24} />,
     title: "Secure Shopping",
     desc: "Your data is protected with enterprise-grade encryption and secure payments.",
-    gradient: "linear-gradient(135deg, #6C5CE7 0%, #a855f7 100%)",
+    gradient: "linear-gradient(135deg, #55412f 0%, #8a5a3b 100%)",
   },
   {
-    icon: <Zap size={24} />,
-    title: "Fast Delivery",
-    desc: "Free shipping on orders over €100 with express options available.",
-    gradient: "linear-gradient(135deg, #00CECE 0%, #6C5CE7 100%)",
+    icon: <Leaf size={24} />,
+    title: "Natural Materials",
+    desc: "Thoughtfully chosen linen, clay, oak and stoneware for a softer home.",
+    gradient: "linear-gradient(135deg, #6f7a52 0%, #55412f 100%)",
   },
   {
     icon: <Heart size={24} />,
-    title: "Certified Products",
-    desc: "Every electrical material is sourced from certified manufacturers and meets professional standards.",
-    gradient: "linear-gradient(135deg, #FF6B6B 0%, #FFB800 100%)",
+    title: "Thoughtfully Made",
+    desc: "Every piece is crafted to feel warm and tactile, made to last for years.",
+    gradient: "linear-gradient(135deg, #c67a4a 0%, #d9a441 100%)",
   },
   {
     icon: <RefreshCw size={24} />,
     title: "Easy Returns",
     desc: "Changed your mind? Return within 30 days — no questions asked.",
-    gradient: "linear-gradient(135deg, #22c55e 0%, #00CECE 100%)",
+    gradient: "linear-gradient(135deg, #6f7a52 0%, #8a9a63 100%)",
   },
   {
     icon: <Award size={24} />,
     title: "Best Prices",
     desc: "We guarantee competitive pricing. Found it cheaper? We'll match it.",
-    gradient: "linear-gradient(135deg, #FFB800 0%, #FF6B6B 100%)",
+    gradient: "linear-gradient(135deg, #d9a441 0%, #c67a4a 100%)",
   },
   {
     icon: <Headphones size={24} />,
     title: "24/7 Support",
     desc: "Our team is available around the clock to help with anything.",
-    gradient: "linear-gradient(135deg, #a855f7 0%, #ec4899 100%)",
+    gradient: "linear-gradient(135deg, #8a5a3b 0%, #c67a4a 100%)",
   },
 ];
 
@@ -49,7 +49,7 @@ export function WhyShopWithUs() {
         <div className="mb-12 text-center">
           <h2 className="section-title">Why choose nurvishop</h2>
           <p className="section-subtitle" style={{ margin: "0.5rem auto 0" }}>
-            Professional-grade electrical materials with expert support and fast delivery
+            Naturally made home goods with warm support and thoughtful details
           </p>
         </div>
 

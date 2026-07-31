@@ -102,7 +102,7 @@ function InputWithIcon({ icon: Icon, error, ...props }: { icon: React.ElementTyp
           ...inputBaseStyle,
           borderColor: error ? "var(--color-danger)" : undefined,
         }}
-        onFocus={(e) => { e.currentTarget.style.borderColor = "var(--color-accent)"; e.currentTarget.style.boxShadow = "0 0 0 3px rgba(108,92,231,0.1)"; }}
+        onFocus={(e) => { e.currentTarget.style.borderColor = "var(--color-accent)"; e.currentTarget.style.boxShadow = "0 0 0 3px var(--color-accent-light)"; }}
         onBlur={(e) => { e.currentTarget.style.borderColor = error ? "var(--color-danger)" : "var(--color-border)"; e.currentTarget.style.boxShadow = "none"; }}
       />
       {error && <span style={errorStyle}>{error}</span>}
@@ -540,7 +540,7 @@ export default function CheckoutPage() {
                             <div style={{ fontSize: "0.875rem", fontWeight: 600 }}>{m.label}</div>
                             <div style={{ fontSize: "0.75rem", color: "var(--color-text-tertiary)" }}>{m.time}</div>
                           </div>
-                          <span style={{ fontSize: "0.875rem", fontWeight: 700, color: m.price === 0 ? "#2E7D32" : "var(--color-text)" }}>
+                          <span style={{ fontSize: "0.875rem", fontWeight: 700, color: m.price === 0 ? "var(--color-success)" : "var(--color-text)" }}>
                             {m.price === 0 ? "Free" : formatPrice(convert(m.price), currency)}
                           </span>
                         </label>
@@ -858,7 +858,7 @@ export default function CheckoutPage() {
             )}
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <span style={{ color: "var(--color-text-secondary)" }}>Shipping</span>
-              <span style={{ fontWeight: 500, color: finalShipping === 0 ? "#2E7D32" : undefined }}>
+              <span style={{ fontWeight: 500, color: finalShipping === 0 ? "var(--color-success)" : undefined }}>
                 {finalShipping > 0 ? formatPrice(convert(finalShipping), currency) : "Free"}
               </span>
             </div>

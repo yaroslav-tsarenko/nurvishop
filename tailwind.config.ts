@@ -21,6 +21,13 @@ const config: Config = {
         surface: "var(--color-bg)",
         well: "var(--color-bg-tertiary)",
         page: "var(--color-page)",
+        inverse: {
+          DEFAULT: "var(--color-inverse-surface)",
+          hover: "var(--color-inverse-surface-hover)",
+          fg: "var(--color-inverse-text)",
+          muted: "var(--color-inverse-muted)",
+          border: "var(--color-inverse-border)",
+        },
         line: {
           DEFAULT: "var(--color-border)",
           hover: "var(--color-border-hover)",
@@ -45,6 +52,28 @@ const config: Config = {
           DEFAULT: "var(--color-lilac)",
           strong: "var(--color-lilac-strong)",
         },
+        /* Warm Natural Home semantic aliases */
+        clay: {
+          DEFAULT: "var(--clay)",
+          hover: "var(--clay-hover)",
+          active: "var(--clay-active)",
+        },
+        sage: {
+          DEFAULT: "var(--sage)",
+          strong: "var(--sage-strong)",
+          tint: "var(--sage-tint)",
+        },
+        ochre: {
+          DEFAULT: "var(--ochre)",
+          hover: "var(--ochre-hover)",
+          tint: "var(--ochre-tint)",
+        },
+        linen: "var(--linen)",
+        "clay-white": "var(--clay-white)",
+        espresso: "var(--espresso)",
+        taupe: "var(--taupe)",
+        peach: "var(--peach)",
+        sand: "var(--ochre-tint)",
         success: {
           DEFAULT: "var(--color-success)",
           tint: "var(--color-success-tint)",

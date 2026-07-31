@@ -134,6 +134,9 @@ export function MarketplaceHome({ data }: Props) {
 
             {tabs.length > 0 && <HorizontalTabs tabs={tabs} />}
             <HeroCarousel slides={heroSlides} deals={dealCards} />
+            {categoryShowcase.length > 0 && (
+              <CategoryShowcase categories={categoryShowcase} />
+            )}
             <PromoBannerGrid smallBanners={promoSmall} wideBanners={promoWide} />
 
             {/* Most Popular Products */}

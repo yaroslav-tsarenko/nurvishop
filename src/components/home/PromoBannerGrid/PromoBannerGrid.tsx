@@ -21,13 +21,13 @@ interface Props {
 }
 
 const defaultSmall: BannerData[] = [
-  { id: "1", badgeText: "Circuit Breakers", title: "Protect Every Circuit", subtitle: "From €12.99", bgColor: "var(--promo-bg-blue, #F0F4FF)", textColor: "var(--color-text, #1A1A2E)", linkUrl: "/catalog/smart-modular-circuit-breakers" },
-  { id: "2", badgeText: "Cables & Wiring", title: "Premium Copper Cables", subtitle: "Up to 30% off", bgColor: "var(--promo-bg-warm, #FFF8F0)", textColor: "var(--color-text, #1A1A2E)", linkUrl: "/catalog/installation-and-wiring-materials" },
-  { id: "3", badgeText: "LED Lighting", title: "Illuminate Your Space", subtitle: "From €4.99", bgColor: "var(--promo-bg-green, #F0FFF4)", textColor: "var(--color-text, #1A1A2E)", linkUrl: "/catalog/lighting" },
+  { id: "1", badgeText: "Kitchen & Dining", title: "Everyday Tableware", subtitle: "Ceramics & glassware", bgColor: "var(--promo-bg-blue)", textColor: "var(--color-text)", linkUrl: "/catalog" },
+  { id: "2", badgeText: "Textiles", title: "Soft-Washed Linen", subtitle: "Up to 30% off", bgColor: "var(--promo-bg-warm)", textColor: "var(--color-text)", linkUrl: "/catalog" },
+  { id: "3", badgeText: "Décor & Lighting", title: "Warm Up Every Room", subtitle: "Candles & lamps", bgColor: "var(--promo-bg-green)", textColor: "var(--color-text)", linkUrl: "/catalog" },
 ];
 
 const defaultWide: BannerData[] = [
-  { id: "w1", badgeText: "Pro Account", title: "Register & Get 10% Off Your First Order", subtitle: "Free shipping over €100, trade pricing, and priority support", bgColor: "#1A1A2E", textColor: "#ffffff", linkUrl: "/auth/register", ctaLabel: "Join Free" },
+  { id: "w1", badgeText: "Members Club", title: "Join & Get 10% Off Your First Order", subtitle: "Member pricing, early access, and warm support", bgColor: "#2b241d", textColor: "#f0e9df", linkUrl: "/auth/register", ctaLabel: "Join Free" },
 ];
 
 export function PromoBannerGrid({ smallBanners, wideBanners }: Props) {
@@ -68,7 +68,7 @@ export function PromoBannerGrid({ smallBanners, wideBanners }: Props) {
         >
           <div className="flex-1">
             {b.badgeText && (
-              <span className="mb-2 inline-block rounded-[4px] px-2 py-[0.2rem] text-[0.65rem] font-bold uppercase tracking-[0.05em] text-white">
+              <span className="mb-2 inline-block rounded-pill bg-accent px-2.5 py-[0.2rem] text-[0.65rem] font-bold uppercase tracking-[0.05em] text-white">
                 {b.badgeText}
               </span>
             )}
@@ -76,7 +76,7 @@ export function PromoBannerGrid({ smallBanners, wideBanners }: Props) {
             {b.subtitle && <p className="m-0 text-[0.8125rem] opacity-70">{b.subtitle}</p>}
           </div>
           {b.ctaLabel && (
-            <span className="flex-shrink-0 rounded-md px-6 py-2.5 text-sm font-semibold text-white md:ml-8">
+            <span className="flex-shrink-0 rounded-pill bg-accent px-6 py-2.5 text-sm font-semibold text-white transition-colors duration-200 md:ml-8">
               {b.ctaLabel}
             </span>
           )}

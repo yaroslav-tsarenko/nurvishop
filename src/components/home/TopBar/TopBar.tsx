@@ -22,7 +22,6 @@ interface Props {
 const defaultLinks: UtilityLink[] = [
   { id: "1", label: "About", linkUrl: "/about", position: "left" },
   { id: "2", label: "Payment", linkUrl: "/policies/payment", position: "left" },
-  { id: "3", label: "Delivery", linkUrl: "/policies/shipping", position: "left" },
   { id: "4", label: "Returns", linkUrl: "/policies/returns", position: "left" },
   { id: "5", label: "Warranty", linkUrl: "/policies/warranty", position: "left" },
   { id: "7", label: "Contacts", linkUrl: "/contact", icon: "Phone", position: "right" },
@@ -34,10 +33,10 @@ export function TopBar({ links }: Props) {
   const rightLinks = items.filter((l) => l.position === "right");
 
   const linkClass =
-    "flex items-center gap-1 whitespace-nowrap text-[#aaa] no-underline transition-colors duration-200 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40";
+    "flex items-center gap-1 whitespace-nowrap text-inverse-muted no-underline transition-colors duration-200 hover:text-inverse-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40";
 
   return (
-    <div className="hidden border-b border-white/[0.08] bg-[#1A1A2E] text-xs text-[#ccc] md:block">
+    <div className="hidden border-b border-inverse-border bg-inverse text-xs text-inverse-muted md:block">
       <div className="mx-auto flex h-8 max-w-[1400px] items-center justify-between px-4">
         <nav className="flex items-center gap-4">
           {leftLinks.map((link) => {

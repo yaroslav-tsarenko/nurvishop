@@ -1,169 +1,243 @@
 /* ============================================================
-   nurvishop — "Soft-Pop Modern" design tokens
-   Friendly, expressive, contemporary retail.
+   nurvishop — "Warm Natural Home" design tokens
+   Calm, tactile, earthy comfort — linen, clay, oak, sage, stone.
    Every colour, radius, shadow and type step lives here.
    ============================================================ */
 
 :root {
+  /* ── Canonical warm palette (source of truth) ──────────── */
+  --linen: #f5f1ea;          /* warm base background */
+  --clay-white: #fbf8f3;     /* soft alternating sections */
+  --card: #ffffff;           /* cards */
+  --espresso: #2b241d;       /* deep ink */
+  --taupe: #7c7267;          /* muted text */
+  --taupe-soft: #807567;     /* tertiary text — AA (4.5:1) on white */
+
+  --clay: #b85c38;           /* rich terracotta — primary accent */
+  --clay-hover: #a44e2e;
+  --clay-active: #8f4426;
+  --peach: #f6e3d7;          /* soft peach tint — hover fills, chips */
+
+  --sage: #5c6b4f;           /* deep olive-sage — secondary accent */
+  --sage-strong: #4a5740;
+  --sage-tint: #e9ede2;      /* pale sage */
+  --sage-tint-strong: #d6dec9;
+
+  --ochre: #d9a441;          /* soft ochre-sand — sparse highlight */
+  --ochre-hover: #c8922f;
+  --ochre-tint: #f5e6c8;     /* sand */
+
+  --brick: #c24e3a;          /* muted brick — error */
+  --brick-tint: #f6e0da;
+
+  --sand-border: #e7dfd3;    /* warm sand-grey divider */
+  --sand-border-hover: #dbd0bf;
+
   /* ── Brand ─────────────────────────────────────────────── */
-  --color-primary: #221e2e;          /* ink used as primary in a few spots */
-  --color-secondary: #ffffff;
+  --color-primary: var(--espresso);
+  --color-secondary: var(--card);
 
-  /* Rich lavender-violet — nav emphasis, links, primary buttons */
-  --color-accent: #6d5ae6;
-  --color-accent-hover: #5b48d6;
-  --color-accent-active: #4c3ac2;
-  /* Soft lilac tint — hover fills, selected chips */
-  --color-accent-light: #efecfc;
-  --color-lilac: #efecfc;
-  --color-lilac-strong: #e2ddf9;
+  /* Primary accent → terracotta clay */
+  --color-accent: var(--clay);
+  --color-accent-hover: var(--clay-hover);
+  --color-accent-active: var(--clay-active);
+  --color-accent-light: var(--peach);
+  /* legacy "lilac" → repurposed as pale sage */
+  --color-lilac: var(--sage-tint);
+  --color-lilac-strong: var(--sage-tint-strong);
 
-  /* Signature "pop" accent — butter-yellow, used sparingly */
-  --color-pop: #ffc94d;
-  --color-pop-hover: #f5b92e;
-  --color-pop-tint: #fff4d9;
-  --color-pop-ink: #221e2e;          /* AA-legible text on butter */
+  /* Highlight "pop" → ochre-sand */
+  --color-pop: var(--ochre);
+  --color-pop-hover: var(--ochre-hover);
+  --color-pop-tint: var(--ochre-tint);
+  --color-pop-ink: var(--espresso);
 
-  /* Support accent — soft blush */
-  --color-blush: #f5a3b7;
-  --color-blush-tint: #fdecf1;
+  /* Support accent "blush" → warm peach-clay */
+  --color-blush: #e7a87e;
+  --color-blush-tint: var(--peach);
 
   /* Legacy aliases kept so existing components keep working */
-  --color-accent-2: #f5a3b7;
-  --color-accent-3: #ffc94d;
+  --color-accent-2: #e7a87e;
+  --color-accent-3: var(--ochre);
 
   /* ── Status ────────────────────────────────────────────── */
-  --color-success: #3fbf7f;
-  --color-success-tint: #e6f7ef;
-  --color-warning: #f5a623;
-  --color-warning-tint: #fdf0da;
-  --color-danger: #ef5350;
-  --color-danger-tint: #fdeaea;
+  --color-success: var(--sage);
+  --color-success-tint: var(--sage-tint);
+  --color-warning: var(--ochre);
+  --color-warning-tint: var(--ochre-tint);
+  --color-danger: var(--brick);
+  --color-danger-tint: var(--brick-tint);
 
-  /* ── Gradients ─────────────────────────────────────────── */
-  --gradient-primary: linear-gradient(135deg, #6d5ae6 0%, #8b78f0 55%, #f5a3b7 100%);
-  --gradient-accent: linear-gradient(135deg, #6d5ae6 0%, #f5a3b7 100%);
-  --gradient-warm: linear-gradient(135deg, #ffc94d 0%, #f5a3b7 100%);
-  --gradient-cool: linear-gradient(135deg, #efecfc 0%, #6d5ae6 100%);
-  --gradient-hero: linear-gradient(135deg, #efecfc 0%, #f4f3f6 40%, #fdecf1 72%, #fff4d9 100%);
-  --gradient-card-hover: linear-gradient(135deg, rgba(109, 90, 230, 0.05) 0%, rgba(245, 163, 183, 0.05) 100%);
-  --gradient-badge: linear-gradient(135deg, #ffc94d 0%, #ffb733 100%);
+  /* ── Gradients — warm & natural ────────────────────────── */
+  --gradient-primary: linear-gradient(135deg, #b85c38 0%, #c97a57 55%, #d9a441 100%);
+  --gradient-accent: linear-gradient(135deg, #b85c38 0%, #e7a87e 100%);
+  --gradient-warm: linear-gradient(135deg, #d9a441 0%, #e7a87e 100%);
+  --gradient-cool: linear-gradient(135deg, #e9ede2 0%, #5c6b4f 100%);
+  --gradient-hero: linear-gradient(135deg, #f6e3d7 0%, #f5f1ea 42%, #e9ede2 78%, #fbf8f3 100%);
+  --gradient-card-hover: linear-gradient(135deg, rgba(184, 92, 56, 0.05) 0%, rgba(217, 164, 65, 0.05) 100%);
+  --gradient-badge: linear-gradient(135deg, #d9a441 0%, #c8922f 100%);
 
   /* ── Surfaces ──────────────────────────────────────────── */
   --color-bg: #ffffff;               /* cards / key surfaces / header */
-  --color-bg-secondary: #f4f3f6;     /* soft warm-grey mist — page & bands */
-  --color-bg-tertiary: #ece9f2;      /* deeper mist for wells */
-  --color-bg-warm: #fff4d9;          /* butter tint block */
-  --color-page: #f4f3f6;             /* body background */
+  --color-bg-secondary: var(--clay-white);  /* soft clay-white bands */
+  --color-bg-tertiary: #efe7da;      /* deeper warm wells */
+  --color-bg-warm: var(--peach);     /* peach tint block */
+  --color-page: var(--linen);        /* warm linen body background */
 
   /* ── Text ──────────────────────────────────────────────── */
-  --color-text: #221e2e;             /* deep violet-charcoal ink */
-  --color-text-secondary: #6e6880;   /* muted */
-  --color-text-tertiary: #9a93ac;
+  --color-text: var(--espresso);         /* deep espresso-brown ink */
+  --color-text-secondary: var(--taupe);  /* warm taupe */
+  --color-text-tertiary: var(--taupe-soft);
 
   /* ── Borders ───────────────────────────────────────────── */
-  --color-border: #e4e1ec;           /* cool light lavender-grey */
-  --color-border-hover: #d5d0e2;
-  --color-focus-ring: rgba(109, 90, 230, 0.35);
+  --color-border: var(--sand-border);
+  --color-border-hover: var(--sand-border-hover);
+  --color-focus-ring: rgba(184, 92, 56, 0.38);
 
-  /* ── Elevation — soft & minimal ────────────────────────── */
-  --shadow-sm: 0 1px 2px rgba(34, 30, 46, 0.05);
-  --shadow-md: 0 6px 20px rgba(34, 30, 46, 0.06);
-  --shadow-lg: 0 16px 44px rgba(34, 30, 46, 0.08);
-  --shadow-xl: 0 28px 68px rgba(34, 30, 46, 0.1);
-  --shadow-accent: 0 10px 28px rgba(109, 90, 230, 0.28);
-  --shadow-pop: 0 10px 26px rgba(255, 201, 77, 0.35);
-  --shadow-card: 0 1px 2px rgba(34, 30, 46, 0.04), 0 0 1px rgba(34, 30, 46, 0.06);
-  --shadow-card-hover: 0 16px 40px rgba(109, 90, 230, 0.14), 0 4px 10px rgba(34, 30, 46, 0.05);
+  /* ── Inverse surfaces (stay dark in BOTH themes) ───────────
+     Use for bars that must always read as dark espresso with
+     light text — top strips, catalog menu header, etc. These do
+     NOT flip in dark mode, so light text never blends. */
+  --color-inverse-surface: #2b241d;
+  --color-inverse-surface-hover: #3a2f25;
+  --color-inverse-text: #f4efe7;
+  --color-inverse-muted: #cabfb1;
+  --color-inverse-border: rgba(255, 255, 255, 0.1);
 
-  /* ── Radius — generously rounded ───────────────────────── */
+  /* ── Elevation — warm & diffused ───────────────────────── */
+  --shadow-sm: 0 1px 2px rgba(43, 36, 29, 0.05);
+  --shadow-md: 0 6px 20px rgba(43, 36, 29, 0.07);
+  --shadow-lg: 0 16px 44px rgba(43, 36, 29, 0.1);
+  --shadow-xl: 0 28px 68px rgba(43, 36, 29, 0.12);
+  --shadow-accent: 0 10px 28px rgba(184, 92, 56, 0.26);
+  --shadow-pop: 0 10px 26px rgba(217, 164, 65, 0.3);
+  --shadow-card: 0 1px 2px rgba(43, 36, 29, 0.04), 0 0 1px rgba(43, 36, 29, 0.06);
+  --shadow-card-hover: 0 16px 40px rgba(43, 36, 29, 0.12), 0 4px 10px rgba(43, 36, 29, 0.05);
+
+  /* ── Radius — soft, tactile ────────────────────────────── */
   --radius-sm: 0.625rem;   /* 10px */
   --radius-md: 0.875rem;   /* 14px */
   --radius-lg: 1rem;       /* 16px — cards */
-  --radius-xl: 1.25rem;    /* 20px — cards */
+  --radius-xl: 1.125rem;   /* 18px — cards */
   --radius-2xl: 1.5rem;    /* 24px */
-  --radius-blob: 42% 58% 63% 37% / 41% 44% 56% 59%;
+  --radius-blob: 58% 42% 47% 53% / 42% 46% 54% 58%;
   --radius-pill: 9999px;
 
   /* ── Layout ────────────────────────────────────────────── */
   --max-width: 1320px;
-  --header-height: 68px;
+  --header-height: 72px;
   --announcement-height: 38px;
 
   /* ── Type ──────────────────────────────────────────────── */
-  --font-display: var(--font-display-brand), var(--font-geist-sans), system-ui, sans-serif;
-  --font-sans: var(--font-ui-brand), var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  --font-display: var(--font-display-brand), Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-ui-brand), system-ui, -apple-system, sans-serif;
   --font-mono: var(--font-geist-mono), monospace;
 
-  /* ── Motion — springy but disciplined ──────────────────── */
+  /* ── Motion — slow, soft, homely ───────────────────────── */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --ease-back: cubic-bezier(0.34, 1.4, 0.6, 1);
-  --dur-fast: 180ms;
-  --dur-base: 220ms;
-  --dur-slow: 320ms;
+  --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-back: cubic-bezier(0.34, 1.2, 0.64, 1);
+  --dur-fast: 200ms;
+  --dur-base: 240ms;
+  --dur-slow: 280ms;
 
-  /* ── Promo block tints (cohesive, not rainbow) ─────────── */
-  --promo-bg-blue: #efecfc;   /* lilac  */
-  --promo-bg-warm: #fff4d9;   /* butter */
-  --promo-bg-green: #fdecf1;  /* blush  */
+  /* ── Promo block tints (cohesive, warm) ────────────────── */
+  --promo-bg-blue: var(--peach);       /* peach  */
+  --promo-bg-warm: var(--ochre-tint);  /* sand   */
+  --promo-bg-green: var(--sage-tint);  /* sage   */
 }
 
 [data-theme="dark"] {
-  --color-primary: #f4f1fa;
-  --color-secondary: #191621;
+  /* Evening at home — cozy candlelit surfaces */
+  --linen: #1c1814;
+  --clay-white: #221d18;
+  --card: #26211b;
+  --espresso: #f0e9df;
+  --taupe: #a89c8d;
+  --taupe-soft: #948775;
 
-  --color-accent: #8f7df2;
-  --color-accent-hover: #a293f5;
-  --color-accent-active: #b6a9f8;
-  --color-accent-light: rgba(143, 125, 242, 0.16);
-  --color-lilac: #2a2440;
-  --color-lilac-strong: #352d4f;
+  --clay: #ce7a55;
+  --clay-hover: #da8b69;
+  --clay-active: #e49c7d;
+  --peach: rgba(206, 122, 85, 0.16);
 
-  --color-pop: #ffd166;
-  --color-pop-hover: #ffdb85;
-  --color-pop-tint: #332a17;
-  --color-pop-ink: #221e2e;
+  --sage: #8fa37d;
+  --sage-strong: #a1b491;
+  --sage-tint: #262b20;
+  --sage-tint-strong: #313826;
 
-  --color-blush: #f5a3b7;
-  --color-blush-tint: #33222a;
-  --color-accent-2: #f5a3b7;
-  --color-accent-3: #ffd166;
+  --ochre: #e6b75e;
+  --ochre-hover: #efc474;
+  --ochre-tint: #322815;
 
-  --color-success: #4fcf8f;
-  --color-success-tint: #14271e;
-  --color-warning: #f5b942;
-  --color-warning-tint: #2c2314;
-  --color-danger: #f2716e;
-  --color-danger-tint: #2c1818;
+  --brick: #d46a57;
+  --brick-tint: #2e1b16;
 
-  --gradient-hero: linear-gradient(135deg, #221e2e 0%, #191621 45%, #241a26 75%, #2a2417 100%);
-  --gradient-card-hover: linear-gradient(135deg, rgba(143, 125, 242, 0.1) 0%, rgba(245, 163, 183, 0.08) 100%);
+  --sand-border: #3a322a;
+  --sand-border-hover: #4a4034;
 
-  --color-bg: #221e2e;               /* cards */
-  --color-bg-secondary: #191621;     /* base */
-  --color-bg-tertiary: #241f31;
-  --color-bg-warm: #2a2417;
-  --color-page: #191621;
+  --color-primary: var(--espresso);
+  --color-secondary: #1c1814;
 
-  --color-text: #f2eff8;
-  --color-text-secondary: #a49dba;
-  --color-text-tertiary: #766e88;
+  --color-accent: var(--clay);
+  --color-accent-hover: var(--clay-hover);
+  --color-accent-active: var(--clay-active);
+  --color-accent-light: var(--peach);
+  --color-lilac: var(--sage-tint);
+  --color-lilac-strong: var(--sage-tint-strong);
 
-  --color-border: #322c44;
-  --color-border-hover: #443c5c;
-  --color-focus-ring: rgba(143, 125, 242, 0.45);
+  --color-pop: var(--ochre);
+  --color-pop-hover: var(--ochre-hover);
+  --color-pop-tint: var(--ochre-tint);
+  --color-pop-ink: #1c1814;
+
+  --color-blush: #d98f66;
+  --color-blush-tint: #322017;
+  --color-accent-2: #d98f66;
+  --color-accent-3: var(--ochre);
+
+  --color-success: var(--sage);
+  --color-success-tint: var(--sage-tint);
+  --color-warning: var(--ochre);
+  --color-warning-tint: var(--ochre-tint);
+  --color-danger: var(--brick);
+  --color-danger-tint: var(--brick-tint);
+
+  --gradient-hero: linear-gradient(135deg, #2a2016 0%, #1c1814 45%, #241e18 75%, #22271c 100%);
+  --gradient-card-hover: linear-gradient(135deg, rgba(206, 122, 85, 0.1) 0%, rgba(217, 164, 65, 0.08) 100%);
+
+  --color-bg: #26211b;               /* cards */
+  --color-bg-secondary: #221d18;     /* bands */
+  --color-bg-tertiary: #302a22;
+  --color-bg-warm: #2e2419;
+  --color-page: #1c1814;             /* base */
+
+  --color-text: #f0e9df;
+  --color-text-secondary: #a89c8d;
+  --color-text-tertiary: #7e7263;
+
+  --color-border: #3a322a;
+  --color-border-hover: #4a4034;
+  --color-focus-ring: rgba(206, 122, 85, 0.45);
+
+  /* Inverse surfaces — nudged lighter than the dark page so the
+     bar still separates from the #1c1814 background. */
+  --color-inverse-surface: #322a22;
+  --color-inverse-surface-hover: #3e352b;
+  --color-inverse-text: #f4efe7;
+  --color-inverse-muted: #cabfb1;
+  --color-inverse-border: rgba(255, 255, 255, 0.09);
 
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
   --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.45);
   --shadow-lg: 0 16px 44px rgba(0, 0, 0, 0.5);
   --shadow-xl: 0 28px 68px rgba(0, 0, 0, 0.55);
-  --shadow-accent: 0 10px 28px rgba(143, 125, 242, 0.35);
-  --shadow-pop: 0 10px 26px rgba(255, 209, 102, 0.25);
+  --shadow-accent: 0 10px 28px rgba(206, 122, 85, 0.35);
+  --shadow-pop: 0 10px 26px rgba(230, 183, 94, 0.25);
   --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.35), 0 0 1px rgba(0, 0, 0, 0.4);
   --shadow-card-hover: 0 16px 40px rgba(0, 0, 0, 0.5);
 
-  --promo-bg-blue: #241f36;
-  --promo-bg-warm: #2a2417;
-  --promo-bg-green: #2c1f28;
+  --promo-bg-blue: #2e2016;
+  --promo-bg-green: #22271c;
+  --promo-bg-warm: #2e2717;
 }

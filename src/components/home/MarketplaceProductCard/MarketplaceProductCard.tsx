@@ -60,7 +60,7 @@ export function MarketplaceProductCard({ product }: Props) {
       href={`/product/${product.slug}`}
       className="group flex flex-col overflow-hidden rounded-xl border border-line bg-surface text-ink no-underline shadow-card transition-[border-color,box-shadow,transform] duration-200 ease-back hover:-translate-y-1 hover:border-accent-light hover:shadow-card-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
     >
-      <div className="relative flex aspect-square items-center justify-center overflow-hidden bg-mist p-3">
+      <div className="relative flex aspect-square items-center justify-center overflow-hidden bg-[#FEFEFE] p-3">
         <Image
           src={imgSrc}
           alt={product.images?.[0]?.alt || product.name}
@@ -108,7 +108,7 @@ export function MarketplaceProductCard({ product }: Props) {
         </h4>
         <div className="mb-2 flex items-center gap-px">
           {[1,2,3,4,5].map((s) => (
-            <Star key={s} size={11} fill={s <= 4 ? "#FF9800" : "none"} stroke={s <= 4 ? "#FF9800" : "#ccc"} />
+            <Star key={s} size={11} fill={s <= 4 ? "var(--ochre)" : "none"} stroke={s <= 4 ? "var(--ochre)" : "var(--color-border)"} />
           ))}
           <span className="ml-1 text-[0.65rem] text-muted">(12)</span>
         </div>

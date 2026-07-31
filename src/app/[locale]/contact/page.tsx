@@ -172,7 +172,7 @@ export default function ContactPage() {
                   animate={{ scale: 1 }}
                   transition={{ delay: 0.1, type: "spring", damping: 12, stiffness: 300 }}
                 >
-                  <CheckCircle size={64} style={{ color: "#2E7D32", margin: "0 auto 1.5rem" }} />
+                  <CheckCircle size={64} style={{ color: "var(--color-success)", margin: "0 auto 1.5rem" }} />
                 </motion.div>
                 <h2 style={{ fontSize: "1.5rem", fontWeight: 800, marginBottom: "0.75rem" }}>Message Sent!</h2>
                 <p style={{ color: "var(--color-text-secondary)", maxWidth: "320px", margin: "0 auto 1.5rem", lineHeight: 1.6 }}>
@@ -343,11 +343,11 @@ export default function ContactPage() {
           <div style={{
             padding: "1.5rem",
             borderRadius: "var(--radius-xl)",
-            background: "linear-gradient(135deg, #1A1A2E 0%, #2d2d4e 100%)",
-            color: "#fff",
+            background: "linear-gradient(135deg, #2b241d 0%, #5c3a2a 100%)",
+            color: "#f0e9df",
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.875rem" }}>
-              <Clock size={18} style={{ color: "#E53935" }} />
+              <Clock size={18} style={{ color: "var(--ochre)" }} />
               <h3 style={{ fontSize: "0.9375rem", fontWeight: 700 }}>Response Times</h3>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: "0.625rem" }}>
@@ -376,7 +376,7 @@ export default function ContactPage() {
             alignItems: "center",
             gap: "0.75rem",
           }}>
-            <ShieldCheck size={20} style={{ color: "#2E7D32", flexShrink: 0 }} />
+            <ShieldCheck size={20} style={{ color: "var(--color-success)", flexShrink: 0 }} />
             <p style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)", lineHeight: 1.5 }}>
               Your information is secure and will only be used to respond to your inquiry. We never share your data.
             </p>

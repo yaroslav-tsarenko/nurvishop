@@ -42,7 +42,7 @@ export function HorizontalTabs({ tabs }: Props) {
               className={clsx(
                 "flex items-center gap-1.5 whitespace-nowrap rounded-md border px-3 py-[0.4rem] text-[0.8125rem] font-medium text-ink no-underline transition-[border-color,box-shadow] duration-200 hover:border-line-hover hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40",
                 i === active
-                  ? "border-[#E53935] bg-[#FFF5F5]"
+                  ? "border-accent bg-accent-light"
                   : "border-line bg-surface",
               )}
               onClick={() => setActive(i)}

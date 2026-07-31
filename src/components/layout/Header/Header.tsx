@@ -8,8 +8,8 @@ import clsx from "clsx";
 import {
   ShoppingCart, Search, Menu, X, User, Shield,
   ChevronRight, Heart, ChevronDown,
-  Cable, LayoutGrid, Zap, Lightbulb, CircuitBoard, Plug,
-  Box, Wrench, Shield as ShieldIcon, SquareStack,
+  Sofa, BedDouble, CookingPot, Bath, Lamp, Armchair,
+  Package, Flower2, Shirt, UtensilsCrossed, LayoutGrid,
 } from "lucide-react";
 import { useCart } from "@/providers/CartProvider";
 import { useAuth } from "@/providers/AuthProvider";
@@ -32,24 +32,40 @@ function subtreeCount(cat: Category): number {
 }
 
 const ICON_MAP: Record<string, React.ElementType> = {
-  "wiring": Cable,
-  "cable": Cable,
-  "automation": CircuitBoard,
-  "control": CircuitBoard,
-  "distribution": LayoutGrid,
-  "energy": Zap,
-  "protection": ShieldIcon,
-  "protective": ShieldIcon,
-  "fuse": Zap,
-  "lighting": Lightbulb,
-  "light": Lightbulb,
-  "terminal": SquareStack,
-  "mounting": Box,
-  "box": Box,
-  "conduit": Wrench,
-  "connector": Plug,
-  "power": Zap,
-  "plug": Plug,
+  "living": Sofa,
+  "sofa": Sofa,
+  "couch": Sofa,
+  "chair": Armchair,
+  "seating": Armchair,
+  "furniture": Armchair,
+  "bed": BedDouble,
+  "bedroom": BedDouble,
+  "sleep": BedDouble,
+  "kitchen": CookingPot,
+  "cook": CookingPot,
+  "cooking": CookingPot,
+  "dining": UtensilsCrossed,
+  "tableware": UtensilsCrossed,
+  "cutlery": UtensilsCrossed,
+  "glass": UtensilsCrossed,
+  "bath": Bath,
+  "bathroom": Bath,
+  "towel": Bath,
+  "light": Lamp,
+  "lighting": Lamp,
+  "lamp": Lamp,
+  "decor": Flower2,
+  "decoration": Flower2,
+  "vase": Flower2,
+  "candle": Flower2,
+  "textile": Shirt,
+  "linen": Shirt,
+  "cushion": Shirt,
+  "blanket": Shirt,
+  "storage": Package,
+  "organiz": Package,
+  "basket": Package,
+  "box": Package,
 };
 
 function getIconForCategory(name: string) {
@@ -59,6 +75,12 @@ function getIconForCategory(name: string) {
   }
   return LayoutGrid;
 }
+
+const UTILITY_MESSAGES = [
+  "Thoughtfully made for a softer home",
+  "Natural materials — linen, clay & oak",
+  "Warm support · 30-day easy returns",
+];
 
 const iconButton =
   "relative flex h-9 w-9 cursor-pointer items-center justify-center rounded-md border-none bg-transparent text-muted no-underline transition-colors duration-150 hover:bg-mist hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40";
@@ -79,6 +101,7 @@ export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [categories, setCategories] = useState<Category[]>([]);
+  const [msgIndex, setMsgIndex] = useState(0);
   const megaRef = useRef<HTMLDivElement>(null);
   const megaTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
 
@@ -86,6 +109,14 @@ export function Header() {
     const onScroll = () => setScrolled(window.scrollY > 10);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    const id = setInterval(
+      () => setMsgIndex((i) => (i + 1) % UTILITY_MESSAGES.length),
+      5000,
+    );
+    return () => clearInterval(id);
   }, []);
 
   useEffect(() => {
@@ -100,7 +131,16 @@ export function Header() {
   useEffect(() => {
     fetch("/api/categories")
       .then((r) => r.json())
-      .then((data) => { if (Array.isArray(data)) setCategories(data); })
+      .then((data) => {
+        if (!Array.isArray(data)) return;
+        const unwrapped =
+          data.length === 1 &&
+          (data[0]?._count?.products || 0) === 0 &&
+          (data[0]?.children?.length || 0) > 0
+            ? data[0].children
+            : data;
+        setCategories(unwrapped);
+      })
       .catch(() => {});
   }, []);
 
@@ -122,115 +162,138 @@ export function Header() {
 
   return (
     <>
-      <header
-        className={clsx(
-          "sticky top-0 z-50 h-[60px] border-b border-line bg-surface/90 backdrop-blur transition-shadow duration-200",
-          scrolled && "shadow-md"
-        )}
-      >
-        <div className="mx-auto flex h-full max-w-container items-center gap-6 px-4 lg:px-6">
-          <Link
-            href="/"
-            className="flex flex-shrink-0 items-center gap-2 whitespace-nowrap font-display text-2xl font-bold tracking-[-0.03em] text-ink no-underline"
-          >
-            <NurviLogo size={26} />
-            <span className="font-bold text-ink">nurvishop</span>
-          </Link>
+      <header className="sticky top-0 z-50">
+        {/* Utility strip */}
+        <div
+          className={clsx(
+            "overflow-hidden border-b border-inverse-border bg-inverse text-inverse-fg transition-[max-height,opacity] duration-300",
+            scrolled ? "max-h-0 opacity-0" : "max-h-10 opacity-100",
+          )}
+        >
+          <div className="mx-auto flex h-9 max-w-container items-center justify-center px-4 lg:px-6">
+            <p className="truncate text-center text-[0.72rem] font-medium tracking-[0.08em] text-inverse-fg">
+              {UTILITY_MESSAGES[msgIndex]}
+            </p>
+          </div>
+        </div>
 
-          <nav className="hidden flex-shrink-0 items-center gap-0.5 lg:flex">
-            <Link href="/" className={navLink}>
-              {t("home")}
+        {/* Main bar */}
+        <div
+          className={clsx(
+            "border-b border-line bg-surface/85 backdrop-blur-md transition-shadow duration-200",
+            scrolled && "shadow-md",
+          )}
+        >
+          <div
+            className={clsx(
+              "mx-auto flex max-w-container items-center gap-6 px-4 transition-[height] duration-200 lg:px-6",
+              scrolled ? "h-[62px]" : "h-[72px]",
+            )}
+          >
+            <Link
+              href="/"
+              className="flex flex-shrink-0 items-center gap-2 whitespace-nowrap font-display text-[1.6rem] font-semibold tracking-[-0.02em] text-ink no-underline"
+            >
+              <NurviLogo size={26} />
+              <span className="font-display font-semibold text-ink">nurvishop</span>
             </Link>
 
-            <div
-              className="relative"
-              ref={megaRef}
-              onMouseEnter={openMega}
-              onMouseLeave={closeMega}
+            <nav className="hidden flex-shrink-0 items-center gap-0.5 lg:flex">
+              <Link href="/" className={navLink}>
+                {t("home")}
+              </Link>
+
+              <div
+                className="relative"
+                ref={megaRef}
+                onMouseEnter={openMega}
+                onMouseLeave={closeMega}
+              >
+                <button className={navLink} onClick={() => setMegaOpen(!megaOpen)}>
+                  Shop by room
+                  <ChevronDown size={14} style={{ transition: "transform 0.2s", transform: megaOpen ? "rotate(180deg)" : undefined }} />
+                </button>
+              </div>
+
+              <Link href="/contact" className={navLink}>
+                {t("contact")}
+              </Link>
+            </nav>
+
+            <form
+              className="relative hidden h-[42px] max-w-[500px] flex-1 items-center overflow-hidden rounded-pill border border-line bg-mist transition-shadow focus-within:border-accent focus-within:ring-2 focus-within:ring-accent/30 md:flex"
+              onSubmit={handleSearch}
             >
-              <button className={navLink} onClick={() => setMegaOpen(!megaOpen)}>
-                {t("catalog")}
-                <ChevronDown size={14} style={{ transition: "transform 0.2s", transform: megaOpen ? "rotate(180deg)" : undefined }} />
+              <Search size={16} className="pointer-events-none absolute left-4 text-subtle" />
+              <input
+                type="text"
+                className="h-full flex-1 border-none bg-transparent py-0 pl-10 pr-3 text-[0.8125rem] text-ink outline-none placeholder:text-subtle"
+                placeholder="Search sofas, ceramics, linen…"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <button
+                type="submit"
+                className="h-full cursor-pointer whitespace-nowrap border-none bg-accent px-5 text-[0.8125rem] font-semibold text-white transition-colors duration-150 hover:bg-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+              >
+                Search
+              </button>
+            </form>
+
+            <div className="ml-auto flex flex-shrink-0 items-center gap-0.5">
+              <CurrencySwitcher />
+              <ThemeToggle />
+              <span className="mx-1 hidden h-5 w-px bg-line sm:block" />
+
+              <Link href="/search" className={clsx(iconButton, "flex md:hidden")} aria-label={t("search")}>
+                <Search size={20} />
+              </Link>
+
+              {user && (
+                <Link href="/account/wishlist" className={iconButton} aria-label="Wishlist">
+                  <Heart size={20} />
+                </Link>
+              )}
+
+              <Link href="/cart" className={clsx(iconButton, "relative text-accent hover:text-accent-hover")} aria-label={t("cart")}>
+                <ShoppingCart size={20} />
+                {itemCount > 0 && (
+                  <motion.span
+                    key={cartBounce}
+                    className="absolute -right-[3px] -top-[3px] flex h-[1.125rem] min-w-[1.125rem] items-center justify-center rounded-pill border-2 border-surface bg-accent px-1 text-[0.625rem] font-bold text-white"
+                    initial={cartBounce > 0 ? { scale: 0.5 } : false}
+                    animate={{ scale: 1 }}
+                    transition={{ type: "spring", damping: 10, stiffness: 400 }}
+                  >
+                    {itemCount > 99 ? "99+" : itemCount}
+                  </motion.span>
+                )}
+              </Link>
+
+              {user && (role === "ADMIN" || role === "SUPER_ADMIN") && (
+                <a href="/admin" className={iconButton} aria-label="Admin">
+                  <Shield size={20} />
+                </a>
+              )}
+
+              {user ? (
+                <Link href="/account" className={iconButton} aria-label={t("account")}>
+                  <User size={20} />
+                </Link>
+              ) : (
+                <Link href="/auth/login" className={iconButton} aria-label={t("login")}>
+                  <User size={20} />
+                </Link>
+              )}
+
+              <button
+                className={clsx(iconButton, "flex lg:hidden")}
+                onClick={() => setMobileOpen(true)}
+                aria-label="Menu"
+              >
+                <Menu size={22} />
               </button>
             </div>
-
-            <Link href="/contact" className={navLink}>
-              {t("contact")}
-            </Link>
-          </nav>
-
-          <form
-            className="relative hidden h-[38px] max-w-[500px] flex-1 items-center overflow-hidden rounded-pill border border-line bg-surface transition-shadow focus-within:ring-2 focus-within:ring-accent/40 md:flex"
-            onSubmit={handleSearch}
-          >
-            <Search size={16} className="pointer-events-none absolute left-3.5 text-subtle" />
-            <input
-              type="text"
-              className="h-full flex-1 border-none bg-transparent py-0 pl-9 pr-3 text-[0.8125rem] text-ink outline-none placeholder:text-subtle"
-              placeholder="Search products..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            <button
-              type="submit"
-              className="h-full cursor-pointer whitespace-nowrap border-none bg-accent px-5 text-[0.8125rem] font-semibold text-white transition-colors duration-150 hover:bg-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
-            >
-              Search
-            </button>
-          </form>
-
-          <div className="ml-auto flex flex-shrink-0 items-center gap-0.5">
-            <Link href="/search" className={clsx(iconButton, "flex md:hidden")} aria-label={t("search")}>
-              <Search size={20} />
-            </Link>
-
-            <ThemeToggle />
-            <CurrencySwitcher />
-
-            {user && (
-              <Link href="/account/wishlist" className={iconButton} aria-label="Wishlist">
-                <Heart size={20} />
-              </Link>
-            )}
-
-            <Link href="/cart" className={clsx(iconButton, "relative")} aria-label={t("cart")}>
-              <ShoppingCart size={20} />
-              {itemCount > 0 && (
-                <motion.span
-                  key={cartBounce}
-                  className="absolute -right-[3px] -top-[3px] flex h-[1.125rem] min-w-[1.125rem] items-center justify-center rounded-pill border-2 border-surface bg-accent px-1 text-[0.625rem] font-bold text-white"
-                  initial={cartBounce > 0 ? { scale: 0.5 } : false}
-                  animate={{ scale: 1 }}
-                  transition={{ type: "spring", damping: 10, stiffness: 400 }}
-                >
-                  {itemCount > 99 ? "99+" : itemCount}
-                </motion.span>
-              )}
-            </Link>
-
-            {user && (role === "ADMIN" || role === "SUPER_ADMIN") && (
-              <a href="/admin" className={iconButton} aria-label="Admin">
-                <Shield size={20} />
-              </a>
-            )}
-
-            {user ? (
-              <Link href="/account" className={iconButton} aria-label={t("account")}>
-                <User size={20} />
-              </Link>
-            ) : (
-              <Link href="/auth/login" className={iconButton} aria-label={t("login")}>
-                <User size={20} />
-              </Link>
-            )}
-
-            <button
-              className={clsx(iconButton, "flex lg:hidden")}
-              onClick={() => setMobileOpen(true)}
-              aria-label="Menu"
-            >
-              <Menu size={22} />
-            </button>
           </div>
         </div>
       </header>
@@ -240,7 +303,8 @@ export function Header() {
         {megaOpen && (
           <>
             <motion.div
-              className="fixed inset-0 top-[60px] z-40 bg-black/45"
+              className="fixed inset-0 z-40 bg-black/45"
+              style={{ top: scrolled ? 62 : 108 }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -248,7 +312,8 @@ export function Header() {
               onClick={() => setMegaOpen(false)}
             />
             <motion.div
-              className="fixed inset-x-0 top-[60px] z-[45] max-h-[30vh] overflow-y-auto border-b border-line bg-surface shadow-lg"
+              className="fixed inset-x-0 z-[45] max-h-[36vh] overflow-y-auto border-b border-line bg-surface shadow-lg"
+              style={{ top: scrolled ? 62 : 108 }}
               initial={{ opacity: 0, y: -8 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
@@ -257,6 +322,7 @@ export function Header() {
               onMouseLeave={closeMega}
             >
               <div className="mx-auto max-w-container px-6 pb-4 pt-5">
+                <p className="eyebrow mb-3">Shop by room</p>
                 {categories.length === 0 ? (
                   <div className="grid grid-cols-3 gap-2 min-[1201px]:grid-cols-5">
                     {Array.from({ length: 10 }).map((_, i) => (
@@ -330,7 +396,7 @@ export function Header() {
               transition={{ type: "spring", damping: 30, stiffness: 300 }}
             >
               <div className="flex items-center justify-between border-b border-line px-5 py-4">
-                <span className="text-[1.125rem] font-bold text-ink">Menu</span>
+                <span className="font-display text-[1.25rem] font-semibold text-ink">Menu</span>
                 <button
                   className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-md border-none bg-transparent text-muted hover:bg-mist hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
                   onClick={() => setMobileOpen(false)}
@@ -353,6 +419,34 @@ export function Header() {
                   <Link href="/catalog?onSale=true" className={drawerNavLink} onClick={() => setMobileOpen(false)}>
                     Deals <ChevronRight size={18} />
                   </Link>
+
+                  {categories.length > 0 && (
+                    <details className="group rounded-md">
+                      <summary className={clsx(drawerNavLink, "list-none cursor-pointer marker:hidden")}>
+                        Shop by room
+                        <ChevronDown size={18} className="transition-transform duration-200 group-open:rotate-180" />
+                      </summary>
+                      <div className="mt-1 flex flex-col gap-0.5 pl-3">
+                        {[...categories]
+                          .sort((a, b) => subtreeCount(b) - subtreeCount(a))
+                          .slice(0, 8)
+                          .map((cat) => {
+                            const Icon = getIconForCategory(cat.name);
+                            return (
+                              <Link
+                                key={cat.id}
+                                href={`/catalog/${cat.slug}`}
+                                className="flex items-center gap-3 rounded-md p-2.5 text-[0.875rem] text-muted no-underline transition-colors duration-150 hover:bg-mist hover:text-ink"
+                                onClick={() => setMobileOpen(false)}
+                              >
+                                <Icon size={18} className="flex-shrink-0 text-accent" />
+                                <span className="truncate">{cat.name}</span>
+                              </Link>
+                            );
+                          })}
+                      </div>
+                    </details>
+                  )}
 
                   <div className="my-2 h-px bg-line" />
 
