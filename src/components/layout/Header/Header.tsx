@@ -77,7 +77,13 @@ export function Header() {
   const megaTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 10);
+    // Hysteresis: collapse past 80px, expand below 20px. The wide dead zone
+    // stops the header flip-flopping when its own height change nudges the
+    // scroll position back across a single threshold.
+    const onScroll = () => {
+      const y = window.scrollY;
+      setScrolled((prev) => (prev ? y > 20 : y > 80));
+    };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
