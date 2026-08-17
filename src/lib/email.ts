@@ -1,4 +1,6 @@
 import { Resend } from "resend";
+import nodemailer, { type Transporter } from "nodemailer";
+import { generateInvoicePdf } from "./invoice-pdf";
 
 let resend: Resend | null = null;
 
@@ -8,8 +10,28 @@ function getResend(): Resend | null {
   return resend;
 }
 
+let smtpTransport: Transporter | null = null;
+
+function getSmtpTransport(): Transporter | null {
+  const host = process.env.SMTP_HOST;
+  const user = process.env.SMTP_USER;
+  const pass = process.env.SMTP_PASS;
+  if (!host || !user || !pass) return null;
+  if (!smtpTransport) {
+    const port = Number(process.env.SMTP_PORT ?? 587);
+    smtpTransport = nodemailer.createTransport({
+      host,
+      port,
+      secure: port === 465,
+      auth: { user, pass },
+    });
+  }
+  return smtpTransport;
+}
+
 function getFrom(): string {
   return (
+    process.env.SMTP_FROM_EMAIL ||
     process.env.RESEND_FROM_EMAIL ||
     process.env.RESEND_FROM ||
     "nurvishop <noreply@nurvishop.com>"
@@ -17,7 +39,7 @@ function getFrom(): string {
 }
 
 function getReplyTo(): string | undefined {
-  return process.env.RESEND_REPLY_TO || undefined;
+  return process.env.SMTP_REPLY_TO || process.env.RESEND_REPLY_TO || undefined;
 }
 
 function getSiteUrl(): string {
@@ -30,17 +52,46 @@ const BG_COLOR = "#f5f1ea";
 const TEXT_COLOR = "#2b241d";
 const MUTED_COLOR = "#8a7d6d";
 
+interface EmailAttachment {
+  filename: string;
+  content: Buffer;
+  contentType?: string;
+}
+
 interface SendArgs {
   to: string;
   subject: string;
   html: string;
   replyTo?: string;
+  attachments?: EmailAttachment[];
 }
 
-async function send({ to, subject, html, replyTo }: SendArgs): Promise<boolean> {
+async function send({ to, subject, html, replyTo, attachments }: SendArgs): Promise<boolean> {
+  const smtp = getSmtpTransport();
+  if (smtp) {
+    try {
+      await smtp.sendMail({
+        from: getFrom(),
+        to,
+        subject,
+        html,
+        replyTo: replyTo ?? getReplyTo(),
+        attachments: attachments?.map((a) => ({
+          filename: a.filename,
+          content: a.content,
+          contentType: a.contentType,
+        })),
+      });
+      return true;
+    } catch (err) {
+      console.error(`[Email] SMTP send failed → ${subject} to ${to}:`, err);
+      return false;
+    }
+  }
+
   const r = getResend();
   if (!r) {
-    console.log(`[Email] Skipped (Resend not configured) → ${subject} to ${to}`);
+    console.log(`[Email] Skipped (no SMTP or Resend configured) → ${subject} to ${to}`);
     return false;
   }
   try {
@@ -50,6 +101,7 @@ async function send({ to, subject, html, replyTo }: SendArgs): Promise<boolean> 
       subject,
       html,
       replyTo: replyTo ?? getReplyTo(),
+      attachments,
     });
     if (error) {
       console.error(`[Email] Send failed → ${subject} to ${to}:`, error);
@@ -88,7 +140,7 @@ function emailWrapper(content: string, options: { preheader?: string } = {}): st
     </div>
     <div style="text-align:center;margin-top:24px;font-size:12px;color:#999;line-height:1.6;">
       <p style="margin:0 0 4px;">&copy; ${new Date().getFullYear()} nurvishop. All rights reserved.</p>
-      <p style="margin:0;">AVONTRA LTD &middot; London, United Kingdom &middot; <a href="${getSiteUrl()}" style="color:${BRAND_COLOR};text-decoration:none;">nurvishop.com</a></p>
+      <p style="margin:0;">ULTRASENS LT MB &middot; Vilnius, Lithuania &middot; <a href="${getSiteUrl()}" style="color:${BRAND_COLOR};text-decoration:none;">nurvishop.com</a></p>
       <p style="margin:8px 0 0;">
         <a href="${getSiteUrl()}/en/policies/privacy" style="color:#999;text-decoration:underline;margin:0 6px;">Privacy</a>
         <a href="${getSiteUrl()}/en/policies/terms" style="color:#999;text-decoration:underline;margin:0 6px;">Terms</a>
@@ -346,9 +398,37 @@ export async function sendOrderInvoiceEmail(data: OrderEmailData): Promise<boole
   const id = shortId(data);
   const date = formatDate(data.createdAt);
 
+  let attachments: EmailAttachment[] | undefined;
+  try {
+    const pdf = await generateInvoicePdf({
+      invoiceNumber: id,
+      date,
+      customerName: data.customerName,
+      customerEmail: data.customerEmail,
+      shippingAddress: data.shippingAddress,
+      items: data.items.map((item) => ({
+        productName: item.productName,
+        productSku: item.productSku,
+        quantity: item.quantity,
+        price: toNum(item.price),
+        total: toNum(item.total),
+      })),
+      subtotal: toNum(data.subtotal),
+      taxAmount: toNum(data.taxAmount),
+      shippingCost: toNum(data.shippingCost),
+      discountAmount: toNum(data.discountAmount),
+      total: toNum(data.total),
+      shippingMethod: data.shippingMethod,
+    });
+    attachments = [{ filename: `invoice-${id}.pdf`, content: pdf, contentType: "application/pdf" }];
+  } catch (err) {
+    console.error(`[Email] Invoice PDF generation failed for #${id}:`, err);
+  }
+
   return send({
     to: data.customerEmail,
     subject: `Invoice — Order #${id}`,
+    attachments,
     html: emailWrapper(
       `
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;border-bottom:2px solid #e5e5e5;padding-bottom:16px;">
@@ -381,11 +461,11 @@ export async function sendOrderInvoiceEmail(data: OrderEmailData): Promise<boole
           <td style="width:50%;vertical-align:top;padding-right:12px;">
             <p style="margin:0 0 4px;font-size:11px;color:#999;text-transform:uppercase;letter-spacing:0.06em;font-weight:700;">From</p>
             <p style="margin:0;font-size:13px;color:${TEXT_COLOR};line-height:1.55;">
-              <strong>AVONTRA LTD</strong><br />
-              Company number: 17245887<br />
-              Dept 6735, 196 High Road<br />
-              Wood Green, London, N22 8HH<br />
-              United Kingdom
+              <strong>ULTRASENS LT MB</strong><br />
+              Company number: 308011165<br />
+              V. Nagevičiaus g. 3<br />
+              LT-08237 Vilnius<br />
+              Lithuania
             </p>
           </td>
           <td style="width:50%;vertical-align:top;padding-left:12px;">
@@ -401,6 +481,7 @@ export async function sendOrderInvoiceEmail(data: OrderEmailData): Promise<boole
       ${totalsBlock(data)}
 
       <p style="color:#999;font-size:12px;margin:24px 0 0;line-height:1.6;text-align:center;">
+        A PDF copy of this invoice is attached to this email.<br />
         VAT is included in the prices shown where applicable. This invoice serves as proof of purchase.<br />
         For any questions, reply to this email or contact <a href="mailto:info@nurvishop.com" style="color:${BRAND_COLOR};">info@nurvishop.com</a>.
       </p>

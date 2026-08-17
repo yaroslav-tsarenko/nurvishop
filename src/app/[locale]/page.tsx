@@ -106,9 +106,24 @@ async function getHomeData() {
     const products = allActiveProducts as any[];
 
     const featuredProducts = getFeaturedProducts(products, 10);
-    const saleProducts = getSaleProducts(products, 15);
-    const newProducts = getNewProducts(products, 10);
-    const popularProducts = getPopularProducts(products, 10);
+
+    // Each homepage block draws from the same product pool, so pick distinct
+    // items across sale → popular → new to avoid showing the same product thrice.
+    const used = new Set<string>();
+    const takeDistinct = (candidates: typeof products, limit: number) => {
+      const picked: typeof products = [];
+      for (const p of candidates) {
+        if (used.has(p.id)) continue;
+        used.add(p.id);
+        picked.push(p);
+        if (picked.length >= limit) break;
+      }
+      return picked;
+    };
+
+    const saleProducts = takeDistinct(getSaleProducts(products, products.length), 15);
+    const popularProducts = takeDistinct(getPopularProducts(products, products.length), 10);
+    const newProducts = takeDistinct(getNewProducts(products, products.length), 10);
 
     const categorySections = getHomepageCategorySections(
       products,

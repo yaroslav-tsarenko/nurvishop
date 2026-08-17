@@ -171,7 +171,7 @@ export default function CartPage() {
                 </span>
               </div>
               <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.875rem" }}>
-                <span style={{ color: "var(--color-text-secondary)" }}>{t("tax")} (21%)</span>
+                <span style={{ color: "var(--color-text-secondary)" }}>{t("tax")} (21%, incl.)</span>
                 <span style={{ fontWeight: 500 }}>{formatPrice(convert(cart.taxAmount), currency)}</span>
               </div>
 

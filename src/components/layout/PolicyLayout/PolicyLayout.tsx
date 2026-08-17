@@ -56,11 +56,11 @@ export function ContactBlock() {
   return (
     <div className="mt-2 rounded-md border border-line bg-mist px-4 py-[0.875rem] text-[0.875rem] leading-[1.7]">
       <p>
-        <strong>AVONTRA LTD</strong>
+        <strong>ULTRASENS LT MB</strong>
         <br />
-        Company number: 17245887
+        Company number: 308011165
         <br />
-        Registered office: Dept 6735, 196 High Road, Wood Green, London, United Kingdom, N22 8HH
+        Registered office: V. Nagevičiaus g. 3, LT-08237 Vilnius, Lithuania
         <br />
         Phone: +44 7360 545980
         <br />

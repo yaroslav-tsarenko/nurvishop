@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { Chip } from "@heroui/react";
-import { Package, MapPin, Heart, User as UserIcon, ChevronRight } from "lucide-react";
+import { Package, ChevronRight } from "lucide-react";
 import { useAuth } from "@/providers/AuthProvider";
 import { useCurrency } from "@/providers/CurrencyProvider";
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner/LoadingSpinner";
@@ -77,7 +77,7 @@ export default function AccountPage() {
         </div>
       </div>
 
-      <div className="mt-6 grid grid-cols-[2fr_1fr] gap-6 max-[768px]:grid-cols-1">
+      <div className="mt-6">
         <div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" }}>
             <h2 style={{ fontSize: "1.0625rem", fontWeight: 700 }}>Recent Orders</h2>
@@ -109,30 +109,6 @@ export default function AccountPage() {
               ))}
             </div>
           )}
-        </div>
-
-        <div className="rounded-xl border border-line bg-surface p-5">
-          <h2 style={{ fontSize: "1.0625rem", fontWeight: 700, marginBottom: "0.75rem" }}>Quick Links</h2>
-          <Link href="/account/orders" className="flex items-center gap-3 rounded-md px-2 py-3 text-sm text-ink no-underline transition-colors hover:bg-mist">
-            <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-[8px] bg-accent-light text-accent"><Package size={16} /></span>
-            <span style={{ flex: 1 }}>{t("orders")}</span>
-            <ChevronRight size={16} color="var(--color-text-tertiary)" />
-          </Link>
-          <Link href="/account/profile" className="flex items-center gap-3 rounded-md px-2 py-3 text-sm text-ink no-underline transition-colors hover:bg-mist">
-            <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-[8px] bg-accent-light text-accent"><UserIcon size={16} /></span>
-            <span style={{ flex: 1 }}>{t("profile")}</span>
-            <ChevronRight size={16} color="var(--color-text-tertiary)" />
-          </Link>
-          <Link href="/account/addresses" className="flex items-center gap-3 rounded-md px-2 py-3 text-sm text-ink no-underline transition-colors hover:bg-mist">
-            <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-[8px] bg-accent-light text-accent"><MapPin size={16} /></span>
-            <span style={{ flex: 1 }}>{t("addresses")}</span>
-            <ChevronRight size={16} color="var(--color-text-tertiary)" />
-          </Link>
-          <Link href="/account/wishlist" className="flex items-center gap-3 rounded-md px-2 py-3 text-sm text-ink no-underline transition-colors hover:bg-mist">
-            <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-[8px] bg-accent-light text-accent"><Heart size={16} /></span>
-            <span style={{ flex: 1 }}>{t("wishlist")}</span>
-            <ChevronRight size={16} color="var(--color-text-tertiary)" />
-          </Link>
         </div>
       </div>
     </div>

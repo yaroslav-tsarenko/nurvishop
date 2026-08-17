@@ -4,13 +4,15 @@ import { Link } from "@/i18n/routing";
 export const metadata = { title: "Policies — nurvishop" };
 
 const policies = [
-  { label: "Terms and Conditions", href: "/policies/terms" },
-  { label: "Shipping Policy", href: "/policies/shipping" },
-  { label: "Privacy Policy", href: "/policies/privacy" },
-  { label: "Cookie Policy", href: "/policies/cookies" },
+  { label: "Terms and Conditions of Sale", href: "/policies/terms" },
+  { label: "Shipping and Delivery Policy", href: "/policies/shipping" },
   { label: "Returns, Refunds and Cancellation Policy", href: "/policies/returns" },
   { label: "Payment Policy", href: "/policies/payment" },
-  { label: "Warranty Policy", href: "/policies/warranty" },
+  { label: "Privacy Policy", href: "/policies/privacy" },
+  { label: "Cookie Policy", href: "/policies/cookies" },
+  { label: "Product Safety, Warranty and Complaints Policy", href: "/policies/warranty" },
+  { label: "Accessibility Statement", href: "/policies/accessibility" },
+  { label: "Legal Notice and Company Information", href: "/policies/legal" },
 ];
 
 export default function PoliciesIndexPage() {

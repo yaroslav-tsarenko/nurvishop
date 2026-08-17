@@ -64,7 +64,7 @@ export default function RegisterPage() {
   const strength = getPasswordStrength(form.password);
 
   const selectedCountry = COUNTRIES.find((c) => c.code === form.country);
-  const phoneHint = selectedCountry ? selectedCountry.phone : "+44";
+  const phoneHint = selectedCountry ? selectedCountry.phone : "+370";
 
   const set = (field: keyof FormData) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setForm((prev) => ({ ...prev, [field]: e.target.value }));
@@ -420,7 +420,7 @@ export default function RegisterPage() {
                     type="text"
                     value={form.city}
                     onChange={set("city")}
-                    placeholder="Riga"
+                    placeholder="Vilnius"
                     style={{
                       ...plainInputStyle,
                       borderColor: errors.city ? "var(--color-danger)" : undefined,
@@ -454,7 +454,7 @@ export default function RegisterPage() {
                     type="text"
                     value={form.postalCode}
                     onChange={set("postalCode")}
-                    placeholder="LV-1001"
+                    placeholder="LT-10001"
                     style={{
                       ...plainInputStyle,
                       borderColor: errors.postalCode ? "var(--color-danger)" : undefined,

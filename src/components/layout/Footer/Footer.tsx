@@ -10,9 +10,9 @@ import { CreditCard, ShieldCheck, Leaf, ArrowRight } from "lucide-react";
 import { NurviLogo } from "../NurviLogo";
 import { COMPANY } from "@/lib/utils/constants";
 import { openCookieSettings } from "@/components/shared/CookieConsent/CookieConsent";
-import visaLogo from "@/assets/visa-logo.svg";
-import mastercardLogo from "@/assets/mastercard-logo.svg";
-import pciDssLogo from "@/assets/pci-dss-compliant-logo-vector.svg";
+import visaLogo from "@/assets/visa.svg";
+import mastercardLogo from "@/assets/mastercard.svg";
+import pciDssLogo from "@/assets/pci-dss.svg";
 
 const linkClass =
   "inline-block text-sm text-[#A89C8D] transition-[color,padding] duration-200 hover:pl-1 hover:text-[#F0E9DF] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50 rounded";
@@ -130,6 +130,7 @@ export function Footer() {
           {columns.map((col) => (
             <details
               key={col.heading}
+              open
               className="group border-b border-[#5C6B4F]/30 py-4 md:border-0 md:py-0 md:[&_summary]:pointer-events-none [&[open]_.footer-chevron]:rotate-45"
             >
               <summary className="flex cursor-pointer list-none items-center justify-between text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[#F0E9DF] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50 md:mb-5 md:cursor-default">
@@ -176,14 +177,14 @@ export function Footer() {
 
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-3">
-              <span className="flex items-center justify-center rounded-md bg-[#F0E9DF] px-2 py-1">
-                <Image src={visaLogo} alt="Visa" height={100} width={100} className="!h-auto !w-[46px] object-contain" />
+              <span className="flex h-9 w-14 items-center justify-center rounded-md bg-[#F0E9DF] px-2">
+                <Image src={visaLogo} alt="Visa" height={100} width={100} className="!h-auto !max-h-6 !w-auto !max-w-full object-contain" />
               </span>
-              <span className="flex items-center justify-center rounded-md bg-[#F0E9DF] px-2 py-1">
-                <Image src={mastercardLogo} alt="Mastercard" height={100} width={100} className="!h-auto !w-[46px] object-contain" />
+              <span className="flex h-9 w-14 items-center justify-center rounded-md bg-[#F0E9DF] px-2">
+                <Image src={mastercardLogo} alt="Mastercard" height={100} width={100} className="!h-auto !max-h-6 !w-auto !max-w-full object-contain" />
               </span>
-              <span className="flex items-center justify-center rounded-md bg-[#F0E9DF] px-2 py-1">
-                <Image src={pciDssLogo} alt="PCI DSS Compliant" height={100} width={100} className="!h-auto !w-[46px] object-contain" />
+              <span className="flex h-9 w-14 items-center justify-center rounded-md bg-[#F0E9DF] px-2">
+                <Image src={pciDssLogo} alt="PCI DSS Compliant" height={100} width={100} className="!h-auto !max-h-6 !w-auto !max-w-full object-contain" />
               </span>
             </div>
             <div className="flex gap-2">
@@ -221,7 +222,7 @@ export function Footer() {
           <p className="m-0 max-w-[900px] text-xs leading-relaxed text-[#A89C8D]">
             {COMPANY.tradingName} is a trading name of{" "}
             <strong className="text-[#F0E9DF]">{COMPANY.legalName}</strong>, a company
-            registered in England and Wales (company no. {COMPANY.companyNumber}).
+            registered in Lithuania (company no. {COMPANY.companyNumber}).
             {" "}Registered office: {COMPANY.addressInline}.
           </p>
           <p className="m-0 max-w-[900px] text-xs leading-relaxed text-[#A89C8D]">
@@ -239,6 +240,8 @@ export function Footer() {
             <Link href="/policies/privacy" className={linkClass}>{t("privacy")}</Link>
             <Link href="/policies/terms" className={linkClass}>{t("terms")}</Link>
             <Link href="/policies/cookies" className={linkClass}>Cookies</Link>
+            <Link href="/policies/accessibility" className={linkClass}>Accessibility</Link>
+            <Link href="/policies/legal" className={linkClass}>Legal notice</Link>
             <button
               type="button"
               onClick={openCookieSettings}

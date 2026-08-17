@@ -255,8 +255,8 @@ model OrderItem {
   quantity    Int
   price       Decimal
   total       Decimal
-  productId   String
-  product     Product @relation(fields: [productId], references: [id])
+  productId   String?
+  product     Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
   orderId     String
   order       Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
   productName String

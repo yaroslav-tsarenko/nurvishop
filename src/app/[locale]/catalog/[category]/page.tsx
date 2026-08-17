@@ -15,13 +15,21 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   const category = await prisma.category.findUnique({
     where: { slug },
     include: {
-      children: { select: { id: true, slug: true } },
+      children: {
+        select: {
+          id: true,
+          children: { select: { id: true } },
+        },
+      },
     },
   });
 
   if (!category) notFound();
 
-  const categoryIds = [category.id, ...category.children.map((c) => c.id)];
+  const categoryIds = [
+    category.id,
+    ...category.children.flatMap((c) => [c.id, ...c.children.map((g) => g.id)]),
+  ];
 
   const productCategories = await prisma.productCategory.findMany({
     where: { categoryId: { in: categoryIds } },

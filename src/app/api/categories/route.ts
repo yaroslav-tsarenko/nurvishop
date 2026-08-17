@@ -52,16 +52,33 @@ export async function GET(request: NextRequest) {
       return own + childSum;
     }
 
+    // Hide categories whose whole subtree holds 1 product or fewer — they clutter
+    // the catalog filter without offering a meaningful browse.
     function pruneEmpty(cats: any[]): any[] {
       return cats
-        .filter((c) => subtreeCount(c) > 0)
+        .filter((c) => subtreeCount(c) > 1)
         .map((c) => ({
           ...c,
           children: c.children ? pruneEmpty(c.children) : [],
         }));
     }
 
-    return NextResponse.json(includeEmpty ? categories : pruneEmpty(categories));
+    // Roll each category's displayed count up to its whole subtree, so a parent
+    // reflects the products of its descendants — matching how the products API
+    // filters (a parent slug pulls in child + grandchild products). Runs AFTER
+    // pruneEmpty so subtreeCount above still reads the raw direct counts.
+    function rollupCounts(cat: any): number {
+      const own = cat._count?.products || 0;
+      const childSum = (cat.children || []).reduce((s: number, c: any) => s + rollupCounts(c), 0);
+      const total = own + childSum;
+      if (cat._count) cat._count.products = total;
+      return total;
+    }
+
+    const tree = includeEmpty ? categories : pruneEmpty(categories);
+    tree.forEach(rollupCounts);
+
+    return NextResponse.json(tree);
   } catch (error) {
     console.error("Error fetching categories:", error);
     return NextResponse.json({ error: "Failed to fetch categories" }, { status: 500 });

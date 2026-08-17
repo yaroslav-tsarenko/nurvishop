@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { ChevronDown } from "lucide-react";
 import { useCurrency, type Currency } from "@/providers/CurrencyProvider";
-import { iconButtonClass } from "./iconButtonClass";
 
 const CURRENCIES: { code: Currency; symbol: string; label: string }[] = [
   { code: "EUR", symbol: "€", label: "EUR (€)" },
@@ -28,12 +28,15 @@ export function CurrencySwitcher() {
   return (
     <div ref={ref} style={{ position: "relative" }}>
       <button
-        className={iconButtonClass}
         onClick={() => setOpen(!open)}
         aria-label="Currency"
-        style={{ fontSize: "0.8125rem", fontWeight: 700, width: "auto", padding: "0 0.5rem" }}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        className="inline-flex items-center gap-1.5 rounded-pill border border-line bg-surface px-3 py-1.5 text-[0.8125rem] font-bold text-ink transition-[background-color,border-color] duration-150 hover:border-accent hover:bg-lilac focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
       >
-        {current.symbol}
+        <span className="text-[0.9375rem] leading-none">{current.symbol}</span>
+        <span>{current.code}</span>
+        <ChevronDown size={14} className={open ? "rotate-180 transition-transform" : "transition-transform"} />
       </button>
       {open && (
         <div

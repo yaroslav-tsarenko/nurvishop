@@ -19,9 +19,9 @@ import { COUNTRIES } from "@/lib/countries";
 import { COMPANY, VAT_RATE } from "@/lib/utils/constants";
 import { shouldUnoptimizeImage } from "@/lib/utils/product-image";
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs/Breadcrumbs";
-import visaLogo from "@/assets/visa-logo.svg";
-import mastercardLogo from "@/assets/mastercard-logo.svg";
-import pciDssLogo from "@/assets/pci-dss-compliant-logo-vector.svg";
+import visaLogo from "@/assets/visa.svg";
+import mastercardLogo from "@/assets/mastercard.svg";
+import pciDssLogo from "@/assets/pci-dss.svg";
 import { toast } from "sonner";
 import {
   Mail, Phone, MapPin, Truck, CreditCard,
@@ -134,6 +134,8 @@ export default function CheckoutPage() {
     formState: { errors },
     watch,
     trigger,
+    reset,
+    setValue,
   } = useForm<CheckoutFormData>({
     resolver: zodResolver(checkoutSchema),
     defaultValues: {
@@ -152,6 +154,49 @@ export default function CheckoutPage() {
     },
   });
 
+  // Prefill from the signed-in user's profile + default address.
+  useEffect(() => {
+    if (!user) return;
+    let cancelled = false;
+    fetch("/api/auth/me")
+      .then((r) => r.json())
+      .then((d) => {
+        if (cancelled || !d?.user) return;
+        const u = d.user;
+        const addresses = u.addresses || [];
+        const addr = addresses.find((a: any) => a.isDefault) || addresses[0] || null;
+        const [firstName, ...rest] = (u.name || "").trim().split(/\s+/);
+        reset((prev) => ({
+          ...prev,
+          contact: {
+            email: u.email || prev.contact.email,
+            phone: u.phone || addr?.phone || prev.contact.phone,
+          },
+          shipping: {
+            ...prev.shipping,
+            firstName: addr?.firstName || firstName || "",
+            lastName: addr?.lastName || rest.join(" ") || "",
+            address1: addr?.address1 || prev.shipping.address1,
+            address2: addr?.address2 || prev.shipping.address2,
+            city: addr?.city || prev.shipping.city,
+            province: addr?.province || prev.shipping.province,
+            postalCode: addr?.postalCode || prev.shipping.postalCode,
+            country: addr?.country || prev.shipping.country,
+          },
+        }));
+      })
+      .catch(() => null);
+    return () => { cancelled = true; };
+  }, [user, reset]);
+
+  // When the order qualifies for free shipping, pre-select it by default.
+  const qualifiesForFreeShipping = cart.subtotal >= 100;
+  useEffect(() => {
+    if (qualifiesForFreeShipping) {
+      setValue("shippingMethod", "free");
+    }
+  }, [qualifiesForFreeShipping, setValue]);
+
   const steps = [t("contact"), t("shipping"), t("review")];
   const selectedMethod = watch("shippingMethod");
   const selectedCountry = watch("shipping.country");
@@ -161,7 +206,7 @@ export default function CheckoutPage() {
   const shippingPrice = SHIPPING_METHODS.find((m) => m.key === selectedMethod)?.price ?? 5.99;
 
   const countryData = COUNTRIES.find((c) => c.code === selectedCountry);
-  const phoneHint = countryData ? `${countryData.phone} XX XXX XXXX` : "+44 XX XXX XXXX";
+  const phoneHint = countryData ? `${countryData.phone} XX XXX XXXX` : "+370 XXX XXXX";
 
   const discountAmount = discount ? +(cart.subtotal * (discount.percent / 100)).toFixed(2) : 0;
   const discountedSubtotal = Math.max(cart.subtotal - discountAmount, 0);
@@ -258,12 +303,8 @@ export default function CheckoutPage() {
       }
 
       const order = await res.json();
-      if (order.paymentLink) {
-        window.location.href = order.paymentLink;
-      } else {
-        toast.success("Order placed successfully!");
-        router.push(`/order/confirmed?orderId=${order.id}`);
-      }
+      toast.success("Order placed successfully!");
+      router.push(`/order/confirmed?orderId=${order.id}`);
     } catch (err: any) {
       toast.error(err.message || "Failed to place order. Please try again.");
     } finally {
@@ -467,7 +508,7 @@ export default function CheckoutPage() {
                 <div className="grid grid-cols-2 gap-4 max-[480px]:grid-cols-1">
                   <div>
                     <label style={labelStyle}>{t("city")} *</label>
-                    <input style={{ ...inputPlainStyle, borderColor: errors.shipping?.city ? "var(--color-danger)" : undefined }} placeholder="Riga" {...register("shipping.city")} />
+                    <input style={{ ...inputPlainStyle, borderColor: errors.shipping?.city ? "var(--color-danger)" : undefined }} placeholder="Vilnius" {...register("shipping.city")} />
                     {errors.shipping?.city && <span style={errorStyle}>{errors.shipping.city.message}</span>}
                   </div>
                   <div>
@@ -479,7 +520,7 @@ export default function CheckoutPage() {
                 <div className="grid grid-cols-2 gap-4 max-[480px]:grid-cols-1">
                   <div>
                     <label style={labelStyle}>{t("postalCode")} *</label>
-                    <input style={{ ...inputPlainStyle, borderColor: errors.shipping?.postalCode ? "var(--color-danger)" : undefined }} placeholder="LV-1001" {...register("shipping.postalCode")} />
+                    <input style={{ ...inputPlainStyle, borderColor: errors.shipping?.postalCode ? "var(--color-danger)" : undefined }} placeholder="LT-10001" {...register("shipping.postalCode")} />
                     {errors.shipping?.postalCode && <span style={errorStyle}>{errors.shipping.postalCode.message}</span>}
                   </div>
                   <div>
@@ -858,8 +899,12 @@ export default function CheckoutPage() {
             )}
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <span style={{ color: "var(--color-text-secondary)" }}>Shipping</span>
-              <span style={{ fontWeight: 500, color: finalShipping === 0 ? "var(--color-success)" : undefined }}>
-                {finalShipping > 0 ? formatPrice(convert(finalShipping), currency) : "Free"}
+              <span style={{ fontWeight: 500, color: step >= 1 && finalShipping === 0 ? "var(--color-success)" : undefined }}>
+                {step < 1
+                  ? "Calculated next step"
+                  : finalShipping > 0
+                    ? formatPrice(convert(finalShipping), currency)
+                    : "Free"}
               </span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -876,7 +921,7 @@ export default function CheckoutPage() {
               marginTop: "0.375rem",
             }}>
               <span>Total</span>
-              <span>{formatPrice(convert(orderTotal), currency)}</span>
+              <span>{formatPrice(convert(step < 1 ? discountedSubtotal : orderTotal), currency)}</span>
             </div>
             <p style={{ fontSize: "0.6875rem", color: "var(--color-text-tertiary)", margin: "0.25rem 0 0" }}>
               All prices include VAT where applicable.

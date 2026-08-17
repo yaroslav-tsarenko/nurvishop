@@ -36,6 +36,8 @@ interface DefaultSlide {
   subtitle: string;
   ctaLabel: string;
   linkUrl: string;
+  secondaryLabel: string;
+  secondaryHref: string;
   gradient: string;
 }
 
@@ -49,6 +51,8 @@ const defaultSlides: DefaultSlide[] = [
       "Thoughtful pieces in linen, clay and oak — calm, tactile things that make everyday living feel a little kinder.",
     ctaLabel: "Shop the collection",
     linkUrl: "/catalog",
+    secondaryLabel: "New arrivals",
+    secondaryHref: "/catalog?sort=newest",
     gradient:
       "linear-gradient(135deg, #2b241d 0%, #463527 55%, #55412f 100%)",
   },
@@ -60,7 +64,9 @@ const defaultSlides: DefaultSlide[] = [
     subtitle:
       "Soft-washed linen, brushed cotton and hand-finished throws to layer warmth into every room.",
     ctaLabel: "Explore textiles",
-    linkUrl: "/catalog",
+    linkUrl: "/search?q=linen",
+    secondaryLabel: "Shop throws",
+    secondaryHref: "/search?q=throw",
     gradient:
       "linear-gradient(135deg, #33261e 0%, #4f3526 55%, #5c4030 100%)",
   },
@@ -72,7 +78,9 @@ const defaultSlides: DefaultSlide[] = [
     subtitle:
       "Ceramics, candles and gentle lighting to slow the pace and make the evenings glow.",
     ctaLabel: "Discover décor",
-    linkUrl: "/catalog",
+    linkUrl: "/search?q=ceramic",
+    secondaryLabel: "Shop candles",
+    secondaryHref: "/search?q=candle",
     gradient:
       "linear-gradient(135deg, #23281f 0%, #384333 55%, #2b241d 100%)",
   },
@@ -140,10 +148,10 @@ export function HeroCarousel({ slides, deals }: Props) {
                       {slide.ctaLabel}
                     </Link>
                     <Link
-                      href="/catalog"
+                      href={slide.secondaryHref}
                       className="inline-block rounded-pill border border-white/70 bg-white/10 px-7 py-3 text-sm font-semibold text-white no-underline transition-colors duration-200 hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
                     >
-                      Browse rooms
+                      {slide.secondaryLabel}
                     </Link>
                   </div>
                   <p className="mt-6 text-[0.78rem] font-medium tracking-[0.02em] text-[#cbbfad]">

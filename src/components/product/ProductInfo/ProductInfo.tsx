@@ -79,36 +79,38 @@ export function ProductInfo({
   const warrantyAvailable = price >= WARRANTY_MIN_PRODUCT_PRICE;
   const warrantyOption = warrantyAvailable ? WARRANTY_OPTIONS[selectedWarranty] : WARRANTY_OPTIONS[0];
   const warrantyPrice = calcWarrantyPrice(price, warrantyOption);
-  const totalPrice = price + warrantyPrice;
 
-  const handleAddToCart = () => {
+  const addToCart = () => {
     addItem({
       productId: id,
-      name: warrantyOption.years > 0
-        ? `${name} + ${warrantyOption.years}yr warranty`
-        : name,
+      name,
       slug,
       sku,
-      price: totalPrice,
+      price,
       quantity: qty,
       imageUrl: imageUrl || null,
       maxQuantity: stockQuantity,
     });
+    if (warrantyOption.years > 0) {
+      addItem({
+        productId: `${id}-warranty-${warrantyOption.years}yr`,
+        name: `${warrantyOption.years}-year extended warranty — ${name}`,
+        slug,
+        sku: `WARR-${sku}-${warrantyOption.years}Y`,
+        price: warrantyPrice,
+        quantity: qty,
+        imageUrl: null,
+        maxQuantity: stockQuantity,
+      });
+    }
+  };
+
+  const handleAddToCart = () => {
+    addToCart();
   };
 
   const handleBuyNow = () => {
-    addItem({
-      productId: id,
-      name: warrantyOption.years > 0
-        ? `${name} + ${warrantyOption.years}yr warranty`
-        : name,
-      slug,
-      sku,
-      price: totalPrice,
-      quantity: qty,
-      imageUrl: imageUrl || null,
-      maxQuantity: stockQuantity,
-    });
+    addToCart();
     router.push("/checkout");
   };
 

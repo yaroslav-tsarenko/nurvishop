@@ -9,7 +9,7 @@ import {
   ShoppingCart, Search, Menu, X, User, Shield,
   ChevronRight, Heart, ChevronDown,
   Sofa, BedDouble, CookingPot, Bath, Lamp, Armchair,
-  Package, Flower2, Shirt, UtensilsCrossed, LayoutGrid,
+  Flower2, UtensilsCrossed,
 } from "lucide-react";
 import { useCart } from "@/providers/CartProvider";
 import { useAuth } from "@/providers/AuthProvider";
@@ -26,54 +26,25 @@ interface Category {
   children?: Category[];
 }
 
-function subtreeCount(cat: Category): number {
-  const own = cat._count?.products || 0;
-  return own + (cat.children || []).reduce((s, c) => s + subtreeCount(c), 0);
-}
+// Curated rooms for the "Shop by room" menu. Each room resolves to the
+// closest matching product category, falling back to a catalog search.
+const ROOMS: { name: string; icon: React.ElementType; keywords: string[] }[] = [
+  { name: "Living Room", icon: Sofa, keywords: ["living", "sofa", "couch", "seating"] },
+  { name: "Bedroom", icon: BedDouble, keywords: ["bed", "bedroom", "sleep"] },
+  { name: "Kitchen", icon: CookingPot, keywords: ["kitchen", "cook"] },
+  { name: "Dining Room", icon: UtensilsCrossed, keywords: ["dining", "tableware", "cutlery", "glass"] },
+  { name: "Bathroom", icon: Bath, keywords: ["bath", "towel"] },
+  { name: "Home Office", icon: Armchair, keywords: ["office", "desk", "chair", "study"] },
+  { name: "Lighting", icon: Lamp, keywords: ["light", "lamp"] },
+  { name: "Decor & Textiles", icon: Flower2, keywords: ["decor", "vase", "candle", "textile", "linen", "cushion"] },
+];
 
-const ICON_MAP: Record<string, React.ElementType> = {
-  "living": Sofa,
-  "sofa": Sofa,
-  "couch": Sofa,
-  "chair": Armchair,
-  "seating": Armchair,
-  "furniture": Armchair,
-  "bed": BedDouble,
-  "bedroom": BedDouble,
-  "sleep": BedDouble,
-  "kitchen": CookingPot,
-  "cook": CookingPot,
-  "cooking": CookingPot,
-  "dining": UtensilsCrossed,
-  "tableware": UtensilsCrossed,
-  "cutlery": UtensilsCrossed,
-  "glass": UtensilsCrossed,
-  "bath": Bath,
-  "bathroom": Bath,
-  "towel": Bath,
-  "light": Lamp,
-  "lighting": Lamp,
-  "lamp": Lamp,
-  "decor": Flower2,
-  "decoration": Flower2,
-  "vase": Flower2,
-  "candle": Flower2,
-  "textile": Shirt,
-  "linen": Shirt,
-  "cushion": Shirt,
-  "blanket": Shirt,
-  "storage": Package,
-  "organiz": Package,
-  "basket": Package,
-  "box": Package,
-};
-
-function getIconForCategory(name: string) {
-  const lower = name.toLowerCase();
-  for (const [keyword, Icon] of Object.entries(ICON_MAP)) {
-    if (lower.includes(keyword)) return Icon;
+function roomHref(room: { name: string; keywords: string[] }, categories: Category[]): string {
+  for (const cat of categories) {
+    const lower = cat.name.toLowerCase();
+    if (room.keywords.some((k) => lower.includes(k))) return `/catalog/${cat.slug}`;
   }
-  return LayoutGrid;
+  return `/search?q=${encodeURIComponent(room.name)}`;
 }
 
 const UTILITY_MESSAGES = [
@@ -323,46 +294,27 @@ export function Header() {
             >
               <div className="mx-auto max-w-container px-6 pb-4 pt-5">
                 <p className="eyebrow mb-3">Shop by room</p>
-                {categories.length === 0 ? (
-                  <div className="grid grid-cols-3 gap-2 min-[1201px]:grid-cols-5">
-                    {Array.from({ length: 10 }).map((_, i) => (
-                      <div key={i} className="flex items-center gap-3 rounded-md px-3 py-2.5">
-                        <div className="h-9 w-9 flex-shrink-0 animate-pulse rounded-md bg-well" />
-                        <div className="flex flex-1 flex-col gap-1.5">
-                          <div className="h-2.5 animate-pulse rounded-sm bg-well" style={{ width: `${55 + (i * 17) % 35}%` }} />
-                          <div className="h-2.5 animate-pulse rounded-sm bg-well" style={{ width: "40%" }} />
+                <div className="grid grid-cols-3 gap-2 min-[1201px]:grid-cols-4">
+                  {ROOMS.map((room) => {
+                    const Icon = room.icon;
+                    return (
+                      <Link
+                        key={room.name}
+                        href={roomHref(room, categories)}
+                        className="group flex items-center gap-3 rounded-md px-3 py-2.5 text-ink no-underline transition-colors duration-150 hover:bg-mist focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+                        onClick={() => setMegaOpen(false)}
+                      >
+                        <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-md bg-accent-light text-accent transition-colors duration-150 group-hover:bg-accent group-hover:text-white">
+                          <Icon size={20} />
                         </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                <div className="grid grid-cols-3 gap-2 min-[1201px]:grid-cols-5">
-                  {[...categories]
-                    .sort((a, b) => subtreeCount(b) - subtreeCount(a))
-                    .slice(0, 10)
-                    .map((cat) => {
-                      const Icon = getIconForCategory(cat.name);
-                      const count = subtreeCount(cat);
-                      return (
-                        <Link
-                          key={cat.id}
-                          href={`/catalog/${cat.slug}`}
-                          className="group flex items-center gap-3 rounded-md px-3 py-2.5 text-ink no-underline transition-colors duration-150 hover:bg-mist focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
-                          onClick={() => setMegaOpen(false)}
-                        >
-                          <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-md bg-accent-light text-accent transition-colors duration-150 group-hover:bg-accent group-hover:text-white">
-                            <Icon size={20} />
-                          </div>
-                          <div className="flex min-w-0 flex-col">
-                            <span className="overflow-hidden text-ellipsis whitespace-nowrap text-[0.8rem] font-semibold leading-tight">{cat.name}</span>
-                            <span className="text-[0.675rem] text-subtle">{count} products</span>
-                          </div>
-                          <ChevronRight size={14} className="ml-auto flex-shrink-0 text-subtle opacity-0 transition-[opacity,transform] duration-150 group-hover:translate-x-0.5 group-hover:opacity-100" />
-                        </Link>
-                      );
-                    })}
+                        <div className="flex min-w-0 flex-col">
+                          <span className="overflow-hidden text-ellipsis whitespace-nowrap text-[0.8rem] font-semibold leading-tight">{room.name}</span>
+                        </div>
+                        <ChevronRight size={14} className="ml-auto flex-shrink-0 text-subtle opacity-0 transition-[opacity,transform] duration-150 group-hover:translate-x-0.5 group-hover:opacity-100" />
+                      </Link>
+                    );
+                  })}
                 </div>
-                )}
                 <div className="mt-3 flex items-center border-t border-line pt-2.5">
                   <Link
                     href="/catalog"
@@ -420,33 +372,28 @@ export function Header() {
                     Deals <ChevronRight size={18} />
                   </Link>
 
-                  {categories.length > 0 && (
-                    <details className="group rounded-md">
-                      <summary className={clsx(drawerNavLink, "list-none cursor-pointer marker:hidden")}>
-                        Shop by room
-                        <ChevronDown size={18} className="transition-transform duration-200 group-open:rotate-180" />
-                      </summary>
-                      <div className="mt-1 flex flex-col gap-0.5 pl-3">
-                        {[...categories]
-                          .sort((a, b) => subtreeCount(b) - subtreeCount(a))
-                          .slice(0, 8)
-                          .map((cat) => {
-                            const Icon = getIconForCategory(cat.name);
-                            return (
-                              <Link
-                                key={cat.id}
-                                href={`/catalog/${cat.slug}`}
-                                className="flex items-center gap-3 rounded-md p-2.5 text-[0.875rem] text-muted no-underline transition-colors duration-150 hover:bg-mist hover:text-ink"
-                                onClick={() => setMobileOpen(false)}
-                              >
-                                <Icon size={18} className="flex-shrink-0 text-accent" />
-                                <span className="truncate">{cat.name}</span>
-                              </Link>
-                            );
-                          })}
-                      </div>
-                    </details>
-                  )}
+                  <details className="group rounded-md">
+                    <summary className={clsx(drawerNavLink, "list-none cursor-pointer marker:hidden")}>
+                      Shop by room
+                      <ChevronDown size={18} className="transition-transform duration-200 group-open:rotate-180" />
+                    </summary>
+                    <div className="mt-1 flex flex-col gap-0.5 pl-3">
+                      {ROOMS.map((room) => {
+                        const Icon = room.icon;
+                        return (
+                          <Link
+                            key={room.name}
+                            href={roomHref(room, categories)}
+                            className="flex items-center gap-3 rounded-md p-2.5 text-[0.875rem] text-muted no-underline transition-colors duration-150 hover:bg-mist hover:text-ink"
+                            onClick={() => setMobileOpen(false)}
+                          >
+                            <Icon size={18} className="flex-shrink-0 text-accent" />
+                            <span className="truncate">{room.name}</span>
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  </details>
 
                   <div className="my-2 h-px bg-line" />
 

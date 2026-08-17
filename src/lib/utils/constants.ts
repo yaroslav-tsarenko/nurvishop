@@ -26,16 +26,15 @@ export const CURRENCIES = ["EUR", "USD", "GBP"] as const;
 export const VAT_RATE = 21;
 
 export const COMPANY = {
-  legalName: "AVONTRA LTD",
+  legalName: "ULTRASENS LT MB",
   tradingName: "nurvishop",
-  companyNumber: "17245887",
+  companyNumber: "308011165",
   addressLines: [
-    "Dept 6735, 196 High Road",
-    "Wood Green, London",
-    "United Kingdom, N22 8HH",
+    "V. Nagevičiaus g. 3",
+    "LT-08237 Vilnius",
+    "Lithuania",
   ],
-  addressInline:
-    "Dept 6735, 196 High Road, Wood Green, London, United Kingdom, N22 8HH",
+  addressInline: "V. Nagevičiaus g. 3, LT-08237 Vilnius, Lithuania",
   phone: "+44 7360 545980",
   email: "info@nurvishop.com",
 } as const;

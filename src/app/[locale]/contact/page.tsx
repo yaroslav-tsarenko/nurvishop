@@ -48,8 +48,8 @@ const errorStyle: React.CSSProperties = {
 
 const CONTACT_INFO = [
   { icon: Mail, title: "Email Us", detail: "info@nurvishop.com", sub: "We reply within 24 hours" },
-  { icon: Phone, title: "Call Us", detail: "+44 7360 545980", sub: "Mon-Fri 9:00-18:00 GMT" },
-  { icon: MapPin, title: "Our Office", detail: "London, United Kingdom", sub: "AVONTRA LTD", tooltip: "Dept 6735, 196 High Road, Wood Green, London, N22 8HH, UK\nCompany No. 17245887" },
+  { icon: Phone, title: "Call Us", detail: "+44 7360 545980", sub: "Mon-Fri 9:00-18:00 EET" },
+  { icon: MapPin, title: "Our Office", detail: "Vilnius, Lithuania", sub: "ULTRASENS LT MB", tooltip: "V. Nagevičiaus g. 3, LT-08237 Vilnius, Lithuania\nCompany No. 308011165" },
   { icon: Clock, title: "Working Hours", detail: "Mon-Fri 9:00-18:00", sub: "Sat 10:00-14:00" },
 ];
 
@@ -99,26 +99,28 @@ export default function ContactPage() {
       `}</style>
       <Breadcrumbs items={[{ label: nav("home"), href: "/" }, { label: t("title") }]} />
 
-      {/* Hero Section */}
+      {/* Hero Section — branded warm band */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mb-12 text-center max-[640px]:mb-8"
+        className="mb-10 overflow-hidden rounded-2xl px-8 py-10 max-[640px]:mb-8 max-[640px]:px-5 max-[640px]:py-7"
+        style={{ background: "linear-gradient(135deg, #2b241d 0%, #5c3a2a 100%)", color: "#f0e9df" }}
       >
-        <h1 className="mb-3 text-4xl font-extrabold tracking-tight max-[640px]:text-[1.625rem]">
+        <p className="eyebrow mb-3" style={{ color: "var(--ochre)" }}>We&apos;re listening</p>
+        <h1 className="mb-3 max-w-[640px] font-display text-4xl font-semibold tracking-tight max-[640px]:text-[1.625rem]">
           {t("title")}
         </h1>
-        <p className="mx-auto max-w-[480px] text-[1.0625rem] text-muted max-[640px]:text-[0.9375rem]">
-          {t("subtitle")}. We&apos;re here to help with orders, products, and any questions you may have.
+        <p className="max-w-[520px] text-[1.0625rem] max-[640px]:text-[0.9375rem]" style={{ color: "rgba(240,233,223,0.85)" }}>
+          {t("subtitle")}. Real people, warm answers — for orders, products, and everything in between.
         </p>
       </motion.div>
 
-      {/* Contact Info Cards */}
+      {/* Contact Info Cards — horizontal, icon-left */}
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="mb-12 grid grid-cols-4 gap-4 max-[900px]:grid-cols-2 max-[480px]:mb-8 max-[480px]:gap-3"
+        className="mb-12 grid grid-cols-2 gap-4 max-[640px]:grid-cols-1 max-[480px]:mb-8 max-[480px]:gap-3"
       >
         {CONTACT_INFO.map((info, i) => (
           <motion.div
@@ -126,8 +128,8 @@ export default function ContactPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15 + i * 0.05 }}
-            className="rounded-lg border border-line bg-surface p-6 text-center max-[480px]:px-3 max-[480px]:py-4"
-            whileHover={{ y: -4, boxShadow: "0 8px 24px rgba(0,0,0,0.08)" }}
+            className="flex items-center gap-4 rounded-xl border border-line bg-surface p-5 max-[480px]:p-4"
+            whileHover={{ y: -3, boxShadow: "0 8px 24px rgba(0,0,0,0.08)" }}
           >
             <div style={{
               width: "3rem",
@@ -138,13 +140,15 @@ export default function ContactPage() {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              margin: "0 auto 0.875rem",
+              flexShrink: 0,
             }}>
               <info.icon size={22} />
             </div>
-            <h3 style={{ fontSize: "0.875rem", fontWeight: 700, marginBottom: "0.375rem" }}>{info.title}</h3>
-            <p title={"tooltip" in info ? info.tooltip : undefined} style={{ fontSize: "0.875rem", fontWeight: 600, color: "var(--color-text)", marginBottom: "0.25rem", cursor: "tooltip" in info ? "help" : undefined }}>{info.detail}</p>
-            <p style={{ fontSize: "0.75rem", color: "var(--color-text-tertiary)" }}>{info.sub}</p>
+            <div className="min-w-0">
+              <h3 style={{ fontSize: "0.75rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--color-text-tertiary)", marginBottom: "0.25rem" }}>{info.title}</h3>
+              <p title={"tooltip" in info ? info.tooltip : undefined} style={{ fontSize: "0.9375rem", fontWeight: 700, color: "var(--color-text)", marginBottom: "0.125rem", cursor: "tooltip" in info ? "help" : undefined }}>{info.detail}</p>
+              <p style={{ fontSize: "0.75rem", color: "var(--color-text-tertiary)" }}>{info.sub}</p>
+            </div>
           </motion.div>
         ))}
       </motion.div>
@@ -356,8 +360,8 @@ export default function ContactPage() {
                 <span style={{ fontWeight: 600 }}>Within 24h</span>
               </div>
               <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.8125rem" }}>
-                <span style={{ color: "rgba(255,255,255,0.7)" }}>Phone</span>
-                <span style={{ fontWeight: 600 }}>Immediate</span>
+                <span style={{ color: "rgba(255,255,255,0.7)" }}>Order support</span>
+                <span style={{ fontWeight: 600 }}>Within 24h</span>
               </div>
               <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.8125rem" }}>
                 <span style={{ color: "rgba(255,255,255,0.7)" }}>Wholesale</span>
