@@ -105,9 +105,7 @@ export function Header() {
       .then((data) => {
         if (!Array.isArray(data)) return;
         const unwrapped =
-          data.length === 1 &&
-          (data[0]?._count?.products || 0) === 0 &&
-          (data[0]?.children?.length || 0) > 0
+          data.length === 1 && (data[0]?.children?.length || 0) > 0
             ? data[0].children
             : data;
         setCategories(unwrapped);

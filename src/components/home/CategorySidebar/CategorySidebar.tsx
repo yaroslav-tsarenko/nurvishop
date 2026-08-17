@@ -62,12 +62,11 @@ export function CategorySidebar() {
 
   const closeMobile = () => setMobileOpen(false);
 
-  // If the tree is a single empty root (e.g. "Home & Cooking"), surface its
-  // subcategories directly so as many categories as possible are visible.
+  // If the tree is a single wrapping root (e.g. "Home & Cooking"), surface its
+  // subcategories directly so the full category list is visible instead of one
+  // parent row.
   const displayCategories =
-    categories.length === 1 &&
-    (categories[0]._count?.products || 0) === 0 &&
-    (categories[0].children?.length || 0) > 0
+    categories.length === 1 && (categories[0].children?.length || 0) > 0
       ? categories[0].children!
       : categories;
 
