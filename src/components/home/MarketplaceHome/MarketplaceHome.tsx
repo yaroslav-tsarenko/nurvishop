@@ -15,7 +15,6 @@ import { NewsletterBanner } from "../NewsletterBanner/NewsletterBanner";
 import { TrustStrip } from "../TrustStrip/TrustStrip";
 import { MaterialsBand } from "../MaterialsBand/MaterialsBand";
 import { EditorialQuote } from "../EditorialQuote/EditorialQuote";
-import { Testimonials } from "../Testimonials/Testimonials";
 import type { HomepageProduct, CategorySection, BrandSection } from "@/lib/homepage-products";
 
 interface BannerData {
@@ -204,9 +203,6 @@ export function MarketplaceHome({ data }: Props) {
 
             {/* Brand Strip */}
             {brands.length > 0 && <BrandStrip brands={brands} />}
-
-            {/* Customer testimonials */}
-            <Testimonials />
 
             {/* Admin-configured sections */}
             {sections.map((section) => {
