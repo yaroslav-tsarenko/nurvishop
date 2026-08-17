@@ -126,7 +126,7 @@ export function ProductFilters({
             ))}
           </div>
         ) : (
-          <ul className="m-0 flex max-h-[220px] list-none flex-col gap-0.5 overflow-y-auto p-0">
+          <ul className="m-0 flex max-h-[70vh] list-none flex-col gap-0.5 overflow-y-auto p-0">
             <li
               className={clsx(categoryItemBase, !selectedCategory && categoryItemActive)}
               onClick={() => onCategoryChange("")}
