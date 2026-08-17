@@ -55,11 +55,11 @@ export default function CatalogPage() {
       .then((res) => res.json())
       .then((data) => {
         if (!Array.isArray(data)) return setCategories([]);
-        // Surface subcategories of a single empty root (e.g. "Home & Cooking").
+        // Surface the subcategories of a single wrapping root (e.g. "Home &
+        // Cooking") directly, so the sidebar shows the full category list
+        // instead of one collapsed parent.
         const unwrapped =
-          data.length === 1 &&
-          (data[0]?._count?.products || 0) === 0 &&
-          (data[0]?.children?.length || 0) > 0
+          data.length === 1 && (data[0]?.children?.length || 0) > 0
             ? data[0].children
             : data;
         setCategories(unwrapped);
