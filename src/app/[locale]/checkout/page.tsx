@@ -901,7 +901,7 @@ export default function CheckoutPage() {
               <span style={{ color: "var(--color-text-secondary)" }}>Shipping</span>
               <span style={{ fontWeight: 500, color: step >= 1 && finalShipping === 0 ? "var(--color-success)" : undefined }}>
                 {step < 1
-                  ? "Calculated next step"
+                  ? "Calculated from shipping address"
                   : finalShipping > 0
                     ? formatPrice(convert(finalShipping), currency)
                     : "Free"}

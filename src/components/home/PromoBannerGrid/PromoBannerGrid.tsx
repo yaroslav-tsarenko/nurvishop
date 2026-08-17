@@ -21,9 +21,9 @@ interface Props {
 }
 
 const defaultSmall: BannerData[] = [
-  { id: "1", badgeText: "Kitchen & Dining", title: "Everyday Tableware", subtitle: "Ceramics & glassware", bgColor: "var(--promo-bg-blue)", textColor: "var(--color-text)", linkUrl: "/search?q=tableware" },
-  { id: "2", badgeText: "Textiles", title: "Soft-Washed Linen", subtitle: "Up to 30% off", bgColor: "var(--promo-bg-warm)", textColor: "var(--color-text)", linkUrl: "/search?q=linen" },
-  { id: "3", badgeText: "Décor & Lighting", title: "Warm Up Every Room", subtitle: "Candles & lamps", bgColor: "var(--promo-bg-green)", textColor: "var(--color-text)", linkUrl: "/search?q=candle" },
+  { id: "1", badgeText: "Kitchen & Dining", title: "Everyday Tableware", subtitle: "Ceramics & glassware", bgColor: "var(--promo-bg-blue)", textColor: "var(--color-text)", linkUrl: "/catalog?category=cutlery-crockery-and-glassware-5032" },
+  { id: "2", badgeText: "Textiles", title: "Soft-Washed Linen", subtitle: "Up to 30% off", bgColor: "var(--promo-bg-warm)", textColor: "var(--color-text)", linkUrl: "/catalog?category=soft-furnishings-18660" },
+  { id: "3", badgeText: "Décor & Lighting", title: "Warm Up Every Room", subtitle: "Candles & lamps", bgColor: "var(--promo-bg-green)", textColor: "var(--color-text)", linkUrl: "/catalog?category=home-d-cor-5684" },
 ];
 
 const defaultWide: BannerData[] = [

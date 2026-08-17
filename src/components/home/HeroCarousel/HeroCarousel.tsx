@@ -64,9 +64,9 @@ const defaultSlides: DefaultSlide[] = [
     subtitle:
       "Soft-washed linen, brushed cotton and hand-finished throws to layer warmth into every room.",
     ctaLabel: "Explore textiles",
-    linkUrl: "/search?q=linen",
-    secondaryLabel: "Shop throws",
-    secondaryHref: "/search?q=throw",
+    linkUrl: "/catalog?category=soft-furnishings-18660",
+    secondaryLabel: "Shop furniture",
+    secondaryHref: "/catalog?category=furniture-12651",
     gradient:
       "linear-gradient(135deg, #33261e 0%, #4f3526 55%, #5c4030 100%)",
   },
@@ -78,9 +78,9 @@ const defaultSlides: DefaultSlide[] = [
     subtitle:
       "Ceramics, candles and gentle lighting to slow the pace and make the evenings glow.",
     ctaLabel: "Discover décor",
-    linkUrl: "/search?q=ceramic",
-    secondaryLabel: "Shop candles",
-    secondaryHref: "/search?q=candle",
+    linkUrl: "/catalog?category=home-d-cor-5684",
+    secondaryLabel: "Shop kitchenware",
+    secondaryHref: "/catalog?category=cutlery-crockery-and-glassware-5032",
     gradient:
       "linear-gradient(135deg, #23281f 0%, #384333 55%, #2b241d 100%)",
   },

@@ -61,12 +61,9 @@ function CategoryItem({
   selectedCategory: string;
   onCategoryChange: (slug: string) => void;
 }) {
-  const [expanded, setExpanded] = useState(true);
   const hasChildren = cat.children && cat.children.length > 0;
   const isActive = selectedCategory === cat.slug;
   const count = cat._count?.products || 0;
-  const alwaysExpanded = cat.slug === "home-and-cooking";
-  const isExpanded = alwaysExpanded || expanded;
 
   return (
     <>
@@ -83,16 +80,8 @@ function CategoryItem({
             <span className="ml-1 text-xs text-subtle">({count})</span>
           )}
         </span>
-        {hasChildren && !alwaysExpanded && (
-          <button
-            onClick={(e) => { e.stopPropagation(); setExpanded(!expanded); }}
-            className="flex cursor-pointer border-none bg-transparent p-0.5 text-subtle"
-          >
-            {expanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
-          </button>
-        )}
       </li>
-      {hasChildren && isExpanded && cat.children!.map((child) => (
+      {hasChildren && cat.children!.map((child) => (
         <CategoryItem
           key={child.id}
           cat={child}
