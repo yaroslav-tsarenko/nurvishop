@@ -24,13 +24,10 @@ export default function ForgotPasswordPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
       });
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || "Something went wrong");
-      }
+      if (!res.ok) throw new Error(t("somethingWentWrong"));
       setSent(true);
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Something went wrong");
+      toast.error(error instanceof Error && error.message ? error.message : t("somethingWentWrong"));
     } finally {
       setLoading(false);
     }
@@ -77,7 +74,7 @@ export default function ForgotPasswordPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  placeholder="you@example.com"
+                  placeholder={t("emailPlaceholder")}
                   className={s.input}
                 />
               </div>

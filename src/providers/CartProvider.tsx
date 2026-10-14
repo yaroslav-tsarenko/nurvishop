@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useEffect, useState, useCallback, type ReactNode } from "react";
 import type { Cart, CartItem } from "@/types/cart";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { CartToast } from "@/components/cart/CartToast/CartToast";
 
@@ -42,6 +43,7 @@ function calculateTotals(items: CartItem[], taxRate: number = 21): Cart {
 export function CartProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<Cart>(emptyCart);
   const [cartBounce, setCartBounce] = useState(0);
+  const t = useTranslations("common");
 
   useEffect(() => {
     const stored = localStorage.getItem(CART_STORAGE_KEY);
@@ -108,11 +110,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
             !(item.productId === productId && item.variantId === variantId)
         );
         localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(updatedItems));
-        toast.success("Removed from cart");
+        toast.success(t("removedFromCart"));
         return calculateTotals(updatedItems);
       });
     },
-    []
+    [t]
   );
 
   const updateQuantity = useCallback(

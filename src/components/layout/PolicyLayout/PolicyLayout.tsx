@@ -1,5 +1,6 @@
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs/Breadcrumbs";
 import { ReactNode } from "react";
+import { getTranslations } from "next-intl/server";
 
 const contentClasses = [
   "text-[0.9375rem] leading-[1.75] text-muted",
@@ -26,18 +27,20 @@ const contentClasses = [
 ].join(" ");
 
 interface PolicyLayoutProps {
+  locale: string;
   title: string;
   lastUpdated: string;
   children: ReactNode;
 }
 
-export function PolicyLayout({ title, lastUpdated, children }: PolicyLayoutProps) {
+export async function PolicyLayout({ locale, title, lastUpdated, children }: PolicyLayoutProps) {
+  const t = await getTranslations({ locale, namespace: "policies" });
   return (
     <div className="mx-auto max-w-3xl px-4 pb-16 [overflow-wrap:anywhere] [word-break:break-word]">
       <Breadcrumbs
         items={[
-          { label: "Home", href: "/" },
-          { label: "Policies", href: "/policies" },
+          { label: t("home"), href: "/" },
+          { label: t("title"), href: "/policies" },
           { label: title },
         ]}
       />
@@ -45,7 +48,7 @@ export function PolicyLayout({ title, lastUpdated, children }: PolicyLayoutProps
         {title}
       </h1>
       <div className={contentClasses}>
-        <p className="mb-4 text-[0.875rem] text-subtle">Last updated: {lastUpdated}</p>
+        <p className="mb-4 text-[0.875rem] text-subtle">{t("lastUpdated", { date: lastUpdated })}</p>
         {children}
       </div>
     </div>

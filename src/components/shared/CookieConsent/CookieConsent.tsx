@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Cookie, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 
 const STORAGE_KEY = "cookie-consent";
@@ -17,23 +18,8 @@ interface ConsentValue {
   updatedAt: string;
 }
 
-const OPTIONAL: { key: Exclude<Category, "necessary">; label: string; description: string }[] = [
-  {
-    key: "functional",
-    label: "Functional",
-    description: "Remember preferences such as recently viewed products and display settings.",
-  },
-  {
-    key: "analytics",
-    label: "Analytics & performance",
-    description: "Help us understand how visitors use the site so we can improve it.",
-  },
-  {
-    key: "marketing",
-    label: "Marketing",
-    description: "Used to deliver and measure more relevant advertising.",
-  },
-];
+// Labels/descriptions live in messages under cookies.categories.<key>.
+const OPTIONAL: Exclude<Category, "necessary">[] = ["functional", "analytics", "marketing"];
 
 /** Reopen the cookie preferences panel from anywhere (e.g. footer link). */
 export function openCookieSettings() {
@@ -41,6 +27,7 @@ export function openCookieSettings() {
 }
 
 export function CookieConsent() {
+  const t = useTranslations("cookies");
   const [visible, setVisible] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const [prefs, setPrefs] = useState({ functional: false, analytics: false, marketing: false });
@@ -108,7 +95,7 @@ export function CookieConsent() {
           type="button"
           className="absolute right-3 top-3 flex cursor-pointer p-1 text-subtle hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
           onClick={() => setVisible(false)}
-          aria-label="Close cookie banner"
+          aria-label={t("close")}
         >
           <X size={16} />
         </button>
@@ -118,38 +105,43 @@ export function CookieConsent() {
             <Cookie size={20} />
           </span>
           <h2 id="cookie-title" className="text-[1.0625rem] font-bold text-ink">
-            We value your privacy
+            {t("title")}
           </h2>
         </div>
 
         <p className="mb-4 text-[0.8125rem] leading-relaxed text-muted">
-          We use strictly necessary cookies to make our store work. With your consent we also use
-          functional, analytics, and marketing cookies. You can accept all, reject non-essential
-          cookies, or set your own preferences. Read more in our{" "}
-          <Link href="/policies/cookies" className="font-semibold text-accent">
-            Cookie Policy
-          </Link>
-          .
+          {t.rich("intro", {
+            policy: (chunks) => (
+              <Link href="/policies/cookies" className="font-semibold text-accent">
+                {chunks}
+              </Link>
+            ),
+          })}
         </p>
 
         {showDetails && (
           <div className="mb-4 flex max-h-[240px] flex-col gap-3 overflow-y-auto pr-1">
             <div className="rounded-sm border border-line px-3 py-2.5">
               <div className="flex items-center justify-between gap-2">
-                <span className="text-[0.8125rem] font-semibold text-ink">Strictly necessary</span>
-                <span className="text-[0.6875rem] font-semibold text-accent">Always active</span>
+                <span className="text-[0.8125rem] font-semibold text-ink">{t("categories.necessary.label")}</span>
+                <span className="text-[0.6875rem] font-semibold text-accent">{t("alwaysActive")}</span>
               </div>
               <p className="mt-1.5 text-xs leading-normal text-subtle">
-                Required for cart, checkout, login, payment security and fraud prevention.
+                {t("categories.necessary.description")}
               </p>
             </div>
-            {OPTIONAL.map((c) => (
+            {OPTIONAL.map((key) => ({
+              key,
+              label: t(`categories.${key}.label`),
+              description: t(`categories.${key}.description`),
+            })).map((c) => (
               <div key={c.key} className="rounded-sm border border-line px-3 py-2.5">
                 <div className="flex items-center justify-between gap-2">
                   <span className="text-[0.8125rem] font-semibold text-ink">{c.label}</span>
                   <label className="relative inline-block h-5 w-9 flex-shrink-0">
                     <input
                       type="checkbox"
+                      aria-label={c.label}
                       className="peer h-0 w-0 opacity-0"
                       checked={prefs[c.key]}
                       onChange={(e) => setPrefs((p) => ({ ...p, [c.key]: e.target.checked }))}
@@ -166,22 +158,22 @@ export function CookieConsent() {
         <div className="flex flex-wrap gap-2">
           {showDetails ? (
             <button type="button" className={secondaryBtn} onClick={savePrefs}>
-              Save preferences
+              {t("save")}
             </button>
           ) : (
             <button type="button" className={secondaryBtn} onClick={() => setShowDetails(true)}>
-              Customize
+              {t("customize")}
             </button>
           )}
           <button type="button" className={secondaryBtn} onClick={rejectAll}>
-            Reject non-essential
+            {t("rejectAll")}
           </button>
           <button
             type="button"
             className="min-w-[120px] flex-1 cursor-pointer rounded-sm border-none bg-accent px-3.5 py-2.5 text-[0.8125rem] font-semibold text-white transition-opacity duration-150 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
             onClick={acceptAll}
           >
-            Accept all
+            {t("acceptAll")}
           </button>
         </div>
       </div>

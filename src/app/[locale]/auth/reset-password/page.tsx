@@ -39,11 +39,13 @@ export default function ResetPasswordPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token, password }),
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Something went wrong");
+      if (!res.ok) {
+        // 400 = invalid/expired token (or bad input, already validated client-side).
+        throw new Error(res.status === 400 ? t("invalidResetLinkDesc") : t("somethingWentWrong"));
+      }
       setSuccess(true);
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Something went wrong");
+      toast.error(error instanceof Error && error.message ? error.message : t("somethingWentWrong"));
     } finally {
       setLoading(false);
     }
@@ -117,7 +119,7 @@ export default function ResetPasswordPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  placeholder="Min 6 characters"
+                  placeholder={t("newPasswordPlaceholder")}
                   className={`${s.input} ${s.inputWithToggle}`}
                 />
                 <button
@@ -125,6 +127,7 @@ export default function ResetPasswordPage() {
                   className={s.inputToggle}
                   onClick={() => setShowPassword(!showPassword)}
                   tabIndex={-1}
+                  aria-label={showPassword ? t("hidePassword") : t("showPassword")}
                 >
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
@@ -140,7 +143,7 @@ export default function ResetPasswordPage() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
-                  placeholder="Confirm your new password"
+                  placeholder={t("confirmNewPasswordPlaceholder")}
                   className={`${s.input} ${s.inputWithToggle}`}
                 />
                 <button
@@ -148,6 +151,7 @@ export default function ResetPasswordPage() {
                   className={s.inputToggle}
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   tabIndex={-1}
+                  aria-label={showConfirmPassword ? t("hidePassword") : t("showPassword")}
                 >
                   {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>

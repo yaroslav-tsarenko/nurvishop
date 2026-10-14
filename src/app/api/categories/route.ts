@@ -2,6 +2,20 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 import { slugify } from "@/lib/utils/slugify";
+import { localizeCategoryName } from "@/lib/i18n/category-names";
+import { isAppLocale } from "@/i18n/routing";
+
+// Swaps `name` for the localized label and keeps the original English name as
+// `matchName`, so clients that match on English keywords keep working.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function localizeNodes(nodes: any[], locale: string): any[] {
+  return nodes.map((n) => ({
+    ...n,
+    name: localizeCategoryName(n.name, locale),
+    matchName: n.name,
+    ...(Array.isArray(n.children) ? { children: localizeNodes(n.children, locale) } : {}),
+  }));
+}
 
 const categorySchema = z.object({
   name: z.string().min(1),
@@ -17,13 +31,15 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const flat = searchParams.get("flat") === "true";
     const includeEmpty = searchParams.get("includeEmpty") === "true";
+    const localeParam = searchParams.get("locale");
+    const locale = isAppLocale(localeParam) ? localeParam : null;
 
     if (flat) {
       const categories = await prisma.category.findMany({
         orderBy: { name: "asc" },
         include: { _count: { select: { products: true } } },
       });
-      return NextResponse.json(categories);
+      return NextResponse.json(locale ? localizeNodes(categories, locale) : categories);
     }
 
     const categories = await prisma.category.findMany({
@@ -78,7 +94,7 @@ export async function GET(request: NextRequest) {
     const tree = includeEmpty ? categories : pruneEmpty(categories);
     tree.forEach(rollupCounts);
 
-    return NextResponse.json(tree);
+    return NextResponse.json(locale ? localizeNodes(tree, locale) : tree);
   } catch (error) {
     console.error("Error fetching categories:", error);
     return NextResponse.json({ error: "Failed to fetch categories" }, { status: 500 });

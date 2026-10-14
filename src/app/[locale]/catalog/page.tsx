@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useSearchParams, useRouter } from "next/navigation";
 import { SlidersHorizontal, X } from "lucide-react";
 import { ProductGrid } from "@/components/product/ProductGrid/ProductGrid";
@@ -15,6 +15,8 @@ import clsx from "clsx";
 export default function CatalogPage() {
   const t = useTranslations("product");
   const nav = useTranslations("nav");
+  const c = useTranslations("catalog");
+  const locale = useLocale();
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -51,7 +53,8 @@ export default function CatalogPage() {
   );
 
   useEffect(() => {
-    fetch("/api/categories")
+    // `locale` lets the API return display names in the active language.
+    fetch(`/api/categories?locale=${locale}`)
       .then((res) => res.json())
       .then((data) => {
         if (!Array.isArray(data)) return setCategories([]);
@@ -69,7 +72,7 @@ export default function CatalogPage() {
       .then((res) => res.json())
       .then((data) => setBrands(Array.isArray(data) ? data : []))
       .catch(console.error);
-  }, []);
+  }, [locale]);
 
   useEffect(() => {
     setLoading(true);
@@ -82,6 +85,7 @@ export default function CatalogPage() {
     if (inStock) params.set("inStock", "true");
     if (onSale) params.set("onSale", "true");
     if (selectedBrand) params.set("brand", selectedBrand);
+    params.set("locale", locale);
 
     fetch(`/api/products?${params}`)
       .then((res) => res.json())
@@ -92,7 +96,7 @@ export default function CatalogPage() {
       })
       .catch(console.error)
       .finally(() => setLoading(false));
-  }, [page, sort, category, minPrice, maxPrice, inStock, onSale, selectedBrand]);
+  }, [page, sort, category, minPrice, maxPrice, inStock, onSale, selectedBrand, locale]);
 
   useEffect(() => {
     if (mobileFiltersOpen) {
@@ -130,7 +134,7 @@ export default function CatalogPage() {
             type="button"
           >
             <SlidersHorizontal size={16} />
-            Filters
+            {c("filters")}
             {activeFilterCount > 0 && (
               <span className="rounded-pill bg-accent px-1.5 py-px text-[0.6875rem] font-bold text-white">{activeFilterCount}</span>
             )}
@@ -164,10 +168,10 @@ export default function CatalogPage() {
             <ProductSkeleton count={12} />
           ) : products.length === 0 ? (
             <EmptyState
-              title={t("filterBy")}
-              subtitle={t("priceRange")}
-              actionLabel={nav("home")}
-              actionHref="/"
+              title={c("emptyTitle")}
+              subtitle={activeFilterCount > 0 ? c("emptyFilteredSubtitle") : c("emptySubtitle")}
+              actionLabel={activeFilterCount > 0 ? c("clearFilters") : nav("home")}
+              actionHref={activeFilterCount > 0 ? "/catalog" : "/"}
             />
           ) : (
             <>
@@ -181,8 +185,9 @@ export default function CatalogPage() {
                       "flex h-9 items-center justify-center rounded-lg border border-line bg-surface px-4 text-[0.8125rem] font-medium text-ink",
                       page <= 1 && "cursor-not-allowed opacity-50"
                     )}
+                    aria-label={c("prevPageLabel")}
                   >
-                    Prev
+                    {c("prevPage")}
                   </button>
                   {(() => {
                     const pages: (number | "ellipsis-start" | "ellipsis-end")[] = [];
@@ -204,6 +209,8 @@ export default function CatalogPage() {
                         <button
                           key={p}
                           onClick={() => updateParams({ page: String(p) })}
+                          aria-label={c("pageLabel", { page: p })}
+                          aria-current={p === page ? "page" : undefined}
                           className={clsx(
                             "flex h-9 w-9 items-center justify-center rounded-lg text-[0.8125rem]",
                             p === page
@@ -223,8 +230,9 @@ export default function CatalogPage() {
                       "flex h-9 items-center justify-center rounded-lg border border-line bg-surface px-4 text-[0.8125rem] font-medium text-ink",
                       page >= totalPages && "cursor-not-allowed opacity-50"
                     )}
+                    aria-label={c("nextPageLabel")}
                   >
-                    Next
+                    {c("nextPage")}
                   </button>
                 </div>
               )}
@@ -239,11 +247,11 @@ export default function CatalogPage() {
           <div className="absolute inset-0 bg-black/40 backdrop-blur-[4px]" onClick={() => setMobileFiltersOpen(false)} />
           <div className="absolute bottom-0 left-0 right-0 flex max-h-[85vh] flex-col overflow-auto rounded-t-2xl bg-surface p-6">
             <div className="mb-4 flex items-center justify-between">
-              <span className="text-lg font-bold">Filters</span>
+              <span className="text-lg font-bold">{c("filters")}</span>
               <button
                 onClick={() => setMobileFiltersOpen(false)}
                 className="flex h-8 w-8 items-center justify-center rounded-lg border-0 bg-well text-ink"
-                aria-label="Close filters"
+                aria-label={c("closeFilters")}
               >
                 <X size={18} />
               </button>

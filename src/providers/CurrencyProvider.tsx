@@ -1,6 +1,8 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState, useCallback, type ReactNode } from "react";
+import { useLocale } from "next-intl";
+import { formatPrice } from "@/lib/utils/format-price";
 
 export type Currency = "EUR" | "USD" | "GBP";
 
@@ -15,6 +17,10 @@ interface CurrencyContextType {
   setCurrency: (currency: Currency) => void;
   convert: (amountInEur: number) => number;
   rates: Rates;
+  /** Converts an EUR amount to the active currency and formats it for the active locale. */
+  format: (amountInEur: number) => string;
+  /** Active app locale ("en" | "lv"), for callers formatting already-converted amounts. */
+  locale: string;
 }
 
 const DEFAULT_RATES: Rates = { EUR: 1, USD: 1.08, GBP: 0.85 };
@@ -56,8 +62,14 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
     [currency, rates]
   );
 
+  const locale = useLocale();
+  const format = useCallback(
+    (amountInEur: number) => formatPrice(convert(amountInEur), currency, locale),
+    [convert, currency, locale]
+  );
+
   return (
-    <CurrencyContext.Provider value={{ currency, setCurrency, convert, rates }}>
+    <CurrencyContext.Provider value={{ currency, setCurrency, convert, rates, format, locale }}>
       {children}
     </CurrencyContext.Provider>
   );

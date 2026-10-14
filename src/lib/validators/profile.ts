@@ -1,19 +1,20 @@
 import { z } from "zod";
 
+// Error messages are stable i18n keys (namespace "validation") — see ./messages.ts.
 export const profileSchema = z.object({
-  name: z.string().min(1, "Name is required"),
+  name: z.string().min(1, "validation.nameRequired"),
   phone: z.string().optional(),
 });
 
 export const addressSchema = z.object({
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
-  address1: z.string().min(1, "Address is required"),
+  firstName: z.string().min(1, "validation.firstNameRequired"),
+  lastName: z.string().min(1, "validation.lastNameRequired"),
+  address1: z.string().min(1, "validation.addressRequired"),
   address2: z.string().optional(),
-  city: z.string().min(1, "City is required"),
+  city: z.string().min(1, "validation.cityRequired"),
   province: z.string().optional(),
-  postalCode: z.string().min(1, "Postal code is required"),
-  country: z.string().min(1, "Country is required"),
+  postalCode: z.string().min(1, "validation.postalCodeRequired"),
+  country: z.string().min(1, "validation.countryRequired"),
   phone: z.string().optional(),
   isDefault: z.boolean().default(false),
 });

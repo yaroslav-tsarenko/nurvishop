@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useCurrency, type Currency } from "@/providers/CurrencyProvider";
 
 const CURRENCIES: { code: Currency; symbol: string; label: string }[] = [
@@ -11,6 +12,7 @@ const CURRENCIES: { code: Currency; symbol: string; label: string }[] = [
 ];
 
 export function CurrencySwitcher() {
+  const t = useTranslations("nav");
   const { currency, setCurrency } = useCurrency();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -29,7 +31,7 @@ export function CurrencySwitcher() {
     <div ref={ref} style={{ position: "relative" }}>
       <button
         onClick={() => setOpen(!open)}
-        aria-label="Currency"
+        aria-label={t("currency")}
         aria-haspopup="listbox"
         aria-expanded={open}
         className="inline-flex items-center gap-1.5 rounded-pill border border-line bg-surface px-3 py-1.5 text-[0.8125rem] font-bold text-ink transition-[background-color,border-color] duration-150 hover:border-accent hover:bg-lilac focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
@@ -76,6 +78,38 @@ export function CurrencySwitcher() {
           ))}
         </div>
       )}
+    </div>
+  );
+}
+
+/** Inline EUR | USD | GBP pills for the mobile drawer. */
+export function CurrencySegmented() {
+  const t = useTranslations("nav");
+  const { currency, setCurrency } = useCurrency();
+
+  return (
+    <div className="flex items-center justify-between gap-3">
+      <span className="text-[0.875rem] font-medium text-muted">{t("currency")}</span>
+      <div role="radiogroup" aria-label={t("currency")} className="flex rounded-pill border border-line bg-mist p-0.5">
+        {CURRENCIES.map((c) => {
+          const active = c.code === currency;
+          return (
+            <button
+              key={c.code}
+              role="radio"
+              aria-checked={active}
+              onClick={() => setCurrency(c.code)}
+              className={
+                active
+                  ? "cursor-pointer rounded-pill border-none bg-accent px-3 py-1 text-[0.8125rem] font-bold text-white"
+                  : "cursor-pointer rounded-pill border-none bg-transparent px-3 py-1 text-[0.8125rem] font-bold text-muted hover:text-ink"
+              }
+            >
+              {c.symbol} {c.code}
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }

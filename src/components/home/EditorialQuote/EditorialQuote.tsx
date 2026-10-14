@@ -2,8 +2,10 @@
 
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 export function EditorialQuote() {
+  const t = useTranslations("home.editorial");
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-60px" });
 
@@ -25,11 +27,10 @@ export function EditorialQuote() {
       >
         <span className="mb-5 inline-block font-display text-5xl leading-none text-accent">&ldquo;</span>
         <p className="font-display text-[1.6rem] font-medium italic leading-[1.4] tracking-[-0.01em] text-inverse-fg md:text-[2rem]">
-          A home should feel like a slow exhale — warm textures, honest materials
-          and objects that earn their place over time.
+          {t("quote")}
         </p>
         <p className="mt-6 text-[0.78rem] font-semibold uppercase tracking-[0.18em] text-inverse-muted">
-          The nurvishop philosophy
+          {t("attribution")}
         </p>
       </motion.div>
     </section>

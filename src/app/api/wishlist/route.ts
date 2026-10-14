@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/auth";
+import { localizeProduct } from "@/lib/i18n/product";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     const user = await getSessionUser();
     if (!user) {
@@ -19,7 +20,10 @@ export async function GET() {
       orderBy: { createdAt: "desc" },
     });
 
-    return NextResponse.json(items);
+    const locale = request.nextUrl.searchParams.get("locale") || "";
+    return NextResponse.json(
+      items.map((item) => ({ ...item, product: localizeProduct(item.product, locale) })),
+    );
   } catch (error) {
     console.error("Error fetching wishlist:", error);
     return NextResponse.json({ error: "Failed to fetch wishlist" }, { status: 500 });

@@ -3,8 +3,10 @@
 import { useState, useRef } from "react";
 import { CheckCircle } from "lucide-react";
 import { motion, useInView } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 export function NewsletterBanner() {
+  const t = useTranslations("home.newsletterBanner");
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const ref = useRef(null);
@@ -36,11 +38,11 @@ export function NewsletterBanner() {
             transition={{ duration: 0.8, delay: 0.5 }}
           >
             <span className="text-xl font-black">10%</span>
-            <span className="text-[0.5rem] font-bold uppercase tracking-wide">OFF</span>
+            <span className="text-[0.5rem] font-bold uppercase tracking-wide">{t("off")}</span>
           </motion.div>
           <div>
-            <h2 className="m-0 font-display text-xl font-extrabold leading-[1.2]">Subscribe & Save 10%</h2>
-            <p className="mx-0 mb-0 mt-1.5 text-[0.8125rem] leading-[1.5] opacity-85">Get exclusive deals, new arrivals & special offers straight to your inbox.</p>
+            <h2 className="m-0 font-display text-xl font-extrabold leading-[1.2]">{t("title")}</h2>
+            <p className="mx-0 mb-0 mt-1.5 text-[0.8125rem] leading-[1.5] opacity-85">{t("subtitle")}</p>
           </div>
         </div>
       </motion.div>
@@ -57,7 +59,7 @@ export function NewsletterBanner() {
             animate={{ scale: 1 }}
             transition={{ type: "spring", stiffness: 200 }}
           >
-            <CheckCircle size={18} /> You&apos;re in! Check your inbox.
+            <CheckCircle size={18} /> {t("success")}
           </motion.span>
         ) : (
           <form onSubmit={handleSubmit} style={{ display: "flex", gap: "0.5rem" }}>
@@ -65,7 +67,8 @@ export function NewsletterBanner() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
+              placeholder={t("placeholder")}
+              aria-label={t("emailLabel")}
               required
               className="w-[260px] rounded-lg border-2 border-white/25 bg-white/15 px-4 py-3 text-sm text-white outline-none backdrop-blur-[4px] transition-[border-color] duration-200 placeholder:text-white/60 focus:border-white/50 max-md:w-full"
             />
@@ -73,7 +76,7 @@ export function NewsletterBanner() {
               type="submit"
               className="cursor-pointer whitespace-nowrap rounded-lg border-none bg-white px-6 py-3 text-sm font-bold text-accent transition-[transform,box-shadow] duration-200 hover:-translate-y-px hover:shadow-[0_4px_16px_rgba(0,0,0,0.15)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
             >
-              Subscribe
+              {t("cta")}
             </button>
           </form>
         )}

@@ -1,9 +1,8 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
-import { Link } from "@/i18n/routing";
+import { useLocale, useTranslations } from "next-intl";
+import { Link, useRouter } from "@/i18n/routing";
 import clsx from "clsx";
 import {
   ShoppingCart, Search, Menu, X, User, Shield,
@@ -16,42 +15,45 @@ import { useAuth } from "@/providers/AuthProvider";
 import { ThemeToggle } from "./ThemeToggle";
 import { AnimatePresence, motion } from "framer-motion";
 import { NurviLogo } from "../NurviLogo";
-import { CurrencySwitcher } from "./CurrencySwitcher";
+import { CurrencySwitcher, CurrencySegmented } from "./CurrencySwitcher";
+import { LanguageSwitcher, LanguageSegmented } from "./LanguageSwitcher";
 
 interface Category {
   id: string;
   name: string;
   slug: string;
+  /** Original English name, returned by /api/categories when `locale` is set. */
+  matchName?: string;
   _count: { products: number };
   children?: Category[];
 }
 
 // Curated rooms for the "Shop by room" menu. Each room resolves to the
 // closest matching product category, falling back to a catalog search.
-const ROOMS: { name: string; icon: React.ElementType; keywords: string[] }[] = [
-  { name: "Living Room", icon: Sofa, keywords: ["living", "sofa", "couch", "seating"] },
-  { name: "Bedroom", icon: BedDouble, keywords: ["bed", "bedroom", "sleep"] },
-  { name: "Kitchen", icon: CookingPot, keywords: ["kitchen", "cook"] },
-  { name: "Dining Room", icon: UtensilsCrossed, keywords: ["dining", "tableware", "cutlery", "glass"] },
-  { name: "Bathroom", icon: Bath, keywords: ["bath", "towel"] },
-  { name: "Home Office", icon: Armchair, keywords: ["office", "desk", "chair", "study"] },
-  { name: "Lighting", icon: Lamp, keywords: ["light", "lamp"] },
-  { name: "Decor & Textiles", icon: Flower2, keywords: ["decor", "vase", "candle", "textile", "linen", "cushion"] },
+// `id` keys the translated label (nav.rooms.<id>); `name` and `keywords` stay
+// English because they are matched against English category names in the DB.
+const ROOMS: { id: string; name: string; icon: React.ElementType; keywords: string[] }[] = [
+  { id: "livingRoom", name: "Living Room", icon: Sofa, keywords: ["living", "sofa", "couch", "seating"] },
+  { id: "bedroom", name: "Bedroom", icon: BedDouble, keywords: ["bed", "bedroom", "sleep"] },
+  { id: "kitchen", name: "Kitchen", icon: CookingPot, keywords: ["kitchen", "cook"] },
+  { id: "diningRoom", name: "Dining Room", icon: UtensilsCrossed, keywords: ["dining", "tableware", "cutlery", "glass"] },
+  { id: "bathroom", name: "Bathroom", icon: Bath, keywords: ["bath", "towel"] },
+  { id: "homeOffice", name: "Home Office", icon: Armchair, keywords: ["office", "desk", "chair", "study"] },
+  { id: "lighting", name: "Lighting", icon: Lamp, keywords: ["light", "lamp"] },
+  { id: "decorTextiles", name: "Decor & Textiles", icon: Flower2, keywords: ["decor", "vase", "candle", "textile", "linen", "cushion"] },
 ];
 
+// Matches on `matchName` (always the English DB name) so localized display
+// names don't break the room → category mapping.
 function roomHref(room: { name: string; keywords: string[] }, categories: Category[]): string {
   for (const cat of categories) {
-    const lower = cat.name.toLowerCase();
+    const lower = (cat.matchName ?? cat.name).toLowerCase();
     if (room.keywords.some((k) => lower.includes(k))) return `/catalog/${cat.slug}`;
   }
   return `/search?q=${encodeURIComponent(room.name)}`;
 }
 
-const UTILITY_MESSAGES = [
-  "Thoughtfully made for a softer home",
-  "Natural materials — linen, clay & oak",
-  "Warm support · 30-day easy returns",
-];
+const UTILITY_MESSAGE_KEYS = ["utility1", "utility2", "utility3"] as const;
 
 const iconButton =
   "relative flex h-9 w-9 cursor-pointer items-center justify-center rounded-md border-none bg-transparent text-muted no-underline transition-colors duration-150 hover:bg-mist hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40";
@@ -64,6 +66,7 @@ const drawerNavLink =
 
 export function Header() {
   const t = useTranslations("nav");
+  const locale = useLocale();
   const router = useRouter();
   const { itemCount, cartBounce } = useCart();
   const { user, role } = useAuth();
@@ -90,7 +93,7 @@ export function Header() {
 
   useEffect(() => {
     const id = setInterval(
-      () => setMsgIndex((i) => (i + 1) % UTILITY_MESSAGES.length),
+      () => setMsgIndex((i) => (i + 1) % UTILITY_MESSAGE_KEYS.length),
       5000,
     );
     return () => clearInterval(id);
@@ -106,7 +109,7 @@ export function Header() {
   }, [mobileOpen]);
 
   useEffect(() => {
-    fetch("/api/categories")
+    fetch(`/api/categories?locale=${encodeURIComponent(locale)}`)
       .then((r) => r.json())
       .then((data) => {
         if (!Array.isArray(data)) return;
@@ -117,7 +120,7 @@ export function Header() {
         setCategories(unwrapped);
       })
       .catch(() => {});
-  }, []);
+  }, [locale]);
 
   const openMega = useCallback(() => {
     clearTimeout(megaTimeout.current);
@@ -131,7 +134,7 @@ export function Header() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      router.push(`/en/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      router.push({ pathname: "/search", query: { q: searchQuery.trim() } });
     }
   };
 
@@ -147,7 +150,7 @@ export function Header() {
         >
           <div className="mx-auto flex h-9 max-w-container items-center justify-center px-4 lg:px-6">
             <p className="truncate text-center text-[0.72rem] font-medium tracking-[0.08em] text-inverse-fg">
-              {UTILITY_MESSAGES[msgIndex]}
+              {t(UTILITY_MESSAGE_KEYS[msgIndex])}
             </p>
           </div>
         </div>
@@ -185,7 +188,7 @@ export function Header() {
                 onMouseLeave={closeMega}
               >
                 <button className={navLink} onClick={() => setMegaOpen(!megaOpen)}>
-                  Shop by room
+                  {t("shopByRoom")}
                   <ChevronDown size={14} style={{ transition: "transform 0.2s", transform: megaOpen ? "rotate(180deg)" : undefined }} />
                 </button>
               </div>
@@ -203,7 +206,8 @@ export function Header() {
               <input
                 type="text"
                 className="h-full flex-1 border-none bg-transparent py-0 pl-10 pr-3 text-[0.8125rem] text-ink outline-none placeholder:text-subtle"
-                placeholder="Search sofas, ceramics, linen…"
+                placeholder={t("searchPlaceholder")}
+                aria-label={t("search")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -211,13 +215,21 @@ export function Header() {
                 type="submit"
                 className="h-full cursor-pointer whitespace-nowrap border-none bg-accent px-5 text-[0.8125rem] font-semibold text-white transition-colors duration-150 hover:bg-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
               >
-                Search
+                {t("searchButton")}
               </button>
             </form>
 
             <div className="ml-auto flex flex-shrink-0 items-center gap-0.5">
-              <CurrencySwitcher />
-              <ThemeToggle />
+              <div className="hidden sm:block">
+                <LanguageSwitcher />
+              </div>
+              {/* On phones currency + theme live in the drawer so the bar fits 360px. */}
+              <div className="hidden sm:block">
+                <CurrencySwitcher />
+              </div>
+              <div className="hidden sm:flex">
+                <ThemeToggle />
+              </div>
               <span className="mx-1 hidden h-5 w-px bg-line sm:block" />
 
               <Link href="/search" className={clsx(iconButton, "flex md:hidden")} aria-label={t("search")}>
@@ -225,7 +237,7 @@ export function Header() {
               </Link>
 
               {user && (
-                <Link href="/account/wishlist" className={iconButton} aria-label="Wishlist">
+                <Link href="/account/wishlist" className={iconButton} aria-label={t("wishlist")}>
                   <Heart size={20} />
                 </Link>
               )}
@@ -246,7 +258,7 @@ export function Header() {
               </Link>
 
               {user && (role === "ADMIN" || role === "SUPER_ADMIN") && (
-                <a href="/admin" className={iconButton} aria-label="Admin">
+                <a href="/admin" className={iconButton} aria-label={t("admin")}>
                   <Shield size={20} />
                 </a>
               )}
@@ -264,7 +276,7 @@ export function Header() {
               <button
                 className={clsx(iconButton, "flex lg:hidden")}
                 onClick={() => setMobileOpen(true)}
-                aria-label="Menu"
+                aria-label={t("menu")}
               >
                 <Menu size={22} />
               </button>
@@ -297,13 +309,13 @@ export function Header() {
               onMouseLeave={closeMega}
             >
               <div className="mx-auto max-w-container px-6 pb-4 pt-5">
-                <p className="eyebrow mb-3">Shop by room</p>
+                <p className="eyebrow mb-3">{t("shopByRoom")}</p>
                 <div className="grid grid-cols-3 gap-2 min-[1201px]:grid-cols-4">
                   {ROOMS.map((room) => {
                     const Icon = room.icon;
                     return (
                       <Link
-                        key={room.name}
+                        key={room.id}
                         href={roomHref(room, categories)}
                         className="group flex items-center gap-3 rounded-md px-3 py-2.5 text-ink no-underline transition-colors duration-150 hover:bg-mist focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
                         onClick={() => setMegaOpen(false)}
@@ -312,7 +324,7 @@ export function Header() {
                           <Icon size={20} />
                         </div>
                         <div className="flex min-w-0 flex-col">
-                          <span className="overflow-hidden text-ellipsis whitespace-nowrap text-[0.8rem] font-semibold leading-tight">{room.name}</span>
+                          <span className="overflow-hidden text-ellipsis whitespace-nowrap text-[0.8rem] font-semibold leading-tight">{t(`rooms.${room.id}`)}</span>
                         </div>
                         <ChevronRight size={14} className="ml-auto flex-shrink-0 text-subtle opacity-0 transition-[opacity,transform] duration-150 group-hover:translate-x-0.5 group-hover:opacity-100" />
                       </Link>
@@ -325,7 +337,7 @@ export function Header() {
                     className="flex items-center gap-1 text-[0.8125rem] font-semibold text-accent no-underline transition-[gap] duration-150 hover:gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
                     onClick={() => setMegaOpen(false)}
                   >
-                    Browse all categories <ChevronRight size={14} />
+                    {t("browseAllCategories")} <ChevronRight size={14} />
                   </Link>
                 </div>
               </div>
@@ -352,10 +364,11 @@ export function Header() {
               transition={{ type: "spring", damping: 30, stiffness: 300 }}
             >
               <div className="flex items-center justify-between border-b border-line px-5 py-4">
-                <span className="font-display text-[1.25rem] font-semibold text-ink">Menu</span>
+                <span className="font-display text-[1.25rem] font-semibold text-ink">{t("menu")}</span>
                 <button
                   className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-md border-none bg-transparent text-muted hover:bg-mist hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
                   onClick={() => setMobileOpen(false)}
+                  aria-label={t("closeMenu")}
                 >
                   <X size={20} />
                 </button>
@@ -370,15 +383,15 @@ export function Header() {
                     {t("catalog")} <ChevronRight size={18} />
                   </Link>
                   <Link href="/catalog?sort=newest" className={drawerNavLink} onClick={() => setMobileOpen(false)}>
-                    New Arrivals <ChevronRight size={18} />
+                    {t("newArrivals")} <ChevronRight size={18} />
                   </Link>
                   <Link href="/catalog?onSale=true" className={drawerNavLink} onClick={() => setMobileOpen(false)}>
-                    Deals <ChevronRight size={18} />
+                    {t("deals")} <ChevronRight size={18} />
                   </Link>
 
                   <details className="group rounded-md">
                     <summary className={clsx(drawerNavLink, "list-none cursor-pointer marker:hidden")}>
-                      Shop by room
+                      {t("shopByRoom")}
                       <ChevronDown size={18} className="transition-transform duration-200 group-open:rotate-180" />
                     </summary>
                     <div className="mt-1 flex flex-col gap-0.5 pl-3">
@@ -386,13 +399,13 @@ export function Header() {
                         const Icon = room.icon;
                         return (
                           <Link
-                            key={room.name}
+                            key={room.id}
                             href={roomHref(room, categories)}
                             className="flex items-center gap-3 rounded-md p-2.5 text-[0.875rem] text-muted no-underline transition-colors duration-150 hover:bg-mist hover:text-ink"
                             onClick={() => setMobileOpen(false)}
                           >
                             <Icon size={18} className="flex-shrink-0 text-accent" />
-                            <span className="truncate">{room.name}</span>
+                            <span className="truncate">{t(`rooms.${room.id}`)}</span>
                           </Link>
                         );
                       })}
@@ -406,29 +419,38 @@ export function Header() {
                   </Link>
                   {user && (role === "ADMIN" || role === "SUPER_ADMIN") && (
                     <a href="/admin" className={drawerNavLink} onClick={() => setMobileOpen(false)}>
-                      Admin Panel <ChevronRight size={18} />
+                      {t("admin")} <ChevronRight size={18} />
                     </a>
                   )}
                 </nav>
+              </div>
+
+              <div className="flex flex-col gap-3 border-t border-line px-5 py-3">
+                <LanguageSegmented onSwitch={() => setMobileOpen(false)} />
+                <CurrencySegmented />
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-[0.875rem] font-medium text-muted">{t("theme")}</span>
+                  <ThemeToggle />
+                </div>
               </div>
 
               <div className="flex flex-col gap-3 border-t border-line px-5 py-4">
                 {user ? (
                   <Link href="/account" onClick={() => setMobileOpen(false)}>
                     <div className="flex items-center justify-center rounded-md bg-accent p-3 text-sm font-semibold text-white">
-                      My Account
+                      {t("myAccount")}
                     </div>
                   </Link>
                 ) : (
                   <>
                     <Link href="/auth/login" onClick={() => setMobileOpen(false)}>
                       <div className="flex items-center justify-center rounded-md bg-accent p-3 text-sm font-semibold text-white">
-                        Sign In
+                        {t("signIn")}
                       </div>
                     </Link>
                     <Link href="/auth/register" onClick={() => setMobileOpen(false)}>
                       <div className="flex items-center justify-center rounded-md bg-mist p-3 text-sm font-semibold text-ink">
-                        Create Account
+                        {t("register")}
                       </div>
                     </Link>
                   </>

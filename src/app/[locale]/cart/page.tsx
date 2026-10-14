@@ -9,15 +9,15 @@ import { useCart } from "@/providers/CartProvider";
 import { useCurrency } from "@/providers/CurrencyProvider";
 import { QuantitySelector } from "@/components/shared/QuantitySelector/QuantitySelector";
 import { PriceDisplay } from "@/components/shared/PriceDisplay/PriceDisplay";
+import { formatPrice } from "@/lib/utils/format-price";
 import { EmptyState } from "@/components/shared/EmptyState/EmptyState";
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs/Breadcrumbs";
-import { formatPrice } from "@/lib/utils/format-price";
 
 export default function CartPage() {
   const t = useTranslations("cart");
   const nav = useTranslations("nav");
   const { cart, updateQuantity, removeItem } = useCart();
-  const { currency, convert } = useCurrency();
+  const { currency, convert, format, locale } = useCurrency();
 
   const freeShippingThreshold = convert(100);
   const subtotalConverted = convert(cart.subtotal);
@@ -34,7 +34,7 @@ export default function CartPage() {
         {t("title")}{" "}
         {cart.items.length > 0 && (
           <span style={{ color: "var(--color-text-tertiary)", fontWeight: 500 }}>
-            ({cart.itemCount} {cart.itemCount === 1 ? "item" : "items"})
+            ({t("itemCount", { count: cart.itemCount })})
           </span>
         )}
       </motion.h1>
@@ -57,13 +57,13 @@ export default function CartPage() {
               <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                 <Package size={16} style={{ color: "var(--color-text-secondary)" }} />
                 <span style={{ fontSize: "0.8125rem", fontWeight: 600, color: "var(--color-text-secondary)" }}>
-                  {cart.itemCount} {cart.itemCount === 1 ? "item" : "items"} in your cart
+                  {t("itemsInCart", { count: cart.itemCount })}
                 </span>
               </div>
               {subtotalConverted >= freeShippingThreshold && (
                 <div style={{ display: "flex", alignItems: "center", gap: "0.375rem", fontSize: "0.75rem", fontWeight: 600, color: "var(--color-success)" }}>
                   <Truck size={14} />
-                  Free shipping
+                  {t("freeShippingUnlocked")}
                 </div>
               )}
             </div>
@@ -106,7 +106,7 @@ export default function CartPage() {
                       </span>
                     )}
                     <span style={{ fontSize: "0.75rem", color: "var(--color-text-tertiary)" }}>
-                      SKU: {item.sku}
+                      {t("sku", { sku: item.sku })}
                     </span>
 
                     <div className="mt-auto flex items-center justify-between gap-3 pt-2 max-[480px]:flex-wrap max-[480px]:gap-2.5 max-[480px]:pt-1">
@@ -136,7 +136,7 @@ export default function CartPage() {
                           }}
                           onMouseEnter={(e) => { e.currentTarget.style.color = "var(--color-danger)"; e.currentTarget.style.background = "var(--color-bg-tertiary)"; }}
                           onMouseLeave={(e) => { e.currentTarget.style.color = "var(--color-text-tertiary)"; e.currentTarget.style.background = "transparent"; }}
-                          aria-label="Remove"
+                          aria-label={t("removeItem", { name: item.name })}
                         >
                           <Trash2 size={16} />
                         </motion.button>
@@ -156,23 +156,23 @@ export default function CartPage() {
             className="sticky top-[calc(var(--header-height)+var(--announcement-height)+1rem)] h-fit rounded-xl border border-line bg-surface p-7 max-[1024px]:static max-[640px]:rounded-lg max-[640px]:p-5"
           >
             <h2 style={{ fontSize: "1.125rem", fontWeight: 700, marginBottom: "1.25rem" }}>
-              Order Summary
+              {t("orderSummary")}
             </h2>
 
             <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", marginBottom: "1.25rem" }}>
               <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.875rem" }}>
                 <span style={{ color: "var(--color-text-secondary)" }}>{t("subtotal")}</span>
-                <span style={{ fontWeight: 500 }}>{formatPrice(convert(cart.subtotal), currency)}</span>
+                <span style={{ fontWeight: 500 }}>{format(cart.subtotal)}</span>
               </div>
               <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.875rem" }}>
                 <span style={{ color: "var(--color-text-secondary)" }}>{t("shipping")}</span>
                 <span style={{ fontWeight: 600, color: cart.shippingCost === 0 ? "var(--color-success)" : undefined }}>
-                  {cart.shippingCost > 0 ? formatPrice(convert(cart.shippingCost), currency) : "Free"}
+                  {cart.shippingCost > 0 ? format(cart.shippingCost) : t("free")}
                 </span>
               </div>
               <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.875rem" }}>
-                <span style={{ color: "var(--color-text-secondary)" }}>{t("tax")} (21%, incl.)</span>
-                <span style={{ fontWeight: 500 }}>{formatPrice(convert(cart.taxAmount), currency)}</span>
+                <span style={{ color: "var(--color-text-secondary)" }}>{t("taxIncluded", { rate: 21 })}</span>
+                <span style={{ fontWeight: 500 }}>{format(cart.taxAmount)}</span>
               </div>
 
               {subtotalConverted < freeShippingThreshold && (
@@ -189,7 +189,9 @@ export default function CartPage() {
                   }}
                 >
                   <Truck size={14} />
-                  Add {formatPrice(freeShippingThreshold - subtotalConverted, currency)} more for free shipping
+                  {t("freeShippingRemaining", {
+                    amount: formatPrice(freeShippingThreshold - subtotalConverted, currency, locale),
+                  })}
                 </div>
               )}
 
@@ -205,7 +207,7 @@ export default function CartPage() {
                 }}
               >
                 <span>{t("total")}</span>
-                <span>{formatPrice(convert(cart.total), currency)}</span>
+                <span>{format(cart.total)}</span>
               </div>
             </div>
 
@@ -241,7 +243,7 @@ export default function CartPage() {
               color: "var(--color-text-tertiary)",
             }}>
               <ShieldCheck size={14} />
-              Secure checkout with SSL encryption
+              {t("secureCheckout")}
             </div>
           </motion.div>
         </div>

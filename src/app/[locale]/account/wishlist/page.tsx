@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Heart } from "lucide-react";
 import { ProductGrid } from "@/components/product/ProductGrid/ProductGrid";
 import { EmptyState } from "@/components/shared/EmptyState/EmptyState";
@@ -10,11 +10,12 @@ import { LoadingSpinner } from "@/components/shared/LoadingSpinner/LoadingSpinne
 export default function WishlistPage() {
   const t = useTranslations("account");
   const nav = useTranslations("nav");
+  const locale = useLocale();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/wishlist")
+    fetch(`/api/wishlist?locale=${locale}`)
       .then((res) => res.json())
       .then((data) => {
         setItems(
@@ -23,7 +24,7 @@ export default function WishlistPage() {
       })
       .catch(() => setItems([]))
       .finally(() => setLoading(false));
-  }, []);
+  }, [locale]);
 
   if (loading) return <LoadingSpinner />;
 

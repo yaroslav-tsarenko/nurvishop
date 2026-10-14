@@ -1,30 +1,47 @@
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs/Breadcrumbs";
+import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/routing";
+import { getPolicy } from "@/lib/policies-content.lv";
 
-export const metadata = { title: "Policies — nurvishop" };
+const POLICY_KEYS = [
+  "terms",
+  "shipping",
+  "returns",
+  "payment",
+  "privacy",
+  "cookies",
+  "warranty",
+  "accessibility",
+  "legal",
+] as const;
 
-const policies = [
-  { label: "Terms and Conditions of Sale", href: "/policies/terms" },
-  { label: "Shipping and Delivery Policy", href: "/policies/shipping" },
-  { label: "Returns, Refunds and Cancellation Policy", href: "/policies/returns" },
-  { label: "Payment Policy", href: "/policies/payment" },
-  { label: "Privacy Policy", href: "/policies/privacy" },
-  { label: "Cookie Policy", href: "/policies/cookies" },
-  { label: "Product Safety, Warranty and Complaints Policy", href: "/policies/warranty" },
-  { label: "Accessibility Statement", href: "/policies/accessibility" },
-  { label: "Legal Notice and Company Information", href: "/policies/legal" },
-];
+interface PageProps {
+  params: Promise<{ locale: string }>;
+}
 
-export default function PoliciesIndexPage() {
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "policies" });
+  return { title: t("metaTitle") };
+}
+
+export default async function PoliciesIndexPage({ params }: PageProps) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations({ locale, namespace: "policies" });
+  const policies = POLICY_KEYS.map((key) => ({
+    label: getPolicy(key, locale).title,
+    href: `/policies/${key}`,
+  }));
   return (
     <div style={{ maxWidth: "48rem", margin: "0 auto", padding: "0 1rem 4rem" }}>
-      <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Policies" }]} />
+      <Breadcrumbs items={[{ label: t("home"), href: "/" }, { label: t("title") }]} />
       <h1 style={{ fontSize: "clamp(1.375rem, 4.5vw, 1.75rem)", fontWeight: 800, letterSpacing: "-0.02em", marginBottom: "1rem", color: "var(--color-text)" }}>
-        Policies
+        {t("title")}
       </h1>
       <p style={{ lineHeight: 1.7, color: "var(--color-text-secondary)", marginBottom: "1.5rem", fontSize: "0.9375rem" }}>
-        Please review our policies below. These policies govern your use of the nurvishop website and
-        any purchases made through it.
+        {t("intro")}
       </p>
       <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "0.5rem" }}>
         {policies.map((policy) => (

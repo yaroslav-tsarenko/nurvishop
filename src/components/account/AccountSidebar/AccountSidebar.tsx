@@ -27,7 +27,7 @@ export function AccountSidebar() {
           {(user?.name?.[0] || user?.email?.[0] || "U").toUpperCase()}
         </div>
         <div>
-          <p className="text-sm font-semibold leading-tight">{user?.name || "User"}</p>
+          <p className="text-sm font-semibold leading-tight">{user?.name || t("userFallback")}</p>
           <p className="max-w-[150px] overflow-hidden text-ellipsis whitespace-nowrap text-xs text-subtle">
             {user?.email}
           </p>

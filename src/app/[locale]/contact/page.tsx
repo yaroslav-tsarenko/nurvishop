@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/Button";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { contactSchema, type ContactFormData } from "@/lib/validators/contact";
+import { useValidationMessage } from "@/lib/validators/messages";
+import { COMPANY } from "@/lib/utils/constants";
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs/Breadcrumbs";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
@@ -46,23 +48,19 @@ const errorStyle: React.CSSProperties = {
   marginTop: "0.25rem",
 };
 
-const CONTACT_INFO = [
-  { icon: Mail, title: "Email Us", detail: "info@nurvishop.com", sub: "We reply within 24 hours" },
-  { icon: Phone, title: "Call Us", detail: "+44 7360 545980", sub: "Mon-Fri 9:00-18:00 EET" },
-  { icon: MapPin, title: "Our Office", detail: "Vilnius, Lithuania", sub: "ULTRASENS LT MB", tooltip: "V. Nagevičiaus g. 3, LT-08237 Vilnius, Lithuania\nCompany No. 308011165" },
-  { icon: Clock, title: "Working Hours", detail: "Mon-Fri 9:00-18:00", sub: "Sat 10:00-14:00" },
-];
-
 const TOPICS = [
-  { icon: MessageSquare, label: "General Inquiry", value: "general" },
-  { icon: HelpCircle, label: "Product Support", value: "support" },
-  { icon: ShieldCheck, label: "Warranty & Returns", value: "warranty" },
-  { icon: Send, label: "Business / Wholesale", value: "business" },
-];
+  { icon: MessageSquare, labelKey: "topicGeneral", value: "general" },
+  { icon: HelpCircle, labelKey: "topicSupport", value: "support" },
+  { icon: ShieldCheck, labelKey: "topicWarranty", value: "warranty" },
+  { icon: Send, labelKey: "topicBusiness", value: "business" },
+] as const;
+
+const FAQ_KEYS = ["Shipping", "Returns", "International", "Tracking"] as const;
 
 export default function ContactPage() {
   const t = useTranslations("contact");
   const nav = useTranslations("nav");
+  const vm = useValidationMessage();
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [selectedTopic, setSelectedTopic] = useState("");
@@ -70,6 +68,19 @@ export default function ContactPage() {
   const { register, handleSubmit, formState: { errors }, setValue } = useForm<ContactFormData>({
     resolver: zodResolver(contactSchema),
   });
+
+  const contactInfo: { icon: typeof Mail; title: string; detail: string; sub: string; tooltip?: string }[] = [
+    { icon: Mail, title: t("emailUsTitle"), detail: COMPANY.email, sub: t("emailUsSub") },
+    { icon: Phone, title: t("callUsTitle"), detail: COMPANY.phone, sub: t("callUsSub") },
+    {
+      icon: MapPin,
+      title: t("officeTitle"),
+      detail: t("officeDetail"),
+      sub: COMPANY.legalName,
+      tooltip: t("officeTooltip", { address: COMPANY.addressInline, number: COMPANY.companyNumber }),
+    },
+    { icon: Clock, title: t("hoursTitle"), detail: t("hoursDetail"), sub: t("hoursSub") },
+  ];
 
   const onSubmit = async (data: ContactFormData) => {
     setLoading(true);
@@ -83,7 +94,7 @@ export default function ContactPage() {
       setSubmitted(true);
       toast.success(t("success"));
     } catch {
-      toast.error("Failed to send message");
+      toast.error(t("sendFailed"));
     } finally {
       setLoading(false);
     }
@@ -106,12 +117,12 @@ export default function ContactPage() {
         className="mb-10 overflow-hidden rounded-2xl px-8 py-10 max-[640px]:mb-8 max-[640px]:px-5 max-[640px]:py-7"
         style={{ background: "linear-gradient(135deg, #2b241d 0%, #5c3a2a 100%)", color: "#f0e9df" }}
       >
-        <p className="eyebrow mb-3" style={{ color: "var(--ochre)" }}>We&apos;re listening</p>
+        <p className="eyebrow mb-3" style={{ color: "var(--ochre)" }}>{t("eyebrow")}</p>
         <h1 className="mb-3 max-w-[640px] font-display text-4xl font-semibold tracking-tight max-[640px]:text-[1.625rem]">
           {t("title")}
         </h1>
         <p className="max-w-[520px] text-[1.0625rem] max-[640px]:text-[0.9375rem]" style={{ color: "rgba(240,233,223,0.85)" }}>
-          {t("subtitle")}. Real people, warm answers — for orders, products, and everything in between.
+          {t("heroSubtitle")}
         </p>
       </motion.div>
 
@@ -122,7 +133,7 @@ export default function ContactPage() {
         transition={{ delay: 0.1 }}
         className="mb-12 grid grid-cols-2 gap-4 max-[640px]:grid-cols-1 max-[480px]:mb-8 max-[480px]:gap-3"
       >
-        {CONTACT_INFO.map((info, i) => (
+        {contactInfo.map((info, i) => (
           <motion.div
             key={info.title}
             initial={{ opacity: 0, y: 20 }}
@@ -146,7 +157,7 @@ export default function ContactPage() {
             </div>
             <div className="min-w-0">
               <h3 style={{ fontSize: "0.75rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--color-text-tertiary)", marginBottom: "0.25rem" }}>{info.title}</h3>
-              <p title={"tooltip" in info ? info.tooltip : undefined} style={{ fontSize: "0.9375rem", fontWeight: 700, color: "var(--color-text)", marginBottom: "0.125rem", cursor: "tooltip" in info ? "help" : undefined }}>{info.detail}</p>
+              <p title={info.tooltip} style={{ fontSize: "0.9375rem", fontWeight: 700, color: "var(--color-text)", marginBottom: "0.125rem", cursor: info.tooltip ? "help" : undefined }}>{info.detail}</p>
               <p style={{ fontSize: "0.75rem", color: "var(--color-text-tertiary)" }}>{info.sub}</p>
             </div>
           </motion.div>
@@ -178,12 +189,12 @@ export default function ContactPage() {
                 >
                   <CheckCircle size={64} style={{ color: "var(--color-success)", margin: "0 auto 1.5rem" }} />
                 </motion.div>
-                <h2 style={{ fontSize: "1.5rem", fontWeight: 800, marginBottom: "0.75rem" }}>Message Sent!</h2>
+                <h2 style={{ fontSize: "1.5rem", fontWeight: 800, marginBottom: "0.75rem" }}>{t("messageSent")}</h2>
                 <p style={{ color: "var(--color-text-secondary)", maxWidth: "320px", margin: "0 auto 1.5rem", lineHeight: 1.6 }}>
                   {t("success")}
                 </p>
                 <Button color="primary" onPress={() => setSubmitted(false)}>
-                  Send Another Message
+                  {t("sendAnother")}
                 </Button>
               </motion.div>
             ) : (
@@ -198,12 +209,12 @@ export default function ContactPage() {
                   <div style={{ width: "2rem", height: "2rem", borderRadius: "10px", background: "var(--color-accent-light)", color: "var(--color-accent)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                     <Send size={16} />
                   </div>
-                  <h2 style={{ fontSize: "1.125rem", fontWeight: 700 }}>Send us a message</h2>
+                  <h2 style={{ fontSize: "1.125rem", fontWeight: 700 }}>{t("formTitle")}</h2>
                 </div>
 
                 {/* Topic Selector */}
                 <div>
-                  <label style={labelStyle}>What can we help with?</label>
+                  <label style={labelStyle}>{t("topicLabel")}</label>
                   <div className="grid grid-cols-2 gap-2 max-[380px]:grid-cols-1">
                     {TOPICS.map((topic) => {
                       const isActive = selectedTopic === topic.value;
@@ -213,7 +224,7 @@ export default function ContactPage() {
                           type="button"
                           onClick={() => {
                             setSelectedTopic(topic.value);
-                            setValue("subject", topic.label);
+                            setValue("subject", t(topic.labelKey));
                           }}
                           style={{
                             display: "flex",
@@ -231,7 +242,7 @@ export default function ContactPage() {
                           }}
                         >
                           <topic.icon size={15} />
-                          {topic.label}
+                          {t(topic.labelKey)}
                         </button>
                       );
                     })}
@@ -244,10 +255,10 @@ export default function ContactPage() {
                     <input
                       className="contact-input"
                       style={inputPlainStyle}
-                      placeholder="John Doe"
+                      placeholder={t("namePlaceholder")}
                       {...register("name")}
                     />
-                    {errors.name && <span style={errorStyle}>{errors.name.message}</span>}
+                    {errors.name && <span style={errorStyle}>{vm(errors.name.message)}</span>}
                   </div>
                   <div>
                     <label style={labelStyle}>{t("email")}</label>
@@ -257,11 +268,11 @@ export default function ContactPage() {
                         className="contact-input"
                         type="email"
                         style={inputStyle}
-                        placeholder="your@email.com"
+                        placeholder={t("emailPlaceholder")}
                         {...register("email")}
                       />
                     </div>
-                    {errors.email && <span style={errorStyle}>{errors.email.message}</span>}
+                    {errors.email && <span style={errorStyle}>{vm(errors.email.message)}</span>}
                   </div>
                 </div>
 
@@ -270,10 +281,10 @@ export default function ContactPage() {
                   <input
                     className="contact-input"
                     style={inputPlainStyle}
-                    placeholder="How can we help?"
+                    placeholder={t("subjectPlaceholder")}
                     {...register("subject")}
                   />
-                  {errors.subject && <span style={errorStyle}>{errors.subject.message}</span>}
+                  {errors.subject && <span style={errorStyle}>{vm(errors.subject.message)}</span>}
                 </div>
 
                 <div>
@@ -282,10 +293,10 @@ export default function ContactPage() {
                     className="contact-input"
                     rows={5}
                     style={{ ...inputPlainStyle, resize: "vertical", lineHeight: 1.6 }}
-                    placeholder="Tell us more about your question or concern..."
+                    placeholder={t("messagePlaceholder")}
                     {...register("message")}
                   />
-                  {errors.message && <span style={errorStyle}>{errors.message.message}</span>}
+                  {errors.message && <span style={errorStyle}>{vm(errors.message.message)}</span>}
                 </div>
 
                 <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
@@ -321,15 +332,10 @@ export default function ContactPage() {
           }}>
             <h3 style={{ fontSize: "1rem", fontWeight: 700, marginBottom: "1rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
               <HelpCircle size={18} style={{ color: "var(--color-accent)" }} />
-              Frequently Asked
+              {t("faqTitle")}
             </h3>
             <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-              {[
-                { q: "How long does shipping take?", a: "Standard 5-7 days, Express 2-3 days." },
-                { q: "What is your return policy?", a: "30-day returns on all unused items." },
-                { q: "Do you ship internationally?", a: "Yes, across all EU countries." },
-                { q: "How do I track my order?", a: "Check your account or email for tracking." },
-              ].map((faq, i) => (
+              {FAQ_KEYS.map((k) => ({ q: t(`faq${k}Q`), a: t(`faq${k}A`) })).map((faq, i) => (
                 <div key={i} style={{
                   padding: "0.75rem",
                   borderRadius: "10px",
@@ -352,20 +358,20 @@ export default function ContactPage() {
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.875rem" }}>
               <Clock size={18} style={{ color: "var(--ochre)" }} />
-              <h3 style={{ fontSize: "0.9375rem", fontWeight: 700 }}>Response Times</h3>
+              <h3 style={{ fontSize: "0.9375rem", fontWeight: 700 }}>{t("responseTimesTitle")}</h3>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: "0.625rem" }}>
               <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.8125rem" }}>
-                <span style={{ color: "rgba(255,255,255,0.7)" }}>Email</span>
-                <span style={{ fontWeight: 600 }}>Within 24h</span>
+                <span style={{ color: "rgba(255,255,255,0.7)" }}>{t("responseEmail")}</span>
+                <span style={{ fontWeight: 600 }}>{t("within24h")}</span>
               </div>
               <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.8125rem" }}>
-                <span style={{ color: "rgba(255,255,255,0.7)" }}>Order support</span>
-                <span style={{ fontWeight: 600 }}>Within 24h</span>
+                <span style={{ color: "rgba(255,255,255,0.7)" }}>{t("responseOrders")}</span>
+                <span style={{ fontWeight: 600 }}>{t("within24h")}</span>
               </div>
               <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.8125rem" }}>
-                <span style={{ color: "rgba(255,255,255,0.7)" }}>Wholesale</span>
-                <span style={{ fontWeight: 600 }}>Within 48h</span>
+                <span style={{ color: "rgba(255,255,255,0.7)" }}>{t("responseWholesale")}</span>
+                <span style={{ fontWeight: 600 }}>{t("within48h")}</span>
               </div>
             </div>
           </div>
@@ -382,7 +388,7 @@ export default function ContactPage() {
           }}>
             <ShieldCheck size={20} style={{ color: "var(--color-success)", flexShrink: 0 }} />
             <p style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)", lineHeight: 1.5 }}>
-              Your information is secure and will only be used to respond to your inquiry. We never share your data.
+              {t("privacyNote")}
             </p>
           </div>
         </motion.div>

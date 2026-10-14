@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { ChevronRight, ChevronDown, Menu, X } from "lucide-react";
 import clsx from "clsx";
@@ -14,6 +15,7 @@ interface Category {
 }
 
 function CategoryItem({ cat, depth = 0, onNavigate }: { cat: Category; depth?: number; onNavigate: () => void }) {
+  const t = useTranslations("home.sidebar");
   const [expanded, setExpanded] = useState(false);
   const hasChildren = cat.children && cat.children.length > 0;
   const count = cat._count?.products || 0;
@@ -36,7 +38,8 @@ function CategoryItem({ cat, depth = 0, onNavigate }: { cat: Category; depth?: n
           <button
             className="mr-1 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-sm text-subtle transition-[background,color] duration-200 hover:bg-well hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
             onClick={(e) => { e.preventDefault(); setExpanded(!expanded); }}
-            aria-label={expanded ? "Collapse" : "Expand"}
+            aria-label={expanded ? t("collapse", { name: cat.name }) : t("expand", { name: cat.name })}
+            aria-expanded={expanded}
           >
             {expanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
           </button>
@@ -50,15 +53,17 @@ function CategoryItem({ cat, depth = 0, onNavigate }: { cat: Category; depth?: n
 }
 
 export function CategorySidebar() {
+  const t = useTranslations("home.sidebar");
+  const locale = useLocale();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
-    fetch("/api/categories")
+    fetch(`/api/categories?locale=${encodeURIComponent(locale)}`)
       .then((r) => r.json())
       .then((d) => setCategories(Array.isArray(d) ? d : []))
       .catch(console.error);
-  }, []);
+  }, [locale]);
 
   const closeMobile = () => setMobileOpen(false);
 
@@ -75,10 +80,10 @@ export function CategorySidebar() {
       <button
         className="hidden items-center gap-2 rounded-lg border-none bg-inverse px-4 py-2 text-sm font-semibold text-inverse-fg max-lg:flex focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
         onClick={() => setMobileOpen(true)}
-        aria-label="Open categories"
+        aria-label={t("open")}
       >
         <Menu size={20} />
-        <span>Categories</span>
+        <span>{t("categories")}</span>
       </button>
 
       {mobileOpen && (
@@ -95,12 +100,12 @@ export function CategorySidebar() {
         <div className="flex items-center justify-between bg-inverse px-4 py-3 text-inverse-fg">
           <h3 className="m-0 flex items-center gap-2 text-sm font-bold uppercase tracking-wide">
             <Menu size={16} />
-            Catalog
+            {t("catalog")}
           </h3>
           <button
             className="hidden cursor-pointer border-none bg-transparent p-0.5 text-inverse-fg max-lg:block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
             onClick={closeMobile}
-            aria-label="Close categories"
+            aria-label={t("close")}
           >
             <X size={20} />
           </button>

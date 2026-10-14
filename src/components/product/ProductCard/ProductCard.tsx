@@ -1,13 +1,12 @@
 "use client";
 
-import Image from "next/image";
+import { ProductImage } from "@/components/shared/ProductImage/ProductImage";
 import clsx from "clsx";
 import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import { ShoppingCart, Heart, ImageOff } from "lucide-react";
 import { PriceDisplay } from "@/components/shared/PriceDisplay/PriceDisplay";
 import { useCart } from "@/providers/CartProvider";
-import { shouldUnoptimizeImage } from "@/lib/utils/product-image";
 
 interface ProductCardProps {
   id: string;
@@ -66,25 +65,24 @@ export function ProductCard({
       <div className="relative aspect-square overflow-hidden bg-[#FEFEFE]">
         {imageUrl ? (
           <div className="absolute inset-1.5 sm:inset-3">
-            <Image
+            <ProductImage
               src={imageUrl}
               alt={name}
               fill
               sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
               className="object-contain transition-transform duration-[600ms] ease-out-expo group-hover:scale-[1.06]"
-              unoptimized={shouldUnoptimizeImage(imageUrl)}
             />
           </div>
         ) : (
           <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-[0.8125rem] text-subtle">
             <ImageOff size={32} />
-            No Image
+            {t("noImage")}
           </div>
         )}
 
         {isOnSale && (
           <span className="absolute left-3 top-3 z-[4] rounded-pill bg-pop px-3 py-[0.3rem] text-[0.6875rem] font-bold uppercase tracking-wide text-pop-ink">
-            Sale
+            {t("sale")}
           </span>
         )}
         {outOfStock && (
@@ -96,7 +94,7 @@ export function ProductCard({
         <button
           className="absolute right-3 top-3 z-[4] flex h-8 w-8 items-center justify-center rounded-pill bg-surface text-subtle opacity-0 shadow-sm transition-[transform,color] duration-150 hover:scale-[1.15] hover:text-danger group-hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
           onClick={handleWishlist}
-          aria-label="Add to wishlist"
+          aria-label={t("addToWishlist")}
         >
           <Heart size={14} />
         </button>

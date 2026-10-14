@@ -1,38 +1,41 @@
 import { z } from "zod";
 
+// Error messages are stable i18n keys (namespace "validation"). Forms render
+// them via useValidationMessage(); API routes may surface them as-is.
+
 export const checkoutContactSchema = z.object({
-  email: z.string().email("Valid email is required"),
+  email: z.string().email("validation.emailInvalid"),
   phone: z.string().optional(),
 });
 
 export const checkoutShippingSchema = z.object({
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
-  address1: z.string().min(1, "Address is required"),
+  firstName: z.string().min(1, "validation.firstNameRequired"),
+  lastName: z.string().min(1, "validation.lastNameRequired"),
+  address1: z.string().min(1, "validation.addressRequired"),
   address2: z.string().optional(),
-  city: z.string().min(1, "City is required"),
+  city: z.string().min(1, "validation.cityRequired"),
   province: z.string().optional(),
-  postalCode: z.string().min(1, "Postal code is required"),
-  country: z.string().min(1, "Country is required"),
+  postalCode: z.string().min(1, "validation.postalCodeRequired"),
+  country: z.string().min(1, "validation.countryRequired"),
 });
 
 export const cardSchema = z.object({
-  number: z.string().min(13, "Card number is too short").max(19, "Card number is too long").refine((val) => {
+  number: z.string().min(13, "validation.cardNumberTooShort").max(19, "validation.cardNumberTooLong").refine((val) => {
     const clean = val.replace(/\s+/g, "");
     const isVisa = /^4/.test(clean);
     const isMaster = /^(5[1-5]|222[1-9]|22[3-9]|2[3-6]|27[0-1]|2720)/.test(clean);
     return isVisa || isMaster;
-  }, "Only VISA or Mastercard cards are accepted"),
-  holder: z.string().min(1, "Card holder name is required"),
-  expiryMonth: z.string().length(2, "Must be 2 digits (e.g. 05)"),
-  expiryYear: z.string().length(4, "Must be 4 digits (e.g. 2034)"),
-  cvv: z.string().min(3, "CVV is too short").max(4, "CVV is too long"),
+  }, "validation.cardUnsupported"),
+  holder: z.string().min(1, "validation.cardHolderRequired"),
+  expiryMonth: z.string().length(2, "validation.expiryMonthFormat"),
+  expiryYear: z.string().length(4, "validation.expiryYearFormat"),
+  cvv: z.string().min(3, "validation.cvvTooShort").max(4, "validation.cvvTooLong"),
 });
 
 export const checkoutSchema = z.object({
   contact: checkoutContactSchema,
   shipping: checkoutShippingSchema,
-  shippingMethod: z.string().min(1, "Shipping method is required"),
+  shippingMethod: z.string().min(1, "validation.shippingMethodRequired"),
   notes: z.string().optional(),
   discountCode: z.string().optional(),
 });

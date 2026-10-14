@@ -1,8 +1,9 @@
 "use client";
 
-import Image from "next/image";
+import { ProductImage } from "@/components/shared/ProductImage/ProductImage";
 import { motion } from "framer-motion";
 import { Check, ShoppingCart } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface CartToastProps {
   name: string;
@@ -11,6 +12,7 @@ interface CartToastProps {
 }
 
 export function CartToast({ name, imageUrl, quantity }: CartToastProps) {
+  const t = useTranslations("shared");
   return (
     <motion.div
       className="flex min-w-[280px] items-center gap-3 px-4 py-3"
@@ -30,18 +32,18 @@ export function CartToast({ name, imageUrl, quantity }: CartToastProps) {
 
       <div className="relative flex h-12 w-12 flex-shrink-0 items-center justify-center overflow-hidden rounded-md bg-well text-subtle">
         {imageUrl ? (
-          <Image src={imageUrl} alt={name} fill sizes="48px" style={{ objectFit: "contain" }} />
+          <ProductImage src={imageUrl} alt={name} fill sizes="48px" style={{ objectFit: "contain" }} fallback={<ShoppingCart size={20} />} />
         ) : (
           <ShoppingCart size={20} />
         )}
       </div>
 
       <div className="flex min-w-0 flex-col gap-0.5">
-        <span className="text-xs font-bold uppercase tracking-wide text-success">Added to cart</span>
+        <span className="text-xs font-bold uppercase tracking-wide text-success">{t("addedToCart")}</span>
         <span className="max-w-[200px] overflow-hidden text-ellipsis whitespace-nowrap text-[0.8125rem] font-semibold text-ink">
           {name}
         </span>
-        {quantity > 1 && <span className="text-[0.6875rem] text-subtle">Qty: {quantity}</span>}
+        {quantity > 1 && <span className="text-[0.6875rem] text-subtle">{t("qty", { count: quantity })}</span>}
       </div>
     </motion.div>
   );

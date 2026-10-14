@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 
 interface BannerData {
@@ -20,19 +21,39 @@ interface Props {
   wideBanners: BannerData[];
 }
 
-const defaultSmall: BannerData[] = [
-  { id: "1", badgeText: "Kitchen & Dining", title: "Everyday Tableware", subtitle: "Ceramics & glassware", bgColor: "var(--promo-bg-blue)", textColor: "var(--color-text)", linkUrl: "/catalog?category=cutlery-crockery-and-glassware-5032" },
-  { id: "2", badgeText: "Textiles", title: "Soft-Washed Linen", subtitle: "Up to 30% off", bgColor: "var(--promo-bg-warm)", textColor: "var(--color-text)", linkUrl: "/catalog?category=soft-furnishings-18660" },
-  { id: "3", badgeText: "Décor & Lighting", title: "Warm Up Every Room", subtitle: "Candles & lamps", bgColor: "var(--promo-bg-green)", textColor: "var(--color-text)", linkUrl: "/catalog?category=home-d-cor-5684" },
-];
+// Fallback banners when none are configured in the admin; copy lives in
+// messages under home.promoGrid.<key>.
+const defaultSmall = [
+  { id: "1", key: "tableware", bgColor: "var(--promo-bg-blue)", textColor: "var(--color-text)", linkUrl: "/catalog?category=cutlery-crockery-and-glassware-5032" },
+  { id: "2", key: "linen", bgColor: "var(--promo-bg-warm)", textColor: "var(--color-text)", linkUrl: "/catalog?category=soft-furnishings-18660" },
+  { id: "3", key: "lighting", bgColor: "var(--promo-bg-green)", textColor: "var(--color-text)", linkUrl: "/catalog?category=home-d-cor-5684" },
+] as const;
 
-const defaultWide: BannerData[] = [
-  { id: "w1", badgeText: "Members Club", title: "Join & Get 10% Off Your First Order", subtitle: "Member pricing, early access, and warm support", bgColor: "#2b241d", textColor: "#f0e9df", linkUrl: "/auth/register", ctaLabel: "Join Free" },
-];
+const defaultWide = [
+  { id: "w1", key: "members", bgColor: "#2b241d", textColor: "#f0e9df", linkUrl: "/auth/register" },
+] as const;
 
 export function PromoBannerGrid({ smallBanners, wideBanners }: Props) {
-  const small = smallBanners.length > 0 ? smallBanners : defaultSmall;
-  const wide = wideBanners.length > 0 ? wideBanners : defaultWide;
+  const t = useTranslations("home.promoGrid");
+  const small: BannerData[] =
+    smallBanners.length > 0
+      ? smallBanners
+      : defaultSmall.map(({ key, ...b }) => ({
+          ...b,
+          badgeText: t(`${key}.badge`),
+          title: t(`${key}.title`),
+          subtitle: t(`${key}.subtitle`),
+        }));
+  const wide: BannerData[] =
+    wideBanners.length > 0
+      ? wideBanners
+      : defaultWide.map(({ key, ...b }) => ({
+          ...b,
+          badgeText: t(`${key}.badge`),
+          title: t(`${key}.title`),
+          subtitle: t(`${key}.subtitle`),
+          ctaLabel: t(`${key}.cta`),
+        }));
 
   return (
     <div className="mb-6 flex flex-col gap-3">
@@ -54,7 +75,7 @@ export function PromoBannerGrid({ smallBanners, wideBanners }: Props) {
               {b.subtitle && (
                 <span className="mb-3 text-[0.8125rem] text-muted">{b.subtitle}</span>
               )}
-              <span className="mt-auto text-[0.8125rem] font-semibold">Shop now &rarr;</span>
+              <span className="mt-auto text-[0.8125rem] font-semibold">{t("shopNow")} &rarr;</span>
             </Link>
           ))}
         </div>

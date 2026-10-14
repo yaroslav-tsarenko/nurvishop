@@ -1,6 +1,5 @@
 "use client";
 
-import { formatPrice } from "@/lib/utils/format-price";
 import { useCurrency } from "@/providers/CurrencyProvider";
 
 interface PriceDisplayProps {
@@ -20,7 +19,7 @@ export function PriceDisplay({
   comparePrice,
   size = "md",
 }: PriceDisplayProps) {
-  const { currency, convert } = useCurrency();
+  const { format } = useCurrency();
   const isOnSale = comparePrice && comparePrice > price;
 
   return (
@@ -34,7 +33,7 @@ export function PriceDisplay({
           color: isOnSale ? "var(--color-accent)" : "var(--color-text)",
         }}
       >
-        {formatPrice(convert(price), currency)}
+        {format(price)}
       </span>
       {isOnSale && (
         <span
@@ -44,7 +43,7 @@ export function PriceDisplay({
             textDecoration: "line-through",
           }}
         >
-          {formatPrice(convert(comparePrice), currency)}
+          {format(comparePrice)}
         </span>
       )}
     </div>

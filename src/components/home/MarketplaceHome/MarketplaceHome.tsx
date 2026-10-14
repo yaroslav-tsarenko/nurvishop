@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { TopBar } from "../TopBar/TopBar";
 import { PromoStrip } from "../PromoStrip/PromoStrip";
 import { CategorySidebar } from "../CategorySidebar/CategorySidebar";
@@ -83,6 +84,7 @@ interface CategoryShowcaseItem {
   id: string;
   name: string;
   slug: string;
+  matchName?: string;
   imageUrl?: string | null;
   productCount: number;
 }
@@ -111,6 +113,7 @@ interface Props {
 }
 
 export function MarketplaceHome({ data }: Props) {
+  const t = useTranslations("home.sections");
   const {
     heroSlides, dealCards, promoSmall, promoWide,
     brands, sections, tabs, utilityLinks, promoStripItems,
@@ -144,11 +147,11 @@ export function MarketplaceHome({ data }: Props) {
             {/* Most Popular Products */}
             {popularProducts.length > 0 && (
               <ProductSection
-                title="Most Popular"
-                subtitle="Top products by availability"
+                title={t("popularTitle")}
+                subtitle={t("popularSubtitle")}
                 products={popularProducts}
                 viewAllHref="/catalog?sort=popular"
-                viewAllLabel="View all popular"
+                viewAllLabel={t("popularViewAll")}
                 bg="white"
                 columns={5}
               />
@@ -162,11 +165,11 @@ export function MarketplaceHome({ data }: Props) {
               <ProductSection
                 key={cs.category.id}
                 title={cs.category.name}
-                subtitle={`${cs.products.length}+ products`}
+                subtitle={t("productCount", { count: cs.products.length })}
                 products={cs.products}
                 tabs={cs.subcategoryTabs}
                 viewAllHref={`/catalog/${cs.category.slug}`}
-                viewAllLabel={`All ${cs.category.name}`}
+                viewAllLabel={t("categoryViewAll", { name: cs.category.name })}
                 bg={i % 2 === 1 ? "gray" : "white"}
                 columns={5}
               />
@@ -191,11 +194,11 @@ export function MarketplaceHome({ data }: Props) {
               <ProductSection
                 key={cs.category.id}
                 title={cs.category.name}
-                subtitle={`${cs.products.length}+ products`}
+                subtitle={t("productCount", { count: cs.products.length })}
                 products={cs.products}
                 tabs={cs.subcategoryTabs}
                 viewAllHref={`/catalog/${cs.category.slug}`}
-                viewAllLabel={`All ${cs.category.name}`}
+                viewAllLabel={t("categoryViewAll", { name: cs.category.name })}
                 bg={i % 2 === 0 ? "gray" : "white"}
                 columns={5}
               />
@@ -228,11 +231,11 @@ export function MarketplaceHome({ data }: Props) {
             {/* New Arrivals */}
             {newProducts.length > 0 && (
               <ProductSection
-                title="New Arrivals"
-                subtitle="Just landed in store"
+                title={t("newTitle")}
+                subtitle={t("newSubtitle")}
                 products={newProducts}
                 viewAllHref="/catalog?sort=newest"
-                viewAllLabel="View all new"
+                viewAllLabel={t("newViewAll")}
                 bg="gray"
                 columns={5}
               />

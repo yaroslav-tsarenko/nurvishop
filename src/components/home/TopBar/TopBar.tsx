@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { MapPin, Phone, Globe, Info, HelpCircle, Truck, RotateCcw, CreditCard, Package } from "lucide-react";
 
@@ -19,16 +20,22 @@ interface Props {
   links: UtilityLink[];
 }
 
+// Fallback links when none are configured in the admin; `label` holds the
+// translation key under home.topBar.
 const defaultLinks: UtilityLink[] = [
-  { id: "1", label: "About", linkUrl: "/about", position: "left" },
-  { id: "2", label: "Payment", linkUrl: "/policies/payment", position: "left" },
-  { id: "4", label: "Returns", linkUrl: "/policies/returns", position: "left" },
-  { id: "5", label: "Warranty", linkUrl: "/policies/warranty", position: "left" },
-  { id: "7", label: "Contacts", linkUrl: "/contact", icon: "Phone", position: "right" },
+  { id: "1", label: "about", linkUrl: "/about", position: "left" },
+  { id: "2", label: "payment", linkUrl: "/policies/payment", position: "left" },
+  { id: "4", label: "returns", linkUrl: "/policies/returns", position: "left" },
+  { id: "5", label: "warranty", linkUrl: "/policies/warranty", position: "left" },
+  { id: "7", label: "contacts", linkUrl: "/contact", icon: "Phone", position: "right" },
 ];
 
 export function TopBar({ links }: Props) {
-  const items = links.length > 0 ? links : defaultLinks;
+  const t = useTranslations("home.topBar");
+  const items =
+    links.length > 0
+      ? links
+      : defaultLinks.map((l) => ({ ...l, label: t(l.label) }));
   const leftLinks = items.filter((l) => l.position === "left");
   const rightLinks = items.filter((l) => l.position === "right");
 

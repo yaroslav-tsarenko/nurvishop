@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import clsx from "clsx";
-import { useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 
 interface Review {
   id: string;
@@ -24,6 +24,7 @@ function countCharacteristics(chars: Record<string, Record<string, string>>): nu
 
 export function ProductTabs({ description, characteristics, reviews }: ProductTabsProps) {
   const t = useTranslations("product");
+  const format = useFormatter();
   const [activeTab, setActiveTab] = useState<"description" | "characteristics" | "reviews">("description");
 
   const groups = characteristics ? Object.entries(characteristics) : [];
@@ -114,11 +115,13 @@ export function ProductTabs({ description, characteristics, reviews }: ProductTa
             <>
               <div className="mb-6 flex items-center gap-8 rounded-xl bg-mist p-5 sm:p-6">
                 <div className="text-center">
-                  <div className="text-[2rem] font-extrabold leading-none text-ink sm:text-[2.5rem]">{avgRating.toFixed(1)}</div>
-                  <div className="mt-1 text-lg text-warning">
+                  <div className="text-[2rem] font-extrabold leading-none text-ink sm:text-[2.5rem]">
+                    {format.number(avgRating, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}
+                  </div>
+                  <div className="mt-1 text-lg text-warning" aria-hidden="true">
                     {"★".repeat(Math.round(avgRating))}{"☆".repeat(5 - Math.round(avgRating))}
                   </div>
-                  <div className="mt-1 text-[0.8125rem] text-subtle">{reviews.length} {t("reviews", { count: reviews.length }).toLowerCase().replace(/\(\d+\)/, "").trim()}</div>
+                  <div className="mt-1 text-[0.8125rem] text-subtle">{t("reviewCount", { count: reviews.length })}</div>
                 </div>
               </div>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-[repeat(auto-fill,minmax(280px,1fr))]">
@@ -126,9 +129,13 @@ export function ProductTabs({ description, characteristics, reviews }: ProductTa
                   <div key={review.id} className="rounded-xl border border-line bg-surface p-5 transition-shadow duration-200 hover:shadow-md sm:p-6">
                     <div className="mb-3 flex items-center justify-between">
                       <span className="text-[0.9375rem] font-bold text-ink">
-                        {review.user.name || "Anonymous"}
+                        {review.user.name || t("anonymous")}
                       </span>
-                      <span className="text-sm tracking-[1px] text-warning">
+                      <span
+                        className="text-sm tracking-[1px] text-warning"
+                        role="img"
+                        aria-label={t("ratingOutOf", { rating: review.rating })}
+                      >
                         {"★".repeat(review.rating)}{"☆".repeat(5 - review.rating)}
                       </span>
                     </div>
@@ -136,7 +143,7 @@ export function ProductTabs({ description, characteristics, reviews }: ProductTa
                       <p className="text-sm leading-[1.65] text-muted">{review.comment}</p>
                     )}
                     <div className="mt-3 text-xs text-subtle">
-                      {new Date(review.createdAt).toLocaleDateString()}
+                      {format.dateTime(new Date(review.createdAt), { year: "numeric", month: "long", day: "numeric" })}
                     </div>
                   </div>
                 ))}

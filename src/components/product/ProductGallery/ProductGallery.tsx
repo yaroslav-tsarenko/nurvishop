@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import clsx from "clsx";
-import Image from "next/image";
-import { shouldUnoptimizeImage } from "@/lib/utils/product-image";
+import { ProductImage } from "@/components/shared/ProductImage/ProductImage";
+import { useTranslations } from "next-intl";
 
 interface ProductGalleryProps {
   images: { id: string; url: string; alt?: string | null }[];
@@ -14,13 +14,14 @@ const mainImageClass =
   "relative aspect-square cursor-zoom-in overflow-hidden rounded-lg border border-line bg-surface p-2 sm:aspect-[4/3] sm:rounded-xl sm:p-4";
 
 export function ProductGallery({ images, productName }: ProductGalleryProps) {
+  const t = useTranslations("product");
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   if (images.length === 0) {
     return (
       <div className="flex flex-col gap-3">
         <div className={clsx(mainImageClass, "flex items-center justify-center text-subtle")}>
-          No Image
+          {t("noImage")}
         </div>
       </div>
     );
@@ -29,14 +30,13 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
   return (
     <div className="flex flex-col gap-3">
       <div className={mainImageClass}>
-        <Image
+        <ProductImage
           src={images[selectedIndex].url}
           alt={images[selectedIndex].alt || productName}
           fill
           sizes="(max-width: 768px) 100vw, 50vw"
           style={{ objectFit: "contain" }}
           priority
-          unoptimized={shouldUnoptimizeImage(images[selectedIndex].url)}
         />
       </div>
       {images.length > 1 && (
@@ -49,14 +49,15 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
                 index === selectedIndex ? "border-accent" : "border-transparent",
               )}
               onClick={() => setSelectedIndex(index)}
+              aria-label={t("showImage", { index: index + 1, total: images.length })}
+              aria-current={index === selectedIndex}
             >
-              <Image
+              <ProductImage
                 src={image.url}
-                alt={image.alt || `${productName} ${index + 1}`}
+                alt={image.alt || t("imageAlt", { name: productName, index: index + 1 })}
                 fill
                 sizes="64px"
                 style={{ objectFit: "contain" }}
-                unoptimized={shouldUnoptimizeImage(image.url)}
               />
             </button>
           ))}

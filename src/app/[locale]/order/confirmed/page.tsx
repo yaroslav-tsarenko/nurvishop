@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, Suspense } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/Button";
@@ -12,9 +12,12 @@ import { formatPrice } from "@/lib/utils/format-price";
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner/LoadingSpinner";
 import { useCart } from "@/providers/CartProvider";
 import type { OrderDetail } from "@/types/order";
+import { getCountryName } from "@/lib/countries";
 
 function ConfirmedContent() {
   const t = useTranslations("notifications");
+  const tOrder = useTranslations("order");
+  const locale = useLocale();
   const { currency, convert } = useCurrency();
   const { clearCart } = useCart();
   const searchParams = useSearchParams();
@@ -84,8 +87,8 @@ function ConfirmedContent() {
     return (
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "60vh", gap: "1.5rem" }}>
         <LoadingSpinner />
-        <h2 style={{ fontSize: "1.25rem", fontWeight: 700 }}>Checking payment status...</h2>
-        <p style={{ color: "var(--color-text-secondary)", fontSize: "0.875rem" }}>Please do not close or refresh this page.</p>
+        <h2 style={{ fontSize: "1.25rem", fontWeight: 700 }}>{tOrder("checkingPayment")}</h2>
+        <p style={{ color: "var(--color-text-secondary)", fontSize: "0.875rem" }}>{tOrder("doNotClose")}</p>
       </div>
     );
   }
@@ -121,16 +124,19 @@ function ConfirmedContent() {
           {isFailed ? <AlertTriangle size={40} /> : <CheckCircle size={40} />}
         </motion.div>
         <h1 style={{ fontSize: "1.75rem", fontWeight: 800, letterSpacing: "-0.02em", marginBottom: "0.5rem" }}>
-          {isFailed ? "Payment Failed" : t("orderPlaced")}
+          {isFailed ? tOrder("paymentFailed") : t("orderPlaced")}
         </h1>
         <p style={{ color: "var(--color-text-secondary)", fontSize: "0.9375rem" }}>
           {isFailed 
-            ? "Your payment transaction could not be completed. Please try again or use another payment method."
-            : "Thank you for your order. We'll send a confirmation email shortly."}
+            ? tOrder("paymentFailedDesc")
+            : tOrder("thankYou")}
         </p>
         {order && (
           <p style={{ marginTop: "0.75rem", fontSize: "0.875rem", color: "var(--color-text-tertiary)" }}>
-            Order <strong style={{ color: "var(--color-text)" }}>#{order.orderNumber.slice(-8)}</strong>
+            {tOrder.rich("orderRef", {
+              number: order.orderNumber.slice(-8),
+              strong: (chunks) => <strong style={{ color: "var(--color-text)" }}>{chunks}</strong>,
+            })}
           </p>
         )}
       </motion.div>
@@ -150,7 +156,7 @@ function ConfirmedContent() {
         >
           <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "1rem" }}>
             <Package size={18} color="var(--color-accent)" />
-            <h2 style={{ fontSize: "1rem", fontWeight: 700 }}>Order Summary</h2>
+            <h2 style={{ fontSize: "1rem", fontWeight: 700 }}>{tOrder("summary")}</h2>
           </div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", marginBottom: "1rem" }}>
@@ -159,7 +165,7 @@ function ConfirmedContent() {
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis" }}>{item.productName}</div>
                   <div style={{ fontSize: "0.75rem", color: "var(--color-text-tertiary)", marginTop: "0.125rem" }}>
-                    Qty {item.quantity} × {formatPrice(convert(Number(item.price)), currency)}
+                    {tOrder("qtyTimesPrice", { count: item.quantity, price: formatPrice(convert(Number(item.price)), currency) })}
                   </div>
                 </div>
                 <span style={{ fontWeight: 700, whiteSpace: "nowrap" }}>{formatPrice(convert(Number(item.total)), currency)}</span>
@@ -169,15 +175,15 @@ function ConfirmedContent() {
 
           <div style={{ display: "flex", flexDirection: "column", gap: "0.375rem", fontSize: "0.875rem" }}>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span style={{ color: "var(--color-text-secondary)" }}>Subtotal</span>
+              <span style={{ color: "var(--color-text-secondary)" }}>{tOrder("subtotal")}</span>
               <span>{formatPrice(convert(Number(order.subtotal)), currency)}</span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span style={{ color: "var(--color-text-secondary)" }}>Shipping</span>
-              <span>{Number(order.shippingCost) === 0 ? "Free" : formatPrice(convert(Number(order.shippingCost)), currency)}</span>
+              <span style={{ color: "var(--color-text-secondary)" }}>{tOrder("shipping")}</span>
+              <span>{Number(order.shippingCost) === 0 ? tOrder("free") : formatPrice(convert(Number(order.shippingCost)), currency)}</span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span style={{ color: "var(--color-text-secondary)" }}>Tax</span>
+              <span style={{ color: "var(--color-text-secondary)" }}>{tOrder("tax")}</span>
               <span>{formatPrice(convert(Number(order.taxAmount)), currency)}</span>
             </div>
             <div style={{
@@ -189,7 +195,7 @@ function ConfirmedContent() {
               paddingTop: "0.625rem",
               marginTop: "0.375rem",
             }}>
-              <span>Total</span>
+              <span>{tOrder("total")}</span>
               <span>{formatPrice(convert(Number(order.total)), currency)}</span>
             </div>
           </div>
@@ -212,32 +218,32 @@ function ConfirmedContent() {
             <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem" }}>
               <MapPin size={14} color="var(--color-accent)" />
               <span style={{ fontSize: "0.75rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: "var(--color-text-tertiary)" }}>
-                Delivery to
+                {tOrder("deliveryTo")}
               </span>
             </div>
             <p style={{ fontSize: "0.8125rem", color: "var(--color-text-secondary)", lineHeight: 1.5 }}>
               {order.shippingAddress.firstName} {order.shippingAddress.lastName}<br />
               {order.shippingAddress.address1}<br />
               {order.shippingAddress.city}, {order.shippingAddress.postalCode}<br />
-              {order.shippingAddress.country}
+              {getCountryName(order.shippingAddress.country, locale)}
             </p>
           </div>
           <div style={{ padding: "1rem 1.25rem", border: "1px solid var(--color-border)", borderRadius: "var(--radius-lg)", background: "var(--color-bg)" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem" }}>
               <Truck size={14} color="var(--color-accent)" />
               <span style={{ fontSize: "0.75rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: "var(--color-text-tertiary)" }}>
-                Next Steps
+                {tOrder("nextSteps")}
               </span>
             </div>
             {isFailed ? (
               <p style={{ fontSize: "0.8125rem", color: "var(--color-text-secondary)", lineHeight: 1.5, margin: 0 }}>
-                Please check your card details and try again. Alternatively, you can contact our customer support for assistance.
+                {tOrder("failedNextSteps")}
               </p>
             ) : (
               <ul style={{ fontSize: "0.8125rem", color: "var(--color-text-secondary)", lineHeight: 1.6, paddingLeft: "1rem", margin: 0 }}>
-                <li>We&apos;ll prepare your order within 1–2 business days</li>
-                <li>You&apos;ll receive a tracking link by email</li>
-                <li>Estimated delivery depends on destination</li>
+                <li>{tOrder("nextStepPrepare")}</li>
+                <li>{tOrder("nextStepTracking")}</li>
+                <li>{tOrder("nextStepDelivery")}</li>
               </ul>
             )}
           </div>
@@ -263,8 +269,10 @@ function ConfirmedContent() {
         >
           <Mail size={16} color="var(--color-accent)" style={{ flexShrink: 0 }} />
           <span>
-            A confirmation email has been sent to{" "}
-            <strong>{order.customerEmail}</strong>
+            {tOrder.rich("confirmationSent", {
+              email: order.customerEmail,
+              strong: (chunks) => <strong>{chunks}</strong>,
+            })}
           </span>
         </motion.div>
       )}
@@ -280,10 +288,10 @@ function ConfirmedContent() {
         }}
       >
         <Button as={Link} href="/account/orders" variant="bordered" style={{ flex: "1 1 200px" }}>
-          View Orders <ChevronRight size={16} />
+          {tOrder("viewOrders")} <ChevronRight size={16} />
         </Button>
         <Button as={Link} href="/catalog" color="primary" style={{ flex: "1 1 200px" }}>
-          Continue Shopping
+          {tOrder("continueShopping")}
         </Button>
       </motion.div>
     </div>

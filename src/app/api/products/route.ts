@@ -4,6 +4,9 @@ import { productSchema } from "@/lib/validators/product";
 import { PRODUCTS_PER_PAGE } from "@/lib/utils/constants";
 import { slugify } from "@/lib/utils/slugify";
 import { Prisma } from "@prisma/client";
+import { localizeCategoryName } from "@/lib/i18n/category-names";
+import { localizeProduct } from "@/lib/i18n/product";
+import { findProductIdsByTranslation } from "@/lib/i18n/product-search";
 
 export async function GET(request: NextRequest) {
   try {
@@ -20,6 +23,9 @@ export async function GET(request: NextRequest) {
     const featured = searchParams.get("featured");
     const brand = searchParams.get("brand") || "";
     const onSale = searchParams.get("onSale");
+    // Optional: storefront callers pass their locale so category names come back
+    // translated. Without it (admin) names stay as stored.
+    const locale = searchParams.get("locale") || "";
 
     const where: Prisma.ProductWhereInput = {};
 
@@ -30,10 +36,12 @@ export async function GET(request: NextRequest) {
     }
 
     if (search) {
+      const translatedIds = await findProductIdsByTranslation(search, locale);
       where.OR = [
         { name: { contains: search, mode: "insensitive" } },
         { sku: { contains: search, mode: "insensitive" } },
         { description: { contains: search, mode: "insensitive" } },
+        ...(translatedIds.length ? [{ id: { in: translatedIds } }] : []),
       ];
     }
 
@@ -109,8 +117,18 @@ export async function GET(request: NextRequest) {
       prisma.product.count({ where }),
     ]);
 
+    const data = locale
+      ? products.map((p) => ({
+          ...localizeProduct(p, locale),
+          categories: p.categories.map((pc) => ({
+            ...pc,
+            category: { ...pc.category, name: localizeCategoryName(pc.category.name, locale) },
+          })),
+        }))
+      : products;
+
     return NextResponse.json({
-      data: products,
+      data,
       total,
       page,
       pageSize,

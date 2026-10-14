@@ -1,13 +1,14 @@
 "use client";
 
 import { useRef } from "react";
-import Image from "next/image";
+import { ProductImage } from "@/components/shared/ProductImage/ProductImage";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { Flame, ChevronLeft, ChevronRight } from "lucide-react";
 import { motion, useInView } from "framer-motion";
 import { formatPrice } from "@/lib/utils/format-price";
 import { useCurrency } from "@/providers/CurrencyProvider";
-import { getProductImage, getProductImageFallback, shouldUnoptimizeImage } from "@/lib/utils/product-image";
+import { getProductImage } from "@/lib/utils/product-image";
 import { getDiscountPercent, type HomepageProduct } from "@/lib/homepage-products";
 
 interface Props {
@@ -15,6 +16,7 @@ interface Props {
 }
 
 export function SaleStrip({ products }: Props) {
+  const t = useTranslations("home");
   const { currency, convert } = useCurrency();
   const scrollRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef(null);
@@ -44,9 +46,9 @@ export function SaleStrip({ products }: Props) {
           >
             <Flame size={18} className="text-danger" />
           </motion.div>
-          <h2 className="m-0 text-base font-extrabold text-ink">Hot Deals</h2>
+          <h2 className="m-0 text-base font-extrabold text-ink">{t("hotDeals")}</h2>
           <span className="rounded-[4px] bg-danger px-2 py-0.5 text-[0.65rem] font-bold uppercase text-white">
-            Sale
+            {t("saleBadge")}
           </span>
         </div>
         <div className="flex items-center gap-2">
@@ -54,20 +56,20 @@ export function SaleStrip({ products }: Props) {
             href="/catalog?sort=price-asc&onSale=true"
             className="flex items-center gap-0.5 whitespace-nowrap text-[0.8125rem] font-semibold text-danger no-underline transition-opacity duration-200 hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
           >
-            View all <ChevronRight size={14} />
+            {t("viewAll")} <ChevronRight size={14} />
           </Link>
           <div className="flex gap-1">
             <button
               className="flex h-7 w-7 items-center justify-center rounded-md border border-line bg-surface text-muted transition-colors duration-200 hover:border-line-hover hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
               onClick={() => scroll(-1)}
-              aria-label="Scroll left"
+              aria-label={t("scrollLeft")}
             >
               <ChevronLeft size={16} />
             </button>
             <button
               className="flex h-7 w-7 items-center justify-center rounded-md border border-line bg-surface text-muted transition-colors duration-200 hover:border-line-hover hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
               onClick={() => scroll(1)}
-              aria-label="Scroll right"
+              aria-label={t("scrollRight")}
             >
               <ChevronRight size={16} />
             </button>
@@ -99,16 +101,12 @@ export function SaleStrip({ products }: Props) {
                     </span>
                   )}
                   <div className="relative mb-2 flex h-[100px] items-center justify-center rounded-[6px] bg-[#FEFEFE] max-[480px]:h-20">
-                    <Image
+                    <ProductImage
                       src={imgUrl}
                       alt={p.name}
                       width={120}
                       height={100}
                       className="max-h-full max-w-full rounded-[4px] object-contain"
-                      unoptimized={shouldUnoptimizeImage(imgUrl)}
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src = getProductImageFallback("120x100");
-                      }}
                     />
                   </div>
                   <h4 className="m-0 mb-1.5 line-clamp-2 min-h-[2.6em] text-xs font-semibold leading-tight">

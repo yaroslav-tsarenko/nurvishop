@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { Button } from "@/components/ui/Button";
 import { Mail, Lock, Eye, EyeOff, ShoppingBag } from "lucide-react";
@@ -11,6 +11,7 @@ import * as s from "../auth-classes";
 
 export default function LoginPage() {
   const t = useTranslations("auth");
+  const locale = useLocale();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -25,16 +26,18 @@ export default function LoginPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Login failed");
-      toast.success("Logged in successfully!");
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(res.status === 401 ? t("invalidCredentials") : t("loginFailed"));
+      }
+      toast.success(t("loginSuccess"));
       if (data.user?.role === "ADMIN" || data.user?.role === "SUPER_ADMIN") {
         window.location.href = "/admin";
       } else {
-        window.location.href = "/en/account";
+        window.location.href = `/${locale}/account`;
       }
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Login failed");
+      toast.error(error instanceof Error && error.message ? error.message : t("loginFailed"));
     } finally {
       setLoading(false);
     }
@@ -75,7 +78,7 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                placeholder="you@example.com"
+                placeholder={t("emailPlaceholder")}
                 className={s.input}
               />
             </div>
@@ -90,7 +93,7 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                placeholder="Enter your password"
+                placeholder={t("passwordPlaceholder")}
                 className={`${s.input} ${s.inputWithToggle}`}
               />
               <button
@@ -98,6 +101,7 @@ export default function LoginPage() {
                 className={s.inputToggle}
                 onClick={() => setShowPassword(!showPassword)}
                 tabIndex={-1}
+                aria-label={showPassword ? t("hidePassword") : t("showPassword")}
               >
                 {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>

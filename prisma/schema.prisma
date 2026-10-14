@@ -141,6 +141,9 @@ model Product {
   googleCategory   String?
   condition        String @default("new")
   characteristics  Json?
+  // Per-locale overrides of the English content, e.g.
+  // { "lv": { "name", "shortDescription", "description", "metaTitle", "metaDescription", "characteristics" } }
+  translations     Json?
 
   images     ProductImage[]
   categories ProductCategory[]

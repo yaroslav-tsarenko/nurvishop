@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { motion, useInView } from "framer-motion";
 import {
@@ -40,6 +41,8 @@ interface CategoryItem {
   id: string;
   name: string;
   slug: string;
+  /** Original English name, used for icon matching when `name` is localized. */
+  matchName?: string;
   imageUrl?: string | null;
   productCount: number;
 }
@@ -49,6 +52,7 @@ interface Props {
 }
 
 export function CategoryShowcase({ categories }: Props) {
+  const t = useTranslations("home.showcase");
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-40px" });
 
@@ -62,15 +66,15 @@ export function CategoryShowcase({ categories }: Props) {
         animate={isInView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.5 }}
       >
-        <p className="eyebrow mb-1">Explore the home</p>
+        <p className="eyebrow mb-1">{t("eyebrow")}</p>
         <h2 className="m-0 font-display text-xl font-semibold tracking-tight text-ink">
-          Shop by room
+          {t("title")}
         </h2>
       </motion.div>
 
       <div className="-mx-1 flex snap-x snap-mandatory gap-3 overflow-x-auto px-1 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:grid md:grid-cols-4 md:overflow-visible min-[1201px]:grid-cols-8">
         {categories.map((cat, i) => {
-          const Icon = iconFor(cat.name);
+          const Icon = iconFor(cat.matchName ?? cat.name);
           return (
             <motion.div
               key={cat.id}
@@ -93,7 +97,7 @@ export function CategoryShowcase({ categories }: Props) {
                     {cat.name}
                   </h3>
                   <span className="text-[0.7rem] text-subtle">
-                    {cat.productCount} items
+                    {t("items", { count: cat.productCount })}
                   </span>
                 </div>
               </Link>

@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { useRouter } from "@/i18n/routing";
-import { useParams } from "next/navigation";
 import Image from "next/image";
+import { ProductImage } from "@/components/shared/ProductImage/ProductImage";
 import { Link } from "@/i18n/routing";
 import { Button } from "@/components/ui/Button";
 import { useForm } from "react-hook-form";
@@ -15,9 +15,9 @@ import { useAuth } from "@/providers/AuthProvider";
 import { useCurrency } from "@/providers/CurrencyProvider";
 import { checkoutSchema, type CheckoutFormData } from "@/lib/validators/checkout";
 import { formatPrice } from "@/lib/utils/format-price";
-import { COUNTRIES } from "@/lib/countries";
+import { getLocalizedCountries } from "@/lib/countries";
+import { useValidationMessage } from "@/lib/validators/messages";
 import { COMPANY, VAT_RATE } from "@/lib/utils/constants";
-import { shouldUnoptimizeImage } from "@/lib/utils/product-image";
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs/Breadcrumbs";
 import visaLogo from "@/assets/visa.svg";
 import mastercardLogo from "@/assets/mastercard.svg";
@@ -36,10 +36,10 @@ interface AppliedDiscount {
 }
 
 const SHIPPING_METHODS = [
-  { key: "standard", label: "Standard Shipping", time: "5-7 business days", price: 5.99, icon: Truck },
-  { key: "express", label: "Express Shipping", time: "2-3 business days", price: 12.99, icon: Truck },
-  { key: "free", label: "Economy Shipping", time: "7-14 business days", price: 0, icon: Truck },
-];
+  { key: "standard", price: 5.99, icon: Truck },
+  { key: "express", price: 12.99, icon: Truck },
+  { key: "free", price: 0, icon: Truck },
+] as const;
 
 const stepIcons = [Mail, MapPin, CreditCard];
 const stepVariants = {
@@ -113,9 +113,13 @@ function InputWithIcon({ icon: Icon, error, ...props }: { icon: React.ElementTyp
 export default function CheckoutPage() {
   const t = useTranslations("checkout");
   const nav = useTranslations("nav");
+  const tOrder = useTranslations("order");
+  const tCountries = useTranslations("countries");
+  const tNotify = useTranslations("notifications");
+  const vm = useValidationMessage();
   const router = useRouter();
-  const params = useParams();
-  const locale = params.locale as string;
+  const locale = useLocale();
+  const countries = getLocalizedCountries(locale);
   const { cart, clearCart } = useCart();
   const { user } = useAuth();
   const { currency, convert } = useCurrency();
@@ -205,7 +209,7 @@ export default function CheckoutPage() {
     : SHIPPING_METHODS.filter((m) => m.key !== "free");
   const shippingPrice = SHIPPING_METHODS.find((m) => m.key === selectedMethod)?.price ?? 5.99;
 
-  const countryData = COUNTRIES.find((c) => c.code === selectedCountry);
+  const countryData = countries.find((c) => c.code === selectedCountry);
   const phoneHint = countryData ? `${countryData.phone} XX XXX XXXX` : "+370 XXX XXXX";
 
   const discountAmount = discount ? +(cart.subtotal * (discount.percent / 100)).toFixed(2) : 0;
@@ -240,12 +244,12 @@ export default function CheckoutPage() {
       if (data?.discount) {
         setDiscount(data.discount);
         setPromoInput("");
-        toast.success(`${data.discount.percent}% discount applied!`);
+        toast.success(t("discountToast", { percent: data.discount.percent }));
       } else {
-        setPromoError("Invalid or expired code");
+        setPromoError(t("promoInvalid"));
       }
     } catch {
-      setPromoError("Failed to apply code");
+      setPromoError(t("promoFailed"));
     } finally {
       setApplyingPromo(false);
     }
@@ -270,7 +274,7 @@ export default function CheckoutPage() {
   const onSubmit = async (data: CheckoutFormData) => {
     if (!agreed) {
       setAgreeError(true);
-      toast.error("Please agree to the website policies before placing your order.");
+      toast.error(t("agreeToast"));
       return;
     }
     setSubmitting(true);
@@ -303,10 +307,11 @@ export default function CheckoutPage() {
       }
 
       const order = await res.json();
-      toast.success("Order placed successfully!");
+      toast.success(tNotify("orderPlaced"));
       router.push(`/order/confirmed?orderId=${order.id}`);
-    } catch (err: any) {
-      toast.error(err.message || "Failed to place order. Please try again.");
+    } catch {
+      // Server details are logged above; show the customer a localized message.
+      toast.error(t("orderFailed"));
     } finally {
       setSubmitting(false);
     }
@@ -355,15 +360,18 @@ export default function CheckoutPage() {
         >
           <UserPlus size={18} style={{ color: "var(--color-accent)", flexShrink: 0 }} />
           <span>
-            Checking out as guest.{" "}
-            <Link href="/auth/login" style={{ color: "var(--color-accent)", fontWeight: 600, textDecoration: "none" }}>
-              Log in
-            </Link>{" "}
-            or{" "}
-            <Link href="/auth/register" style={{ color: "var(--color-accent)", fontWeight: 600, textDecoration: "none" }}>
-              create an account
-            </Link>{" "}
-            to track orders easily.
+            {t.rich("guestNotice", {
+              login: (chunks) => (
+                <Link href="/auth/login" style={{ color: "var(--color-accent)", fontWeight: 600, textDecoration: "none" }}>
+                  {chunks}
+                </Link>
+              ),
+              register: (chunks) => (
+                <Link href="/auth/register" style={{ color: "var(--color-accent)", fontWeight: 600, textDecoration: "none" }}>
+                  {chunks}
+                </Link>
+              ),
+            })}
           </span>
         </motion.div>
       )}
@@ -438,13 +446,13 @@ export default function CheckoutPage() {
                   <label style={labelStyle}>{t("email")} *</label>
                   <InputWithIcon
                     icon={Mail}
-                    placeholder="your@email.com"
-                    error={errors.contact?.email?.message}
+                    placeholder={t("emailPlaceholder")}
+                    error={vm(errors.contact?.email?.message)}
                     {...register("contact.email")}
                   />
                   {!user && (
                     <span style={{ fontSize: "0.75rem", color: "var(--color-text-tertiary)", marginTop: "0.25rem", display: "block" }}>
-                      Order confirmation will be sent to this email
+                      {t("emailHint")}
                     </span>
                   )}
                 </div>
@@ -453,15 +461,15 @@ export default function CheckoutPage() {
                   <InputWithIcon
                     icon={Phone}
                     placeholder={phoneHint}
-                    error={errors.contact?.phone?.message}
+                    error={vm(errors.contact?.phone?.message)}
                     {...register("contact.phone")}
                   />
                   <span style={{ fontSize: "0.75rem", color: "var(--color-text-tertiary)", marginTop: "0.25rem", display: "block" }}>
-                    Include country code (e.g. +371, +44, +49)
+                    {t("phoneHint")}
                   </span>
                 </div>
                 <Button color="primary" size="lg" onPress={goNext} style={{ marginTop: "0.5rem" }}>
-                  Continue to Shipping <ChevronRight size={16} />
+                  {t("continueToShipping")} <ChevronRight size={16} />
                 </Button>
               </motion.div>
             )}
@@ -486,42 +494,42 @@ export default function CheckoutPage() {
                 <div className="grid grid-cols-2 gap-4 max-[480px]:grid-cols-1">
                   <div>
                     <label style={labelStyle}>{t("firstName")} *</label>
-                    <input style={{ ...inputPlainStyle, borderColor: errors.shipping?.firstName ? "var(--color-danger)" : undefined }} placeholder="John" {...register("shipping.firstName")} />
-                    {errors.shipping?.firstName && <span style={errorStyle}>{errors.shipping.firstName.message}</span>}
+                    <input style={{ ...inputPlainStyle, borderColor: errors.shipping?.firstName ? "var(--color-danger)" : undefined }} placeholder={t("firstNamePlaceholder")} {...register("shipping.firstName")} />
+                    {errors.shipping?.firstName && <span style={errorStyle}>{vm(errors.shipping.firstName.message)}</span>}
                   </div>
                   <div>
                     <label style={labelStyle}>{t("lastName")} *</label>
-                    <input style={{ ...inputPlainStyle, borderColor: errors.shipping?.lastName ? "var(--color-danger)" : undefined }} placeholder="Doe" {...register("shipping.lastName")} />
-                    {errors.shipping?.lastName && <span style={errorStyle}>{errors.shipping.lastName.message}</span>}
+                    <input style={{ ...inputPlainStyle, borderColor: errors.shipping?.lastName ? "var(--color-danger)" : undefined }} placeholder={t("lastNamePlaceholder")} {...register("shipping.lastName")} />
+                    {errors.shipping?.lastName && <span style={errorStyle}>{vm(errors.shipping.lastName.message)}</span>}
                   </div>
                 </div>
 
                 <div>
                   <label style={labelStyle}>{t("address")} *</label>
-                  <InputWithIcon icon={MapPin} placeholder="123 Main Street" error={errors.shipping?.address1?.message} {...register("shipping.address1")} />
+                  <InputWithIcon icon={MapPin} placeholder={t("addressPlaceholder")} error={vm(errors.shipping?.address1?.message)} {...register("shipping.address1")} />
                 </div>
                 <div>
                   <label style={labelStyle}>{t("apartment")}</label>
-                  <input style={inputPlainStyle} placeholder="Apt 4B (optional)" {...register("shipping.address2")} />
+                  <input style={inputPlainStyle} placeholder={t("apartmentPlaceholder")} {...register("shipping.address2")} />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 max-[480px]:grid-cols-1">
                   <div>
                     <label style={labelStyle}>{t("city")} *</label>
-                    <input style={{ ...inputPlainStyle, borderColor: errors.shipping?.city ? "var(--color-danger)" : undefined }} placeholder="Vilnius" {...register("shipping.city")} />
-                    {errors.shipping?.city && <span style={errorStyle}>{errors.shipping.city.message}</span>}
+                    <input style={{ ...inputPlainStyle, borderColor: errors.shipping?.city ? "var(--color-danger)" : undefined }} placeholder={t("cityPlaceholder")} {...register("shipping.city")} />
+                    {errors.shipping?.city && <span style={errorStyle}>{vm(errors.shipping.city.message)}</span>}
                   </div>
                   <div>
                     <label style={labelStyle}>{t("province")}</label>
-                    <input style={inputPlainStyle} placeholder="Region (optional)" {...register("shipping.province")} />
+                    <input style={inputPlainStyle} placeholder={t("provincePlaceholder")} {...register("shipping.province")} />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 max-[480px]:grid-cols-1">
                   <div>
                     <label style={labelStyle}>{t("postalCode")} *</label>
-                    <input style={{ ...inputPlainStyle, borderColor: errors.shipping?.postalCode ? "var(--color-danger)" : undefined }} placeholder="LT-10001" {...register("shipping.postalCode")} />
-                    {errors.shipping?.postalCode && <span style={errorStyle}>{errors.shipping.postalCode.message}</span>}
+                    <input style={{ ...inputPlainStyle, borderColor: errors.shipping?.postalCode ? "var(--color-danger)" : undefined }} placeholder={t("postalCodePlaceholder")} {...register("shipping.postalCode")} />
+                    {errors.shipping?.postalCode && <span style={errorStyle}>{vm(errors.shipping.postalCode.message)}</span>}
                   </div>
                   <div>
                     <label style={labelStyle}>{t("country")} *</label>
@@ -532,12 +540,12 @@ export default function CheckoutPage() {
                       }}
                       {...register("shipping.country")}
                     >
-                      <option value="">Select country...</option>
-                      {COUNTRIES.map((c) => (
+                      <option value="">{tCountries("select")}</option>
+                      {countries.map((c) => (
                         <option key={c.code} value={c.code}>{c.name}</option>
                       ))}
                     </select>
-                    {errors.shipping?.country && <span style={errorStyle}>{errors.shipping.country.message}</span>}
+                    {errors.shipping?.country && <span style={errorStyle}>{vm(errors.shipping.country.message)}</span>}
                   </div>
                 </div>
 
@@ -578,11 +586,11 @@ export default function CheckoutPage() {
                             {isSelected && <div style={{ width: "0.5rem", height: "0.5rem", borderRadius: "50%", background: "var(--color-accent)" }} />}
                           </div>
                           <div style={{ flex: 1 }}>
-                            <div style={{ fontSize: "0.875rem", fontWeight: 600 }}>{m.label}</div>
-                            <div style={{ fontSize: "0.75rem", color: "var(--color-text-tertiary)" }}>{m.time}</div>
+                            <div style={{ fontSize: "0.875rem", fontWeight: 600 }}>{tOrder(`shippingMethod.${m.key}`)}</div>
+                            <div style={{ fontSize: "0.75rem", color: "var(--color-text-tertiary)" }}>{tOrder(`shippingTime.${m.key}`)}</div>
                           </div>
                           <span style={{ fontSize: "0.875rem", fontWeight: 700, color: m.price === 0 ? "var(--color-success)" : "var(--color-text)" }}>
-                            {m.price === 0 ? "Free" : formatPrice(convert(m.price), currency)}
+                            {m.price === 0 ? tOrder("free") : formatPrice(convert(m.price), currency)}
                           </span>
                         </label>
                       );
@@ -592,10 +600,10 @@ export default function CheckoutPage() {
 
                 <div style={{ display: "flex", gap: "0.75rem", marginTop: "0.5rem" }}>
                   <Button variant="bordered" size="lg" onPress={() => setStep(0)} style={{ flex: "0 0 auto" }}>
-                    Back
+                    {t("back")}
                   </Button>
                   <Button color="primary" size="lg" onPress={goNext} style={{ flex: 1 }}>
-                    Review Order <ChevronRight size={16} />
+                    {t("reviewOrderCta")} <ChevronRight size={16} />
                   </Button>
                 </div>
               </motion.div>
@@ -645,7 +653,7 @@ export default function CheckoutPage() {
                         flexShrink: 0,
                       }}>
                         {item.imageUrl ? (
-                          <Image src={item.imageUrl} alt={item.name} fill sizes="56px" style={{ objectFit: "contain", padding: "4px" }} unoptimized={shouldUnoptimizeImage(item.imageUrl)} />
+                          <ProductImage src={item.imageUrl} alt={item.name} fill sizes="56px" style={{ objectFit: "contain", padding: "4px" }} />
                         ) : (
                           <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--color-text-tertiary)" }}>
                             <ImageOff size={18} />
@@ -654,7 +662,7 @@ export default function CheckoutPage() {
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ fontSize: "0.8125rem", fontWeight: 600, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{item.name}</div>
-                        <div style={{ fontSize: "0.75rem", color: "var(--color-text-tertiary)" }}>Qty: {item.quantity}</div>
+                        <div style={{ fontSize: "0.75rem", color: "var(--color-text-tertiary)" }}>{tOrder("qtyLabel", { count: item.quantity })}</div>
                       </div>
                       <span style={{ fontSize: "0.875rem", fontWeight: 700, flexShrink: 0 }}>
                         {formatPrice(convert(item.price * item.quantity), currency)}
@@ -674,12 +682,12 @@ export default function CheckoutPage() {
                   color: "var(--color-text-secondary)",
                 }}>
                   <div style={{ fontWeight: 700, color: "var(--color-text)", marginBottom: "0.25rem" }}>
-                    Sold by {COMPANY.legalName} (trading as {COMPANY.tradingName})
+                    {t("soldBy", { legalName: COMPANY.legalName, tradingName: COMPANY.tradingName })}
                   </div>
-                  <div>Registered office: {COMPANY.addressInline}</div>
-                  <div>Company no. {COMPANY.companyNumber} · VAT included in prices where applicable</div>
+                  <div>{t("registeredOffice", { address: COMPANY.addressInline })}</div>
+                  <div>{t("companyNumberVat", { number: COMPANY.companyNumber })}</div>
                   <div style={{ marginTop: "0.375rem" }}>
-                    {COMPANY.legalName} is the Merchant of Record for this order.
+                    {t("merchantOfRecordNote", { legalName: COMPANY.legalName })}
                   </div>
                 </div>
 
@@ -702,20 +710,21 @@ export default function CheckoutPage() {
                     style={{ marginTop: "0.15rem", width: 16, height: 16, flexShrink: 0, accentColor: "var(--color-accent)" }}
                   />
                   <span>
-                    I have read and agree to the{" "}
-                    <Link href="/policies/terms" target="_blank" style={{ color: "var(--color-accent)", fontWeight: 600 }}>Terms &amp; Conditions</Link>,{" "}
-                    <Link href="/policies/privacy" target="_blank" style={{ color: "var(--color-accent)", fontWeight: 600 }}>Privacy Policy</Link>,{" "}
-                    <Link href="/policies/returns" target="_blank" style={{ color: "var(--color-accent)", fontWeight: 600 }}>Returns Policy</Link> and{" "}
-                    <Link href="/policies/payment" target="_blank" style={{ color: "var(--color-accent)", fontWeight: 600 }}>Payment Policy</Link>.
+                    {t.rich("agreePolicies", {
+                      terms: (chunks) => <Link href="/policies/terms" target="_blank" style={{ color: "var(--color-accent)", fontWeight: 600 }}>{chunks}</Link>,
+                      privacy: (chunks) => <Link href="/policies/privacy" target="_blank" style={{ color: "var(--color-accent)", fontWeight: 600 }}>{chunks}</Link>,
+                      returns: (chunks) => <Link href="/policies/returns" target="_blank" style={{ color: "var(--color-accent)", fontWeight: 600 }}>{chunks}</Link>,
+                      payment: (chunks) => <Link href="/policies/payment" target="_blank" style={{ color: "var(--color-accent)", fontWeight: 600 }}>{chunks}</Link>,
+                    })}
                   </span>
                 </label>
                 {agreeError && (
-                  <span style={errorStyle}>You must agree to the website policies to continue.</span>
+                  <span style={errorStyle}>{t("agreeRequired")}</span>
                 )}
 
                 <div style={{ display: "flex", gap: "0.75rem", marginTop: "0.5rem" }}>
                   <Button variant="bordered" size="lg" onPress={() => setStep(1)} style={{ flex: "0 0 auto" }}>
-                    Back
+                    {t("back")}
                   </Button>
                   <motion.div style={{ flex: 1 }} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                     <Button
@@ -755,7 +764,7 @@ export default function CheckoutPage() {
             }}>
               <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem" }}>
                 <Truck size={14} style={{ color: "var(--color-accent)" }} />
-                <span>Add <strong>{formatPrice(amountToFreeShipping, currency)}</strong> more for free shipping</span>
+                <span>{t.rich("addForFreeShipping", { amount: formatPrice(amountToFreeShipping, currency), strong: (chunks) => <strong>{chunks}</strong> })}</span>
               </div>
               <div style={{ height: 4, borderRadius: 2, background: "var(--color-border)", overflow: "hidden" }}>
                 <div style={{
@@ -784,7 +793,7 @@ export default function CheckoutPage() {
                   flexShrink: 0,
                 }}>
                   {item.imageUrl ? (
-                    <Image src={item.imageUrl} alt={item.name} fill sizes="40px" style={{ objectFit: "contain", padding: "2px" }} unoptimized={shouldUnoptimizeImage(item.imageUrl)} />
+                    <ProductImage src={item.imageUrl} alt={item.name} fill sizes="40px" style={{ objectFit: "contain", padding: "2px" }} />
                   ) : (
                     <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#ccc" }}>
                       <ImageOff size={14} />
@@ -834,17 +843,17 @@ export default function CheckoutPage() {
                 <Tag size={14} style={{ color: "#15803d", flexShrink: 0 }} />
                 <div style={{ flex: 1 }}>
                   <div style={{ fontWeight: 700, color: "#166534" }}>
-                    {discount.percent}% OFF applied
+                    {t("discountApplied", { percent: discount.percent })}
                   </div>
                   <div style={{ color: "#15803d", fontSize: "0.6875rem" }}>
-                    {discount.type === "welcome" ? "Welcome discount" : `Code: ${discount.code}`}
+                    {discount.type === "welcome" ? t("welcomeDiscount") : t("discountCode", { code: discount.code })}
                   </div>
                 </div>
                 {discount.source === "code" && (
                   <button
                     type="button"
                     onClick={removeDiscount}
-                    aria-label="Remove discount"
+                    aria-label={t("removeDiscount")}
                     style={{ background: "none", border: "none", cursor: "pointer", color: "#15803d", padding: 4, display: "flex" }}
                   >
                     <XIcon size={14} />
@@ -853,13 +862,14 @@ export default function CheckoutPage() {
               </div>
             ) : (
               <div>
-                <label style={{ ...labelStyle, marginBottom: "0.375rem" }}>Promo code</label>
+                <label style={{ ...labelStyle, marginBottom: "0.375rem" }}>{t("promoCode")}</label>
                 <div style={{ display: "flex", gap: "0.5rem" }}>
                   <input
                     type="text"
                     value={promoInput}
                     onChange={(e) => { setPromoInput(e.target.value.toUpperCase()); setPromoError(null); }}
-                    placeholder="NEWS-XXXXXX"
+                    placeholder={t("promoPlaceholder")}
+                    aria-label={t("promoCode")}
                     style={{ ...inputPlainStyle, fontSize: "0.8125rem", letterSpacing: "0.5px" }}
                   />
                   <button
@@ -878,7 +888,7 @@ export default function CheckoutPage() {
                       opacity: promoInput.trim() && !applyingPromo ? 1 : 0.5,
                     }}
                   >
-                    {applyingPromo ? "…" : "Apply"}
+                    {applyingPromo ? "…" : t("apply")}
                   </button>
                 </div>
                 {promoError && <span style={errorStyle}>{promoError}</span>}
@@ -888,27 +898,27 @@ export default function CheckoutPage() {
 
           <div style={{ display: "flex", flexDirection: "column", gap: "0.625rem", fontSize: "0.875rem" }}>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span style={{ color: "var(--color-text-secondary)" }}>Subtotal</span>
+              <span style={{ color: "var(--color-text-secondary)" }}>{tOrder("subtotal")}</span>
               <span style={{ fontWeight: 500 }}>{formatPrice(convert(cart.subtotal), currency)}</span>
             </div>
             {discount && (
               <div style={{ display: "flex", justifyContent: "space-between", color: "#15803d" }}>
-                <span>Discount ({discount.percent}%)</span>
+                <span>{t("discountLine", { percent: discount.percent })}</span>
                 <span style={{ fontWeight: 600 }}>−{formatPrice(convert(discountAmount), currency)}</span>
               </div>
             )}
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span style={{ color: "var(--color-text-secondary)" }}>Shipping</span>
+              <span style={{ color: "var(--color-text-secondary)" }}>{tOrder("shipping")}</span>
               <span style={{ fontWeight: 500, color: step >= 1 && finalShipping === 0 ? "var(--color-success)" : undefined }}>
                 {step < 1
-                  ? "Calculated from shipping address"
+                  ? t("shippingCalculated")
                   : finalShipping > 0
                     ? formatPrice(convert(finalShipping), currency)
-                    : "Free"}
+                    : tOrder("free")}
               </span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span style={{ color: "var(--color-text-secondary)" }}>Includes VAT ({VAT_RATE}%)</span>
+              <span style={{ color: "var(--color-text-secondary)" }}>{t("includesVat", { rate: VAT_RATE })}</span>
               <span style={{ fontWeight: 500 }}>{formatPrice(convert(vatIncluded), currency)}</span>
             </div>
             <div style={{
@@ -920,11 +930,11 @@ export default function CheckoutPage() {
               paddingTop: "0.875rem",
               marginTop: "0.375rem",
             }}>
-              <span>Total</span>
+              <span>{tOrder("total")}</span>
               <span>{formatPrice(convert(step < 1 ? discountedSubtotal : orderTotal), currency)}</span>
             </div>
             <p style={{ fontSize: "0.6875rem", color: "var(--color-text-tertiary)", margin: "0.25rem 0 0" }}>
-              All prices include VAT where applicable.
+              {t("pricesIncludeVat")}
             </p>
           </div>
 
@@ -939,16 +949,16 @@ export default function CheckoutPage() {
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: "0.375rem", fontSize: "0.75rem", color: "var(--color-text-tertiary)" }}>
               <ShieldCheck size={14} />
-              Secure checkout with SSL encryption
+              {t("secureCheckout")}
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: "0.375rem", fontSize: "0.75rem", color: "var(--color-text-tertiary)" }}>
               <Lock size={14} />
-              Your data is protected
+              {t("dataProtected")}
             </div>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.75rem", marginTop: "0.5rem" }}>
               <Image src={visaLogo} alt="Visa" height={22} style={{ height: 22, width: "auto" }} />
               <Image src={mastercardLogo} alt="Mastercard" height={22} style={{ height: 22, width: "auto" }} />
-              <Image src={pciDssLogo} alt="PCI DSS Compliant" height={26} style={{ height: 26, width: "auto" }} />
+              <Image src={pciDssLogo} alt={t("pciAlt")} height={26} style={{ height: 26, width: "auto" }} />
             </div>
           </div>
 
@@ -960,7 +970,7 @@ export default function CheckoutPage() {
             textAlign: "center",
             marginTop: "1rem",
           }}>
-            Merchant of Record: <strong>{COMPANY.legalName}</strong>
+            {t.rich("merchantOfRecord", { legalName: COMPANY.legalName, strong: (chunks) => <strong>{chunks}</strong> })}
             <br />
             {COMPANY.addressInline}
           </p>

@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect, useState, use } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useFormatter, useLocale } from "next-intl";
 import { Chip } from "@heroui/react";
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner/LoadingSpinner";
 import { useCurrency } from "@/providers/CurrencyProvider";
 import { formatPrice } from "@/lib/utils/format-price";
-import { format } from "date-fns";
 import type { OrderDetail } from "@/types/order";
+import { getCountryName } from "@/lib/countries";
 
 const statusColors: Record<string, "default" | "accent" | "success" | "warning" | "danger"> = {
   PENDING: "warning",
@@ -22,6 +22,12 @@ const statusColors: Record<string, "default" | "accent" | "success" | "warning" 
 export default function OrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const t = useTranslations("account");
+  const tOrder = useTranslations("order");
+  const format = useFormatter();
+  const locale = useLocale();
+  // Translate an enum-like value via the "order" namespace, falling back to the raw value.
+  const label = (group: string, value: string) =>
+    tOrder.has(`${group}.${value}`) ? tOrder(`${group}.${value}`) : value;
   const { currency, convert } = useCurrency();
   const [order, setOrder] = useState<OrderDetail | null>(null);
   const [loading, setLoading] = useState(true);
@@ -35,7 +41,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
   }, [id]);
 
   if (loading) return <LoadingSpinner />;
-  if (!order) return <div style={{ padding: "2rem", textAlign: "center" }}>Order not found</div>;
+  if (!order) return <div style={{ padding: "2rem", textAlign: "center" }}>{t("orderNotFound")}</div>;
 
   return (
     <div>
@@ -45,30 +51,30 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
             {t("orderNumber", { number: order.orderNumber.slice(-8) })}
           </h1>
           <p style={{ fontSize: "0.875rem", color: "var(--color-text-tertiary)" }}>
-            Placed on {format(new Date(order.createdAt), "MMM d, yyyy 'at' HH:mm")}
+            {t("placedOn", { date: format.dateTime(new Date(order.createdAt), { dateStyle: "medium", timeStyle: "short" }) })}
           </p>
         </div>
-        <Chip size="lg" color={statusColors[order.status] || "default"}>{order.status}</Chip>
+        <Chip size="lg" color={statusColors[order.status] || "default"}>{label("status", order.status)}</Chip>
       </div>
 
       <div className="mb-6 grid grid-cols-2 gap-4 max-[640px]:grid-cols-1">
         <div className="rounded-lg border border-line bg-surface px-5 py-4">
-          <div className="mb-2 text-[0.8125rem] font-bold uppercase tracking-wide text-subtle">Shipping Address</div>
+          <div className="mb-2 text-[0.8125rem] font-bold uppercase tracking-wide text-subtle">{t("shippingAddress")}</div>
           <div className="text-sm leading-[1.5] text-muted">
             {order.shippingAddress.firstName} {order.shippingAddress.lastName}<br />
             {order.shippingAddress.address1}<br />
             {order.shippingAddress.address2 && <>{order.shippingAddress.address2}<br /></>}
             {order.shippingAddress.city}, {order.shippingAddress.postalCode}<br />
-            {order.shippingAddress.country}
+            {getCountryName(order.shippingAddress.country, locale)}
           </div>
         </div>
         <div className="rounded-lg border border-line bg-surface px-5 py-4">
-          <div className="mb-2 text-[0.8125rem] font-bold uppercase tracking-wide text-subtle">Order Info</div>
+          <div className="mb-2 text-[0.8125rem] font-bold uppercase tracking-wide text-subtle">{t("orderInfo")}</div>
           <div className="text-sm leading-[1.5] text-muted">
-            Payment: <strong>{order.paymentStatus}</strong>
-            {order.paymentMethod && <><br />Method: {order.paymentMethod}</>}
-            {order.shippingMethod && <><br />Shipping: {order.shippingMethod}</>}
-            {order.trackingNumber && <><br />Tracking: <strong>{order.trackingNumber}</strong></>}
+            {t("paymentLabel")}: <strong>{label("paymentStatus", order.paymentStatus)}</strong>
+            {order.paymentMethod && <><br />{t("methodLabel")}: {label("paymentMethod", order.paymentMethod)}</>}
+            {order.shippingMethod && <><br />{t("shippingLabel")}: {label("shippingMethod", order.shippingMethod)}</>}
+            {order.trackingNumber && <><br />{t("trackingLabel")}: <strong>{order.trackingNumber}</strong></>}
           </div>
         </div>
       </div>
@@ -77,10 +83,10 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
         <table className="w-full border-collapse max-[640px]:hidden [&_td]:border-b [&_td]:border-line [&_td]:px-4 [&_td]:py-3.5 [&_td]:text-sm [&_th]:border-b [&_th]:border-line [&_th]:bg-mist [&_th]:px-4 [&_th]:py-3 [&_th]:text-left [&_th]:text-xs [&_th]:font-semibold [&_th]:uppercase [&_th]:tracking-wide [&_th]:text-subtle [&_tr:last-child_td]:border-b-0">
           <thead>
             <tr>
-              <th>Product</th>
-              <th style={{ textAlign: "right" }}>Qty</th>
-              <th style={{ textAlign: "right" }}>Price</th>
-              <th style={{ textAlign: "right" }}>Total</th>
+              <th>{tOrder("product")}</th>
+              <th style={{ textAlign: "right" }}>{tOrder("qty")}</th>
+              <th style={{ textAlign: "right" }}>{tOrder("price")}</th>
+              <th style={{ textAlign: "right" }}>{tOrder("total")}</th>
             </tr>
           </thead>
           <tbody>
@@ -89,7 +95,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                 <td>
                   <div style={{ fontWeight: 600 }}>{item.productName}</div>
                   {item.variantName && <div style={{ fontSize: "0.75rem", color: "var(--color-text-tertiary)" }}>{item.variantName}</div>}
-                  <div style={{ fontSize: "0.75rem", color: "var(--color-text-tertiary)" }}>SKU: {item.productSku}</div>
+                  <div style={{ fontSize: "0.75rem", color: "var(--color-text-tertiary)" }}>{tOrder("sku", { sku: item.productSku })}</div>
                 </td>
                 <td style={{ textAlign: "right" }}>{item.quantity}</td>
                 <td style={{ textAlign: "right" }}>{formatPrice(convert(Number(item.price)), currency)}</td>
@@ -105,7 +111,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
               <div className="text-sm font-semibold">{item.productName}</div>
               {item.variantName && <div style={{ fontSize: "0.75rem", color: "var(--color-text-tertiary)" }}>{item.variantName}</div>}
               <div className="flex justify-between text-xs text-subtle">
-                <span>Qty {item.quantity} × {formatPrice(convert(Number(item.price)), currency)}</span>
+                <span>{tOrder("qtyTimesPrice", { count: item.quantity, price: formatPrice(convert(Number(item.price)), currency) })}</span>
                 <span className="font-bold text-ink">{formatPrice(convert(Number(item.total)), currency)}</span>
               </div>
             </div>
@@ -114,25 +120,25 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
 
         <div className="flex flex-col items-end gap-1 border-t border-line bg-mist px-5 py-4 text-sm">
           <div className="flex gap-4">
-            <span style={{ color: "var(--color-text-secondary)" }}>Subtotal</span>
+            <span style={{ color: "var(--color-text-secondary)" }}>{tOrder("subtotal")}</span>
             <span>{formatPrice(convert(Number(order.subtotal)), currency)}</span>
           </div>
           <div className="flex gap-4">
-            <span style={{ color: "var(--color-text-secondary)" }}>Shipping</span>
-            <span>{Number(order.shippingCost) === 0 ? "Free" : formatPrice(convert(Number(order.shippingCost)), currency)}</span>
+            <span style={{ color: "var(--color-text-secondary)" }}>{tOrder("shipping")}</span>
+            <span>{Number(order.shippingCost) === 0 ? tOrder("free") : formatPrice(convert(Number(order.shippingCost)), currency)}</span>
           </div>
           <div className="flex gap-4">
-            <span style={{ color: "var(--color-text-secondary)" }}>Tax</span>
+            <span style={{ color: "var(--color-text-secondary)" }}>{tOrder("tax")}</span>
             <span>{formatPrice(convert(Number(order.taxAmount)), currency)}</span>
           </div>
           {Number(order.discountAmount) > 0 && (
             <div className="flex gap-4">
-              <span style={{ color: "var(--color-success)" }}>Discount</span>
+              <span style={{ color: "var(--color-success)" }}>{tOrder("discount")}</span>
               <span style={{ color: "var(--color-success)" }}>−{formatPrice(convert(Number(order.discountAmount)), currency)}</span>
             </div>
           )}
           <div className="flex w-full justify-between gap-4 border-t border-line pt-2 mt-1 text-lg font-extrabold">
-            <span>Total</span>
+            <span>{tOrder("total")}</span>
             <span>{formatPrice(convert(Number(order.total)), currency)}</span>
           </div>
         </div>

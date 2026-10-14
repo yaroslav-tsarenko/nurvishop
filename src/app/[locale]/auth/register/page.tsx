@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { Button } from "@/components/ui/Button";
 import { toast } from "sonner";
@@ -10,18 +10,21 @@ import {
   Phone, MapPin, Calendar, ChevronRight, ChevronLeft, Check,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { COUNTRIES } from "@/lib/countries";
+import { getLocalizedCountries } from "@/lib/countries";
+import { useValidationMessage } from "@/lib/validators/messages";
 import * as s from "../auth-classes";
 
-function getPasswordStrength(password: string): { level: number; label: string; color: string } {
-  if (password.length === 0) return { level: 0, label: "", color: "transparent" };
-  if (password.length < 6) return { level: 25, label: "Weak", color: "#ef4444" };
-  if (password.length < 10) return { level: 50, label: "Fair", color: "#f59e0b" };
-  if (password.length < 14) return { level: 75, label: "Good", color: "#22c55e" };
-  return { level: 100, label: "Strong", color: "#16a34a" };
+type StrengthKey = "strengthWeak" | "strengthFair" | "strengthGood" | "strengthStrong";
+
+function getPasswordStrength(password: string): { level: number; labelKey: StrengthKey | null; color: string } {
+  if (password.length === 0) return { level: 0, labelKey: null, color: "transparent" };
+  if (password.length < 6) return { level: 25, labelKey: "strengthWeak", color: "#ef4444" };
+  if (password.length < 10) return { level: 50, labelKey: "strengthFair", color: "#f59e0b" };
+  if (password.length < 14) return { level: 75, labelKey: "strengthGood", color: "#22c55e" };
+  return { level: 100, labelKey: "strengthStrong", color: "#16a34a" };
 }
 
-const STEP_LABELS = ["Personal Info", "Contact Details", "Address", "Password"];
+const STEP_LABEL_KEYS = ["stepPersonal", "stepContact", "stepAddress", "stepPassword"] as const;
 const STEP_ICONS = [User, Phone, MapPin, Lock];
 
 interface FormData {
@@ -54,6 +57,10 @@ const initialForm: FormData = {
 
 export default function RegisterPage() {
   const t = useTranslations("auth");
+  const tCountries = useTranslations("countries");
+  const vm = useValidationMessage();
+  const locale = useLocale();
+  const countries = getLocalizedCountries(locale);
   const [step, setStep] = useState(0);
   const [form, setForm] = useState<FormData>(initialForm);
   const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
@@ -63,7 +70,7 @@ export default function RegisterPage() {
 
   const strength = getPasswordStrength(form.password);
 
-  const selectedCountry = COUNTRIES.find((c) => c.code === form.country);
+  const selectedCountry = countries.find((c) => c.code === form.country);
   const phoneHint = selectedCountry ? selectedCountry.phone : "+370";
 
   const set = (field: keyof FormData) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -74,27 +81,27 @@ export default function RegisterPage() {
   function validateStep(s: number): boolean {
     const errs: Partial<Record<keyof FormData, string>> = {};
     if (s === 0) {
-      if (!form.firstName.trim()) errs.firstName = "First name is required";
-      if (!form.lastName.trim()) errs.lastName = "Last name is required";
-      if (!form.dateOfBirth) errs.dateOfBirth = "Date of birth is required";
+      if (!form.firstName.trim()) errs.firstName = "validation.firstNameRequired";
+      if (!form.lastName.trim()) errs.lastName = "validation.lastNameRequired";
+      if (!form.dateOfBirth) errs.dateOfBirth = "validation.dateOfBirthRequired";
       else {
         const dob = new Date(form.dateOfBirth);
         const age = (Date.now() - dob.getTime()) / (365.25 * 24 * 60 * 60 * 1000);
-        if (age < 18) errs.dateOfBirth = "You must be at least 18 years old";
+        if (age < 18) errs.dateOfBirth = "validation.mustBeAdult";
       }
     } else if (s === 1) {
-      if (!form.email.trim()) errs.email = "Email is required";
-      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) errs.email = "Invalid email";
-      if (!form.phone.trim()) errs.phone = "Phone is required";
+      if (!form.email.trim()) errs.email = "validation.emailRequired";
+      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) errs.email = "validation.emailInvalid";
+      if (!form.phone.trim()) errs.phone = "validation.phoneRequired";
     } else if (s === 2) {
-      if (!form.street.trim()) errs.street = "Street address is required";
-      if (!form.city.trim()) errs.city = "City is required";
-      if (!form.country) errs.country = "Country is required";
-      if (!form.postalCode.trim()) errs.postalCode = "Postal code is required";
+      if (!form.street.trim()) errs.street = "validation.streetRequired";
+      if (!form.city.trim()) errs.city = "validation.cityRequired";
+      if (!form.country) errs.country = "validation.countryRequired";
+      if (!form.postalCode.trim()) errs.postalCode = "validation.postalCodeRequired";
     } else if (s === 3) {
-      if (!form.password) errs.password = "Password is required";
-      else if (form.password.length < 6) errs.password = "Min 6 characters";
-      if (form.password !== form.confirmPassword) errs.confirmPassword = "Passwords do not match";
+      if (!form.password) errs.password = "validation.passwordRequired";
+      else if (form.password.length < 6) errs.password = "validation.passwordMin";
+      if (form.password !== form.confirmPassword) errs.confirmPassword = "validation.passwordsMismatch";
     }
     setErrors(errs);
     return Object.keys(errs).length === 0;
@@ -127,12 +134,13 @@ export default function RegisterPage() {
           password: form.password,
         }),
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Registration failed");
-      toast.success("Account created!");
-      window.location.href = "/en/account";
+      if (!res.ok) {
+        throw new Error(res.status === 409 ? t("emailTaken") : t("registrationFailed"));
+      }
+      toast.success(t("accountCreated"));
+      window.location.href = `/${locale}/account`;
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Registration failed");
+      toast.error(error instanceof Error && error.message ? error.message : t("registrationFailed"));
     } finally {
       setLoading(false);
     }
@@ -173,7 +181,7 @@ export default function RegisterPage() {
 
   const renderError = (field: keyof FormData) =>
     errors[field] ? (
-      <span style={{ color: "var(--color-danger)", fontSize: "0.75rem", marginTop: "0.25rem" }}>{errors[field]}</span>
+      <span style={{ color: "var(--color-danger)", fontSize: "0.75rem", marginTop: "0.25rem" }}>{vm(errors[field])}</span>
     ) : null;
 
   return (
@@ -200,7 +208,7 @@ export default function RegisterPage() {
           gap: "0.25rem",
           marginBottom: "1.75rem",
         }}>
-          {STEP_LABELS.map((label, i) => {
+          {STEP_LABEL_KEYS.map((labelKey, i) => {
             const Icon = STEP_ICONS[i];
             const isActive = i === step;
             const isDone = i < step;
@@ -234,7 +242,7 @@ export default function RegisterPage() {
                 ) : (
                   <Icon size={14} />
                 )}
-                <span style={{ display: "none" }}>{label}</span>
+                <span style={{ display: "none" }}>{t(labelKey)}</span>
               </button>
             );
           })}
@@ -245,7 +253,7 @@ export default function RegisterPage() {
           gap: "0.5rem",
           marginBottom: "1.25rem",
         }}>
-          {STEP_LABELS.map((_, i) => (
+          {STEP_LABEL_KEYS.map((_, i) => (
             <div
               key={i}
               style={{
@@ -260,7 +268,7 @@ export default function RegisterPage() {
         </div>
 
         <p style={{ fontSize: "0.8125rem", color: "var(--color-text-secondary)", marginBottom: "1rem", fontWeight: 600 }}>
-          Step {step + 1} of 4: {STEP_LABELS[step]}
+          {t("stepOf", { current: step + 1, total: STEP_LABEL_KEYS.length, label: t(STEP_LABEL_KEYS[step]) })}
         </p>
 
         <form onSubmit={handleSubmit}>
@@ -276,14 +284,14 @@ export default function RegisterPage() {
                 className={s.form}
               >
                 <div className={s.inputGroup}>
-                  <label className={s.inputLabel}>First Name *</label>
+                  <label className={s.inputLabel}>{t("firstName")} *</label>
                   <div className={s.inputWrapper}>
                     <User size={16} className={s.inputIcon} />
                     <input
                       type="text"
                       value={form.firstName}
                       onChange={set("firstName")}
-                      placeholder="John"
+                      placeholder={t("firstNamePlaceholder")}
                       className={s.input}
                       style={errors.firstName ? { borderColor: "var(--color-danger)" } : undefined}
                     />
@@ -292,14 +300,14 @@ export default function RegisterPage() {
                 </div>
 
                 <div className={s.inputGroup}>
-                  <label className={s.inputLabel}>Last Name *</label>
+                  <label className={s.inputLabel}>{t("lastName")} *</label>
                   <div className={s.inputWrapper}>
                     <User size={16} className={s.inputIcon} />
                     <input
                       type="text"
                       value={form.lastName}
                       onChange={set("lastName")}
-                      placeholder="Doe"
+                      placeholder={t("lastNamePlaceholder")}
                       className={s.input}
                       style={errors.lastName ? { borderColor: "var(--color-danger)" } : undefined}
                     />
@@ -308,7 +316,7 @@ export default function RegisterPage() {
                 </div>
 
                 <div className={s.inputGroup}>
-                  <label className={s.inputLabel}>Date of Birth *</label>
+                  <label className={s.inputLabel}>{t("dateOfBirth")} *</label>
                   <div className={s.inputWrapper}>
                     <Calendar size={16} className={s.inputIcon} />
                     <input
@@ -324,7 +332,7 @@ export default function RegisterPage() {
 
                 <div className={s.submitButton}>
                   <Button type="button" color="primary" fullWidth onPress={goNext}>
-                    Continue <ChevronRight size={16} />
+                    {t("continue")} <ChevronRight size={16} />
                   </Button>
                 </div>
               </motion.div>
@@ -348,7 +356,7 @@ export default function RegisterPage() {
                       type="email"
                       value={form.email}
                       onChange={set("email")}
-                      placeholder="you@example.com"
+                      placeholder={t("emailPlaceholder")}
                       className={s.input}
                       style={errors.email ? { borderColor: "var(--color-danger)" } : undefined}
                     />
@@ -357,7 +365,7 @@ export default function RegisterPage() {
                 </div>
 
                 <div className={s.inputGroup}>
-                  <label className={s.inputLabel}>Phone *</label>
+                  <label className={s.inputLabel}>{t("phone")} *</label>
                   <div className={s.inputWrapper}>
                     <Phone size={16} className={s.inputIcon} />
                     <input
@@ -372,17 +380,17 @@ export default function RegisterPage() {
                   {renderError("phone")}
                   {!form.country && (
                     <span style={{ fontSize: "0.7rem", color: "var(--color-text-tertiary)" }}>
-                      Select country in next step for phone code hint
+                      {t("phoneCountryHint")}
                     </span>
                   )}
                 </div>
 
                 <div style={{ display: "flex", gap: "0.75rem" }} className={s.submitButton}>
                   <Button type="button" variant="bordered" onPress={goBack}>
-                    <ChevronLeft size={16} /> Back
+                    <ChevronLeft size={16} /> {t("back")}
                   </Button>
                   <Button type="button" color="primary" style={{ flex: 1 }} onPress={goNext}>
-                    Continue <ChevronRight size={16} />
+                    {t("continue")} <ChevronRight size={16} />
                   </Button>
                 </div>
               </motion.div>
@@ -399,14 +407,14 @@ export default function RegisterPage() {
                 className={s.form}
               >
                 <div className={s.inputGroup}>
-                  <label className={s.inputLabel}>Street Address *</label>
+                  <label className={s.inputLabel}>{t("street")} *</label>
                   <div className={s.inputWrapper}>
                     <MapPin size={16} className={s.inputIcon} />
                     <input
                       type="text"
                       value={form.street}
                       onChange={set("street")}
-                      placeholder="123 Main Street, Apt 4B"
+                      placeholder={t("streetPlaceholder")}
                       className={s.input}
                       style={errors.street ? { borderColor: "var(--color-danger)" } : undefined}
                     />
@@ -415,12 +423,12 @@ export default function RegisterPage() {
                 </div>
 
                 <div className={s.inputGroup}>
-                  <label className={s.inputLabel}>City *</label>
+                  <label className={s.inputLabel}>{t("city")} *</label>
                   <input
                     type="text"
                     value={form.city}
                     onChange={set("city")}
-                    placeholder="Vilnius"
+                    placeholder={t("cityPlaceholder")}
                     style={{
                       ...plainInputStyle,
                       borderColor: errors.city ? "var(--color-danger)" : undefined,
@@ -430,7 +438,7 @@ export default function RegisterPage() {
                 </div>
 
                 <div className={s.inputGroup}>
-                  <label className={s.inputLabel}>Country *</label>
+                  <label className={s.inputLabel}>{t("country")} *</label>
                   <select
                     value={form.country}
                     onChange={set("country")}
@@ -440,8 +448,8 @@ export default function RegisterPage() {
                       color: form.country ? "var(--color-text)" : "var(--color-text-tertiary)",
                     }}
                   >
-                    <option value="">Select country...</option>
-                    {COUNTRIES.map((c) => (
+                    <option value="">{tCountries("select")}</option>
+                    {countries.map((c) => (
                       <option key={c.code} value={c.code}>{c.name}</option>
                     ))}
                   </select>
@@ -449,12 +457,12 @@ export default function RegisterPage() {
                 </div>
 
                 <div className={s.inputGroup}>
-                  <label className={s.inputLabel}>Postal Code *</label>
+                  <label className={s.inputLabel}>{t("postalCode")} *</label>
                   <input
                     type="text"
                     value={form.postalCode}
                     onChange={set("postalCode")}
-                    placeholder="LT-10001"
+                    placeholder={t("postalCodePlaceholder")}
                     style={{
                       ...plainInputStyle,
                       borderColor: errors.postalCode ? "var(--color-danger)" : undefined,
@@ -465,10 +473,10 @@ export default function RegisterPage() {
 
                 <div style={{ display: "flex", gap: "0.75rem" }} className={s.submitButton}>
                   <Button type="button" variant="bordered" onPress={goBack}>
-                    <ChevronLeft size={16} /> Back
+                    <ChevronLeft size={16} /> {t("back")}
                   </Button>
                   <Button type="button" color="primary" style={{ flex: 1 }} onPress={goNext}>
-                    Continue <ChevronRight size={16} />
+                    {t("continue")} <ChevronRight size={16} />
                   </Button>
                 </div>
               </motion.div>
@@ -492,7 +500,7 @@ export default function RegisterPage() {
                       type={showPassword ? "text" : "password"}
                       value={form.password}
                       onChange={set("password")}
-                      placeholder="Min 6 characters"
+                      placeholder={t("newPasswordPlaceholder")}
                       className={`${s.input} ${s.inputWithToggle}`}
                       style={errors.password ? { borderColor: "var(--color-danger)" } : undefined}
                     />
@@ -501,6 +509,7 @@ export default function RegisterPage() {
                       className={s.inputToggle}
                       onClick={() => setShowPassword(!showPassword)}
                       tabIndex={-1}
+                      aria-label={showPassword ? t("hidePassword") : t("showPassword")}
                     >
                       {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                     </button>
@@ -511,7 +520,7 @@ export default function RegisterPage() {
                       <div style={{ height: 4, borderRadius: 2, background: "var(--color-border)", overflow: "hidden" }}>
                         <div style={{ width: `${strength.level}%`, height: "100%", background: strength.color, transition: "width 0.3s" }} />
                       </div>
-                      <p style={{ fontSize: "0.75rem", color: strength.color, marginTop: "0.25rem", margin: "0.25rem 0 0" }}>{strength.label}</p>
+                      <p style={{ fontSize: "0.75rem", color: strength.color, marginTop: "0.25rem", margin: "0.25rem 0 0" }}>{strength.labelKey ? t(strength.labelKey) : null}</p>
                     </div>
                   )}
                 </div>
@@ -524,7 +533,7 @@ export default function RegisterPage() {
                       type={showConfirmPassword ? "text" : "password"}
                       value={form.confirmPassword}
                       onChange={set("confirmPassword")}
-                      placeholder="Confirm your password"
+                      placeholder={t("confirmPasswordPlaceholder")}
                       className={`${s.input} ${s.inputWithToggle}`}
                       style={errors.confirmPassword ? { borderColor: "var(--color-danger)" } : undefined}
                     />
@@ -533,6 +542,7 @@ export default function RegisterPage() {
                       className={s.inputToggle}
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                       tabIndex={-1}
+                      aria-label={showConfirmPassword ? t("hidePassword") : t("showPassword")}
                     >
                       {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                     </button>
@@ -541,14 +551,15 @@ export default function RegisterPage() {
                 </div>
 
                 <p className={s.termsText}>
-                  By creating an account, you agree to our{" "}
-                  <Link href="/policies/terms">Terms of Service</Link> and{" "}
-                  <Link href="/policies/privacy">Privacy Policy</Link>.
+                  {t.rich("registerTerms", {
+                    terms: (chunks) => <Link href="/policies/terms">{chunks}</Link>,
+                    privacy: (chunks) => <Link href="/policies/privacy">{chunks}</Link>,
+                  })}
                 </p>
 
                 <div style={{ display: "flex", gap: "0.75rem" }} className={s.submitButton}>
                   <Button type="button" variant="bordered" onPress={goBack}>
-                    <ChevronLeft size={16} /> Back
+                    <ChevronLeft size={16} /> {t("back")}
                   </Button>
                   <Button type="submit" color="primary" style={{ flex: 1 }} isLoading={loading}>
                     {t("signUp")}

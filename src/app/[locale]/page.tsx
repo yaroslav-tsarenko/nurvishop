@@ -1,4 +1,7 @@
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
+import { localizeCategoryName } from "@/lib/i18n/category-names";
+import { localizeProduct } from "@/lib/i18n/product";
 import { JsonLd } from "@/components/shared/SEO/JsonLd";
 import { MarketplaceHome } from "@/components/home/MarketplaceHome/MarketplaceHome";
 import {
@@ -11,13 +14,40 @@ import {
   TOP_BRANDS,
 } from "@/lib/homepage-products";
 
+import type { Metadata } from "next";
+
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "home" });
+  return {
+    title: { absolute: t("metaTitle") },
+    description: t("metaDescription"),
+  };
+}
 
 function serialize<T>(data: T): T {
   return JSON.parse(JSON.stringify(data));
 }
 
-async function getHomeData() {
+// Category names are stored in English; swap in the localized label for
+// display. Done before any name-based grouping (subcategory tabs compare
+// product category names against tab labels) so everything stays consistent.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function localizeProductCategories<T extends { categories?: any[]; translations?: unknown }>(product: T, locale: string): T {
+  const localized = localizeProduct(product, locale) as T;
+  if (!localized.categories) return localized;
+  return {
+    ...localized,
+    categories: localized.categories.map((pc) => ({
+      ...pc,
+      category: { ...pc.category, name: localizeCategoryName(pc.category.name, locale) },
+    })),
+  };
+}
+
+async function getHomeData(locale: string, allLabel: string) {
   try {
     const productInclude = {
       images: { orderBy: { sortOrder: "asc" as const }, take: 1 },
@@ -103,7 +133,7 @@ async function getHomeData() {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const products = allActiveProducts as any[];
+    const products = (allActiveProducts as any[]).map((p) => localizeProductCategories(p, locale));
 
     const featuredProducts = getFeaturedProducts(products, 10);
 
@@ -131,11 +161,12 @@ async function getHomeData() {
         id: c.id,
         name: c.name,
         slug: c.slug,
-        children: c.children,
+        children: c.children.map((ch) => ({ ...ch, name: localizeCategoryName(ch.name, locale) })),
         _count: c._count,
-      })),
+      })).map((c) => ({ ...c, name: localizeCategoryName(c.name, locale) })),
       10,
       6,
+      allLabel,
     );
 
     const brandSections = getBrandSections(products, TOP_BRANDS, 8);
@@ -155,7 +186,8 @@ async function getHomeData() {
       ).length;
       return {
         id: c.id,
-        name: c.name,
+        name: localizeCategoryName(c.name, locale),
+        matchName: c.name,
         slug: c.slug,
         imageUrl: null as string | null,
         productCount,
@@ -174,8 +206,17 @@ async function getHomeData() {
       tabs,
       utilityLinks,
       promoStripItems,
-      sectionProducts,
-      categories: categoriesWithChildren,
+      sectionProducts: Object.fromEntries(
+        Object.entries(sectionProducts).map(([slug, list]) => [
+          slug,
+          list.map((p) => localizeProductCategories(p, locale)),
+        ]),
+      ),
+      categories: categoriesWithChildren.map((c) => ({
+        ...c,
+        name: localizeCategoryName(c.name, locale),
+        children: c.children.map((ch) => ({ ...ch, name: localizeCategoryName(ch.name, locale) })),
+      })),
       featuredProducts,
       saleProducts,
       newProducts,
@@ -197,8 +238,11 @@ async function getHomeData() {
   }
 }
 
-export default async function HomePage() {
-  const data = await getHomeData();
+export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations({ locale, namespace: "home" });
+  const data = await getHomeData(locale, t("sections.allTab"));
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
   return (
@@ -209,7 +253,7 @@ export default async function HomePage() {
           "@type": "Organization",
           name: "nurvishop",
           url: siteUrl,
-          description: "Warm, naturally made home goods — linen, clay, oak and stoneware for a softer home.",
+          description: t("orgDescription"),
         }}
       />
       {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}

@@ -241,3 +241,9 @@
   --promo-bg-green: #22271c;
   --promo-bg-warm: #2e2717;
 }
+
+/* Latvian: Fraunces draws ā/ē/ī/ū macrons off-centre, use Lora instead.
+   :lang() outranks the next/font class that defines --font-display-brand. */
+html:lang(lv) {
+  --font-display-brand: var(--font-display-lv);
+}

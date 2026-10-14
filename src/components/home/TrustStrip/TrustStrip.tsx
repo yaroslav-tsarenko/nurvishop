@@ -3,15 +3,18 @@
 import { useRef } from "react";
 import { Leaf, ShieldCheck, RotateCcw, Headphones } from "lucide-react";
 import { motion, useInView } from "framer-motion";
+import { useTranslations } from "next-intl";
 
+// Copy lives in messages under home.trust.<key>.{label,desc}.
 const items = [
-  { icon: Leaf, label: "Natural Materials", desc: "Linen, clay & oak", tint: "bg-lilac", iconColor: "text-accent" },
-  { icon: ShieldCheck, label: "Secure Payment", desc: "100% protected checkout", tint: "bg-success-tint", iconColor: "text-success" },
-  { icon: RotateCcw, label: "Easy Returns", desc: "30-day return policy", tint: "bg-pop-tint", iconColor: "text-warning" },
-  { icon: Headphones, label: "24/7 Support", desc: "We're always here to help", tint: "bg-blush-tint", iconColor: "text-blush" },
-];
+  { key: "materials", icon: Leaf, tint: "bg-lilac", iconColor: "text-accent" },
+  { key: "payment", icon: ShieldCheck, tint: "bg-success-tint", iconColor: "text-success" },
+  { key: "returns", icon: RotateCcw, tint: "bg-pop-tint", iconColor: "text-warning" },
+  { key: "support", icon: Headphones, tint: "bg-blush-tint", iconColor: "text-blush" },
+] as const;
 
 export function TrustStrip() {
+  const t = useTranslations("home.trust");
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-30px" });
 
@@ -22,7 +25,7 @@ export function TrustStrip() {
     >
       {items.map((item, i) => (
         <motion.div
-          key={item.label}
+          key={item.key}
           className="flex items-center gap-3 py-2 lg:not-last:border-r lg:not-last:border-line lg:not-last:pr-4"
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -36,8 +39,8 @@ export function TrustStrip() {
             <item.icon size={20} className={item.iconColor} />
           </motion.div>
           <div>
-            <p className="mb-0.5 text-[0.8125rem] font-bold leading-tight text-ink">{item.label}</p>
-            <p className="text-[0.7rem] leading-tight text-subtle">{item.desc}</p>
+            <p className="mb-0.5 text-[0.8125rem] font-bold leading-tight text-ink">{t(`${item.key}.label`)}</p>
+            <p className="text-[0.7rem] leading-tight text-subtle">{t(`${item.key}.desc`)}</p>
           </div>
         </motion.div>
       ))}

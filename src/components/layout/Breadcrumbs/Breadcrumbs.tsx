@@ -2,6 +2,7 @@
 
 import { Link } from "@/i18n/routing";
 import { ChevronRight } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface BreadcrumbItem {
   label: string;
@@ -13,8 +14,9 @@ interface BreadcrumbsProps {
 }
 
 export function Breadcrumbs({ items }: BreadcrumbsProps) {
+  const t = useTranslations("layout");
   return (
-    <nav className="py-5 text-[0.8125rem]" aria-label="Breadcrumb">
+    <nav className="py-5 text-[0.8125rem]" aria-label={t("breadcrumb")}>
       <ol className="m-0 flex flex-wrap list-none items-center gap-2 p-0">
         {items.map((item, index) => (
           <li key={index} className="flex items-center gap-2">
@@ -29,7 +31,7 @@ export function Breadcrumbs({ items }: BreadcrumbsProps) {
                 {item.label}
               </Link>
             ) : (
-              <span className="font-semibold text-ink">{item.label}</span>
+              <span className="font-semibold text-ink" aria-current="page">{item.label}</span>
             )}
           </li>
         ))}

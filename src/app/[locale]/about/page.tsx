@@ -1,42 +1,65 @@
+import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs/Breadcrumbs";
 import { Heart, Truck, Shield, Award } from "lucide-react";
 
+// Copy lives in messages under about.values.<key>.{title,desc}.
 const values = [
-  { icon: <Heart size={28} />, title: "Customer First", desc: "Whether you're a professional electrician or a DIY installer, your satisfaction drives every decision we make." },
-  { icon: <Truck size={28} />, title: "Fast & Reliable", desc: "We partner with trusted carriers to deliver your electrical supplies quickly and safely, every time." },
-  { icon: <Shield size={28} />, title: "Certified Quality", desc: "Every product meets professional installation standards and is sourced from certified manufacturers." },
-  { icon: <Award size={28} />, title: "Trade Pricing", desc: "We work directly with manufacturers to offer competitive trade prices on cables, switchgear, and more." },
-];
+  { key: "customerFirst", icon: <Heart size={28} /> },
+  { key: "fastReliable", icon: <Truck size={28} /> },
+  { key: "certifiedQuality", icon: <Shield size={28} /> },
+  { key: "tradePricing", icon: <Award size={28} /> },
+] as const;
 
-export default function AboutPage() {
+interface PageProps {
+  params: Promise<{ locale: string }>;
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "about" });
+  return {
+    title: t("metaTitle"),
+    description: t("metaDescription"),
+  };
+}
+
+export default async function AboutPage({ params }: PageProps) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations({ locale, namespace: "about" });
+  const nav = await getTranslations({ locale, namespace: "nav" });
+
   return (
     <div className="mx-auto max-w-container px-4 pb-16">
-      <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "About Us" }]} />
+      <Breadcrumbs items={[{ label: nav("home"), href: "/" }, { label: t("breadcrumb") }]} />
 
       <div className="mx-auto max-w-[720px]">
         <div className="mb-12 text-center max-[640px]:mb-8">
           <h1 className="mb-4 font-display text-4xl font-extrabold tracking-tight max-[640px]:text-[1.625rem]">
-            About <span className="gradient-text">nurvishop</span>
+            {t.rich("title", {
+              brand: (chunks) => <span className="gradient-text">{chunks}</span>,
+            })}
           </h1>
           <p className="mx-auto max-w-[540px] text-[1.0625rem] leading-[1.7] text-muted max-[640px]:text-[0.9375rem]">
-            We&apos;re on a mission to make professional-grade electrical materials accessible to electricians, contractors, and DIY installers. Finding the right cables, switchgear, and installation accessories shouldn&apos;t be complicated.
+            {t("intro")}
           </p>
         </div>
 
         <div className="mb-12 grid grid-cols-2 gap-5 max-[600px]:mb-8 max-[600px]:grid-cols-1 max-[600px]:gap-3.5">
           {values.map((v) => (
-            <div key={v.title} className="rounded-xl border border-line bg-surface p-7 max-[480px]:p-5">
+            <div key={v.key} className="rounded-xl border border-line bg-surface p-7 max-[480px]:p-5">
               <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-accent-light text-accent">{v.icon}</div>
-              <h3 className="mb-2 text-[1.0625rem] font-bold">{v.title}</h3>
-              <p className="text-sm leading-[1.6] text-muted">{v.desc}</p>
+              <h3 className="mb-2 text-[1.0625rem] font-bold">{t(`values.${v.key}.title`)}</h3>
+              <p className="text-sm leading-[1.6] text-muted">{t(`values.${v.key}.desc`)}</p>
             </div>
           ))}
         </div>
 
         <div className="rounded-2xl bg-accent p-10 text-center text-white max-[480px]:px-5 max-[480px]:py-7">
-          <h2 className="mb-3 text-2xl font-extrabold max-[480px]:text-xl">Our Promise</h2>
+          <h2 className="mb-3 text-2xl font-extrabold max-[480px]:text-xl">{t("promiseTitle")}</h2>
           <p className="mx-auto max-w-[480px] text-[0.9375rem] leading-[1.7] opacity-90">
-            We stand behind every electrical product we sell. If you&apos;re not completely satisfied, we&apos;ll make it right — that&apos;s our guarantee to you.
+            {t("promiseText")}
           </p>
         </div>
       </div>

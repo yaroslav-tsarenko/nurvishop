@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import clsx from "clsx";
-import { useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
 interface Category {
@@ -39,6 +39,8 @@ function FilterSection({ title, defaultOpen = true, children }: { title: string;
   return (
     <div className="border-b border-line last:border-b-0">
       <button
+        type="button"
+        aria-expanded={open}
         className="flex w-full items-center justify-between px-5 py-4 text-muted transition-colors duration-150 hover:bg-well focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
         onClick={() => setOpen(!open)}
       >
@@ -112,6 +114,11 @@ export function ProductFilters({
 }: ProductFiltersProps) {
   const t = useTranslations("product");
   const nav = useTranslations("nav");
+  const catalog = useTranslations("catalog");
+  const format = useFormatter();
+  // Quick-range presets filter on the stored EUR price, so they are always shown in EUR.
+  const eur = (value: number) =>
+    format.number(value, { style: "currency", currency: "EUR", maximumFractionDigits: 0 });
 
   return (
     <aside className="flex flex-col overflow-hidden rounded-xl border border-line bg-surface">
@@ -150,7 +157,8 @@ export function ProductFilters({
         <div className="mb-3 flex items-center gap-2">
           <input
             type="number"
-            placeholder="Min"
+            placeholder={catalog("priceMin")}
+            aria-label={catalog("priceMinLabel")}
             value={minPrice}
             onChange={(e) => onMinPriceChange(e.target.value)}
             className="w-full rounded-md border border-line bg-surface px-3 py-2 text-sm text-ink transition-colors duration-200 focus:border-accent focus:outline-none"
@@ -158,28 +166,29 @@ export function ProductFilters({
           <span className="flex-shrink-0 text-subtle">–</span>
           <input
             type="number"
-            placeholder="Max"
+            placeholder={catalog("priceMax")}
+            aria-label={catalog("priceMaxLabel")}
             value={maxPrice}
             onChange={(e) => onMaxPriceChange(e.target.value)}
             className="w-full rounded-md border border-line bg-surface px-3 py-2 text-sm text-ink transition-colors duration-200 focus:border-accent focus:outline-none"
           />
         </div>
         <div className="grid grid-cols-2 gap-1.5">
-          <button className="rounded-md border border-line bg-surface p-[0.4375rem] text-xs font-medium text-muted transition-[background-color,color,border-color] duration-150 hover:border-accent hover:bg-lilac hover:text-accent" onClick={() => { onMinPriceChange(""); onMaxPriceChange("25"); }}>Under €25</button>
-          <button className="rounded-md border border-line bg-surface p-[0.4375rem] text-xs font-medium text-muted transition-[background-color,color,border-color] duration-150 hover:border-accent hover:bg-lilac hover:text-accent" onClick={() => { onMinPriceChange("25"); onMaxPriceChange("50"); }}>€25–€50</button>
-          <button className="rounded-md border border-line bg-surface p-[0.4375rem] text-xs font-medium text-muted transition-[background-color,color,border-color] duration-150 hover:border-accent hover:bg-lilac hover:text-accent" onClick={() => { onMinPriceChange("50"); onMaxPriceChange("100"); }}>€50–€100</button>
-          <button className="rounded-md border border-line bg-surface p-[0.4375rem] text-xs font-medium text-muted transition-[background-color,color,border-color] duration-150 hover:border-accent hover:bg-lilac hover:text-accent" onClick={() => { onMinPriceChange("100"); onMaxPriceChange(""); }}>€100+</button>
+          <button className="rounded-md border border-line bg-surface p-[0.4375rem] text-xs font-medium text-muted transition-[background-color,color,border-color] duration-150 hover:border-accent hover:bg-lilac hover:text-accent" onClick={() => { onMinPriceChange(""); onMaxPriceChange("25"); }}>{catalog("priceUnder", { price: eur(25) })}</button>
+          <button className="rounded-md border border-line bg-surface p-[0.4375rem] text-xs font-medium text-muted transition-[background-color,color,border-color] duration-150 hover:border-accent hover:bg-lilac hover:text-accent" onClick={() => { onMinPriceChange("25"); onMaxPriceChange("50"); }}>{catalog("priceBetween", { min: eur(25), max: eur(50) })}</button>
+          <button className="rounded-md border border-line bg-surface p-[0.4375rem] text-xs font-medium text-muted transition-[background-color,color,border-color] duration-150 hover:border-accent hover:bg-lilac hover:text-accent" onClick={() => { onMinPriceChange("50"); onMaxPriceChange("100"); }}>{catalog("priceBetween", { min: eur(50), max: eur(100) })}</button>
+          <button className="rounded-md border border-line bg-surface p-[0.4375rem] text-xs font-medium text-muted transition-[background-color,color,border-color] duration-150 hover:border-accent hover:bg-lilac hover:text-accent" onClick={() => { onMinPriceChange("100"); onMaxPriceChange(""); }}>{catalog("priceOver", { price: eur(100) })}</button>
         </div>
       </FilterSection>
 
       {brands.length > 0 && (
-        <FilterSection title="Brand" defaultOpen={false}>
+        <FilterSection title={t("brand")} defaultOpen={false}>
           <ul className="m-0 flex max-h-[220px] list-none flex-col gap-0.5 overflow-y-auto p-0">
             <li
               className={clsx(categoryItemBase, !selectedBrand && categoryItemActive)}
               onClick={() => onBrandChange("")}
             >
-              All Brands
+              {catalog("allBrands")}
             </li>
             {brands.map((brand) => (
               <li
@@ -201,7 +210,7 @@ export function ProductFilters({
         </label>
         <label className="flex cursor-pointer items-center gap-2 py-1.5 text-sm text-muted">
           <input type="checkbox" checked={onSale} onChange={(e) => onSaleChange(e.target.checked)} className="h-4 w-4 accent-accent" />
-          <span>On Sale</span>
+          <span>{catalog("onSale")}</span>
         </label>
       </FilterSection>
     </aside>

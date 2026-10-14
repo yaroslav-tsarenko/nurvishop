@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useRef } from "react";
 import clsx from "clsx";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { ChevronRight } from "lucide-react";
 import { motion, useInView } from "framer-motion";
@@ -35,6 +36,7 @@ interface Props {
 export function ProductSection({
   title, subtitle, products, viewAllHref, viewAllLabel, tabs, bg = "white", columns = 5,
 }: Props) {
+  const t = useTranslations("common");
   const [activeTab, setActiveTab] = useState(0);
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-60px" });
@@ -87,7 +89,7 @@ export function ProductSection({
             href={viewAllHref}
             className="flex items-center gap-0.5 whitespace-nowrap text-[0.8125rem] font-semibold text-accent transition-opacity duration-100 hover:opacity-80 sm:ml-auto"
           >
-            {viewAllLabel || "View all"} <ChevronRight size={14} />
+            {viewAllLabel || t("viewAll")} <ChevronRight size={14} />
           </Link>
         )}
       </motion.div>

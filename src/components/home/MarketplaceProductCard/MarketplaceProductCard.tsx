@@ -1,13 +1,14 @@
 "use client";
 
-import Image from "next/image";
+import { ProductImage } from "@/components/shared/ProductImage/ProductImage";
 import clsx from "clsx";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { Heart, ShoppingCart, Star, Eye } from "lucide-react";
 import { useCart } from "@/providers/CartProvider";
 import { useCurrency } from "@/providers/CurrencyProvider";
 import { formatPrice } from "@/lib/utils/format-price";
-import { getProductImage, getProductImageFallback, shouldUnoptimizeImage } from "@/lib/utils/product-image";
+import { getProductImage } from "@/lib/utils/product-image";
 
 interface Props {
   product: {
@@ -26,6 +27,7 @@ interface Props {
 }
 
 export function MarketplaceProductCard({ product }: Props) {
+  const t = useTranslations("home.card");
   const { addItem } = useCart();
   const { currency, convert } = useCurrency();
   const price = Number(product.price);
@@ -61,16 +63,12 @@ export function MarketplaceProductCard({ product }: Props) {
       className="group flex flex-col overflow-hidden rounded-xl border border-line bg-surface text-ink no-underline shadow-card transition-[border-color,box-shadow,transform] duration-200 ease-back hover:-translate-y-1 hover:border-accent-light hover:shadow-card-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
     >
       <div className="relative flex aspect-square items-center justify-center overflow-hidden bg-[#FEFEFE] p-3">
-        <Image
+        <ProductImage
           src={imgSrc}
           alt={product.images?.[0]?.alt || product.name}
           width={200}
           height={200}
           className="max-h-full max-w-full object-contain transition-transform duration-200 group-hover:scale-[1.03]"
-          unoptimized={shouldUnoptimizeImage(imgSrc)}
-          onError={(e) => {
-            (e.target as HTMLImageElement).src = getProductImageFallback();
-          }}
         />
         {hasDiscount && (
           <span className="absolute left-2 top-2 rounded-pill bg-pop px-1.5 py-0.5 text-[0.7rem] font-bold uppercase tracking-wide text-pop-ink">
@@ -79,21 +77,21 @@ export function MarketplaceProductCard({ product }: Props) {
         )}
         {!inStock && (
           <span className="absolute inset-0 flex items-center justify-center bg-surface/75 text-[0.8125rem] font-semibold text-muted">
-            Out of Stock
+            {t("outOfStock")}
           </span>
         )}
         <div className="absolute right-2 top-2 flex flex-col gap-1 opacity-100 transition-opacity duration-150 sm:opacity-0 sm:group-hover:opacity-100">
           <button
             className="flex h-[30px] w-[30px] items-center justify-center rounded-md border border-line bg-surface text-muted transition-colors duration-100 hover:border-accent hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
             onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
-            aria-label="Add to wishlist"
+            aria-label={t("addToWishlist")}
           >
             <Heart size={15} />
           </button>
           <button
             className="flex h-[30px] w-[30px] items-center justify-center rounded-md border border-line bg-surface text-muted transition-colors duration-100 hover:border-accent hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
             onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
-            aria-label="Quick view"
+            aria-label={t("quickView")}
           >
             <Eye size={15} />
           </button>
@@ -126,15 +124,15 @@ export function MarketplaceProductCard({ product }: Props) {
             )}
             onClick={handleAddToCart}
             disabled={!inStock}
-            aria-label="Add to cart"
+            aria-label={t("addToCart")}
           >
             <ShoppingCart size={15} />
           </button>
         </div>
         {inStock ? (
-          <span className="text-[0.65rem] font-medium text-success">In stock</span>
+          <span className="text-[0.65rem] font-medium text-success">{t("inStock")}</span>
         ) : (
-          <span className="text-[0.65rem] font-medium text-danger">Out of stock</span>
+          <span className="text-[0.65rem] font-medium text-danger">{t("outOfStock")}</span>
         )}
       </div>
     </Link>

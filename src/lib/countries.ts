@@ -279,3 +279,43 @@ const ALL_COUNTRIES = [
 export const COUNTRIES = ALL_COUNTRIES
   .filter((c) => !SANCTIONED.has(c.code))
   .sort((a, b) => a.name.localeCompare(b.name));
+
+const displayNamesCache = new Map<string, Intl.DisplayNames | null>();
+
+function getDisplayNames(locale: string): Intl.DisplayNames | null {
+  if (!displayNamesCache.has(locale)) {
+    let dn: Intl.DisplayNames | null = null;
+    try {
+      dn = new Intl.DisplayNames([locale], { type: "region" });
+    } catch {
+      dn = null;
+    }
+    displayNamesCache.set(locale, dn);
+  }
+  return displayNamesCache.get(locale) ?? null;
+}
+
+/** Country name for an ISO 3166-1 alpha-2 code in the given UI locale. Non-codes are returned unchanged. */
+export function getCountryName(codeOrName: string, locale: string): string {
+  if (!/^[A-Z]{2}$/.test(codeOrName)) return codeOrName;
+  const fallback = ALL_COUNTRIES.find((c) => c.code === codeOrName)?.name ?? codeOrName;
+  try {
+    return getDisplayNames(locale)?.of(codeOrName) || fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+const localizedCache = new Map<string, typeof COUNTRIES>();
+
+/** COUNTRIES with names in the given locale, sorted with that locale's collation. */
+export function getLocalizedCountries(locale: string): typeof COUNTRIES {
+  let list = localizedCache.get(locale);
+  if (!list) {
+    list = COUNTRIES
+      .map((c) => ({ ...c, name: getCountryName(c.code, locale) }))
+      .sort((a, b) => a.name.localeCompare(b.name, locale));
+    localizedCache.set(locale, list);
+  }
+  return list;
+}

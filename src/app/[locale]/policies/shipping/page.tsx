@@ -1,13 +1,24 @@
+import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { PolicyLayout } from "@/components/layout/PolicyLayout/PolicyLayout";
-import { POLICIES } from "@/lib/policies-content";
+import { getPolicy } from "@/lib/policies-content.lv";
 
-const policy = POLICIES.shipping;
+interface PageProps {
+  params: Promise<{ locale: string }>;
+}
 
-export const metadata = { title: `${policy.title} — nurvishop` };
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "policies" });
+  return { title: t("pageMetaTitle", { title: getPolicy("shipping", locale).title }) };
+}
 
-export default function Policy_shipping_Page() {
+export default async function Policy_shipping_Page({ params }: PageProps) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const policy = getPolicy("shipping", locale);
   return (
-    <PolicyLayout title={policy.title} lastUpdated={policy.lastUpdated}>
+    <PolicyLayout locale={locale} title={policy.title} lastUpdated={policy.lastUpdated}>
       <div dangerouslySetInnerHTML={{ __html: policy.html }} />
     </PolicyLayout>
   );

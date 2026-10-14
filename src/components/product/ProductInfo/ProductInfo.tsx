@@ -9,7 +9,6 @@ import { PriceDisplay } from "@/components/shared/PriceDisplay/PriceDisplay";
 import { QuantitySelector } from "@/components/shared/QuantitySelector/QuantitySelector";
 import { useCart } from "@/providers/CartProvider";
 import { useCurrency } from "@/providers/CurrencyProvider";
-import { formatPrice } from "@/lib/utils/format-price";
 import { useRouter } from "@/i18n/routing";
 import { toast } from "sonner";
 
@@ -19,6 +18,8 @@ const WARRANTY_OPTIONS = [
   { key: "2year", years: 2, percent: 16, min: 9.99 },
   { key: "3year", years: 3, percent: 22, min: 12.99 },
 ];
+
+const CONDITIONS = ["new", "used", "refurbished"] as const;
 
 // Hide additional warranty for low-priced items where the minimum
 // charge would be disproportionate to the product price.
@@ -70,7 +71,7 @@ export function ProductInfo({
   const [qty, setQty] = useState(1);
   const [selectedWarranty, setSelectedWarranty] = useState(0);
   const { addItem } = useCart();
-  const { currency, convert } = useCurrency();
+  const { format } = useCurrency();
   const router = useRouter();
 
   const outOfStock = stockQuantity <= 0;
@@ -94,7 +95,7 @@ export function ProductInfo({
     if (warrantyOption.years > 0) {
       addItem({
         productId: `${id}-warranty-${warrantyOption.years}yr`,
-        name: `${warrantyOption.years}-year extended warranty — ${name}`,
+        name: t("warrantyCartItemName", { years: warrantyOption.years, name }),
         slug,
         sku: `WARR-${sku}-${warrantyOption.years}Y`,
         price: warrantyPrice,
@@ -121,14 +122,15 @@ export function ProductInfo({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ productId: id }),
       });
+      if (!res.ok) throw new Error(String(res.status));
       const data = await res.json();
       if (data.action === "added") {
-        toast.success(t("addToWishlist"));
+        toast.success(t("addedToWishlist"));
       } else {
-        toast.success(t("removeFromWishlist"));
+        toast.success(t("removedFromWishlist"));
       }
     } catch {
-      toast.error("Please log in to use wishlist");
+      toast.error(t("wishlistLoginRequired"));
     }
   };
 
@@ -148,7 +150,8 @@ export function ProductInfo({
           {ean && <span className="text-xs text-subtle">{t("ean")}: {ean}</span>}
           {reviewCount > 0 && (
             <span className="inline-flex items-center gap-1 text-[0.8125rem] font-semibold text-warning">
-              {"★".repeat(Math.round(avgRating))}{"☆".repeat(5 - Math.round(avgRating))}
+              <span aria-hidden="true">{"★".repeat(Math.round(avgRating))}{"☆".repeat(5 - Math.round(avgRating))}</span>
+              <span className="sr-only">{t("ratingOutOf", { rating: Math.round(avgRating * 10) / 10 })}</span>
               <span className="font-normal text-subtle">({reviewCount})</span>
             </span>
           )}
@@ -207,7 +210,7 @@ export function ProductInfo({
               >
                 {idx === 0 ? t("noWarranty") : t(`warrantyOption${opt.years}year` as "warrantyOption1year" | "warrantyOption2year" | "warrantyOption3year")}
                 {opt.percent > 0 && (
-                  <span className="text-[0.6875rem] font-normal text-muted">+{formatPrice(convert(calcWarrantyPrice(price, opt)), currency)}</span>
+                  <span className="text-[0.6875rem] font-normal text-muted">+{format(calcWarrantyPrice(price, opt))}</span>
                 )}
               </button>
             ))}
@@ -260,7 +263,11 @@ export function ProductInfo({
         )}
         <div className="flex justify-between border-b border-well py-2 text-sm">
           <span className="text-muted">{t("condition")}</span>
-          <span className="font-semibold text-ink">{condition}</span>
+          <span className="font-semibold text-ink">
+            {CONDITIONS.includes(condition as (typeof CONDITIONS)[number])
+              ? t(`conditions.${condition as (typeof CONDITIONS)[number]}`)
+              : condition}
+          </span>
         </div>
         <div className="flex justify-between border-b border-well py-2 text-sm last:border-b-0">
           <span className="text-muted">{t("sku")}</span>

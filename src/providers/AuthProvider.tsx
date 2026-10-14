@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { useLocale } from "next-intl";
 
 interface AuthUser {
   id: string;
@@ -21,6 +22,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const locale = useLocale();
   const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -41,7 +43,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signOut = async () => {
     await fetch("/api/auth/logout", { method: "POST" });
     setUser(null);
-    window.location.href = "/en/auth/login";
+    window.location.href = `/${locale}/auth/login`;
   };
 
   return (

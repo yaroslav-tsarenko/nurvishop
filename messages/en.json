@@ -1,4 +1,392 @@
 {
+  "checkout": {
+    "title": "Checkout",
+    "contact": "Contact Information",
+    "shipping": "Shipping Address",
+    "shippingMethod": "Shipping Method",
+    "payment": "Payment",
+    "review": "Review Order",
+    "placeOrder": "Place Order",
+    "email": "Email",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "address": "Address",
+    "apartment": "Apartment, suite, etc.",
+    "city": "City",
+    "province": "State / Province",
+    "postalCode": "Postal Code",
+    "country": "Country",
+    "phone": "Phone",
+    "orderSummary": "Order Summary",
+    "processing": "Processing your order...",
+    "guestNotice": "Checking out as guest. <login>Log in</login> or <register>create an account</register> to track orders easily.",
+    "emailPlaceholder": "your@email.com",
+    "emailHint": "Order confirmation will be sent to this email",
+    "phoneHint": "Include country code (e.g. +371, +44, +49)",
+    "continueToShipping": "Continue to Shipping",
+    "reviewOrderCta": "Review Order",
+    "back": "Back",
+    "firstNamePlaceholder": "John",
+    "lastNamePlaceholder": "Doe",
+    "addressPlaceholder": "123 Main Street",
+    "apartmentPlaceholder": "Apt 4B (optional)",
+    "cityPlaceholder": "Vilnius",
+    "provincePlaceholder": "Region (optional)",
+    "postalCodePlaceholder": "LT-10001",
+    "soldBy": "Sold by {legalName} (trading as {tradingName})",
+    "registeredOffice": "Registered office: {address}",
+    "companyNumberVat": "Company no. {number} · VAT included in prices where applicable",
+    "merchantOfRecordNote": "{legalName} is the Merchant of Record for this order.",
+    "agreePolicies": "I have read and agree to the <terms>Terms & Conditions</terms>, <privacy>Privacy Policy</privacy>, <returns>Returns Policy</returns> and <payment>Payment Policy</payment>.",
+    "agreeRequired": "You must agree to the website policies to continue.",
+    "agreeToast": "Please agree to the website policies before placing your order.",
+    "addForFreeShipping": "Add <strong>{amount}</strong> more for free shipping",
+    "discountApplied": "{percent}% OFF applied",
+    "welcomeDiscount": "Welcome discount",
+    "discountCode": "Code: {code}",
+    "removeDiscount": "Remove discount",
+    "promoCode": "Promo code",
+    "promoPlaceholder": "NEWS-XXXXXX",
+    "apply": "Apply",
+    "discountToast": "{percent}% discount applied!",
+    "promoInvalid": "Invalid or expired code",
+    "promoFailed": "Failed to apply code",
+    "discountLine": "Discount ({percent}%)",
+    "shippingCalculated": "Calculated from shipping address",
+    "includesVat": "Includes VAT ({rate}%)",
+    "pricesIncludeVat": "All prices include VAT where applicable.",
+    "secureCheckout": "Secure checkout with SSL encryption",
+    "dataProtected": "Your data is protected",
+    "pciAlt": "PCI DSS Compliant",
+    "merchantOfRecord": "Merchant of Record: <strong>{legalName}</strong>",
+    "orderFailed": "Failed to place order. Please try again."
+  },
+  "account": {
+    "title": "My Account",
+    "welcome": "Welcome, {name}",
+    "orders": "My Orders",
+    "profile": "Profile",
+    "addresses": "Addresses",
+    "wishlist": "Wishlist",
+    "orderNumber": "Order #{number}",
+    "orderStatus": "Status",
+    "orderDate": "Date",
+    "orderTotal": "Total",
+    "noOrders": "You haven't placed any orders yet",
+    "noOrdersSubtitle": "When you place an order, it will appear here",
+    "editProfile": "Edit Profile",
+    "addAddress": "Add Address",
+    "defaultAddress": "Default",
+    "setDefault": "Set as default",
+    "emptyWishlist": "Your wishlist is empty",
+    "logout": "Log out",
+    "userFallback": "User",
+    "statOrders": "Orders",
+    "allTime": "All-time",
+    "totalSpent": "Total Spent",
+    "acrossAllOrders": "Across all orders",
+    "statAccount": "Account",
+    "noNameSet": "No name set",
+    "recentOrders": "Recent Orders",
+    "viewAll": "View all",
+    "loading": "Loading...",
+    "noOrdersShort": "No orders yet",
+    "startShopping": "Start shopping →",
+    "itemsCount": "{count, plural, one {# item} other {# items}}",
+    "placedOn": "Placed on {date}",
+    "orderNotFound": "Order not found",
+    "shippingAddress": "Shipping Address",
+    "orderInfo": "Order Info",
+    "paymentLabel": "Payment",
+    "methodLabel": "Method",
+    "shippingLabel": "Shipping",
+    "trackingLabel": "Tracking",
+    "noAddresses": "No addresses yet",
+    "noAddressesSubtitle": "Add a shipping address for faster checkout",
+    "emailLabel": "Email",
+    "nameLabel": "Name",
+    "phoneLabel": "Phone",
+    "profileUpdateFailed": "Failed to update profile"
+  },
+  "auth": {
+    "loginTitle": "Welcome Back",
+    "loginSubtitle": "Log in to your account",
+    "registerTitle": "Create Account",
+    "registerSubtitle": "Join us today",
+    "googleLogin": "Continue with Google",
+    "emailLogin": "Log in with Email",
+    "email": "Email address",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "orDivider": "or",
+    "forgotPassword": "Forgot password?",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "signUp": "Sign up",
+    "signIn": "Sign in",
+    "magicLink": "Send Magic Link",
+    "magicLinkSent": "Check your email for a login link",
+    "termsAgree": "By signing up, you agree to our {terms} and {privacy}",
+    "forgotPasswordTitle": "Forgot Password",
+    "forgotPasswordSubtitle": "Enter your email and we'll send you a reset link",
+    "sendResetLink": "Send Reset Link",
+    "resetEmailSent": "If an account exists with that email, we've sent a password reset link. Check your inbox.",
+    "backToLogin": "Back to login",
+    "resetPasswordTitle": "Reset Password",
+    "resetPasswordSubtitle": "Enter your new password below",
+    "newPassword": "New password",
+    "resetPassword": "Reset Password",
+    "passwordResetSuccess": "Your password has been reset successfully. You can now sign in with your new password.",
+    "invalidResetLink": "Invalid Reset Link",
+    "invalidResetLinkDesc": "This password reset link is invalid or has expired.",
+    "requestNewLink": "Request a new reset link",
+    "passwordsMismatch": "Passwords do not match",
+    "passwordTooShort": "Password must be at least 6 characters",
+    "emailPlaceholder": "you@example.com",
+    "passwordPlaceholder": "Enter your password",
+    "newPasswordPlaceholder": "Min 6 characters",
+    "confirmNewPasswordPlaceholder": "Confirm your new password",
+    "confirmPasswordPlaceholder": "Confirm your password",
+    "loginSuccess": "Logged in successfully!",
+    "loginFailed": "Login failed. Please try again.",
+    "invalidCredentials": "Invalid email or password",
+    "somethingWentWrong": "Something went wrong. Please try again.",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "stepPersonal": "Personal Info",
+    "stepContact": "Contact Details",
+    "stepAddress": "Address",
+    "stepPassword": "Password",
+    "stepOf": "Step {current} of {total}: {label}",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "dateOfBirth": "Date of Birth",
+    "phone": "Phone",
+    "street": "Street Address",
+    "city": "City",
+    "country": "Country",
+    "postalCode": "Postal Code",
+    "firstNamePlaceholder": "John",
+    "lastNamePlaceholder": "Doe",
+    "streetPlaceholder": "123 Main Street, Apt 4B",
+    "cityPlaceholder": "Vilnius",
+    "postalCodePlaceholder": "LT-10001",
+    "phoneCountryHint": "Select country in next step for phone code hint",
+    "continue": "Continue",
+    "back": "Back",
+    "strengthWeak": "Weak",
+    "strengthFair": "Fair",
+    "strengthGood": "Good",
+    "strengthStrong": "Strong",
+    "registerTerms": "By creating an account, you agree to our <terms>Terms of Service</terms> and <privacy>Privacy Policy</privacy>.",
+    "accountCreated": "Account created!",
+    "registrationFailed": "Registration failed. Please try again.",
+    "emailTaken": "This email is already registered"
+  },
+  "contact": {
+    "title": "Contact Us",
+    "subtitle": "We'd love to hear from you",
+    "name": "Your Name",
+    "email": "Your Email",
+    "subject": "Subject",
+    "message": "Message",
+    "send": "Send Message",
+    "success": "Thank you! We'll get back to you soon.",
+    "feedback": "Feedback",
+    "feedbackSubtitle": "Help us improve your experience",
+    "metaTitle": "Contact Us",
+    "metaDescription": "Get in touch with nurvishop — questions about orders, products, warranty or wholesale. We reply within 24 hours.",
+    "eyebrow": "We're listening",
+    "heroSubtitle": "We'd love to hear from you. Real people, warm answers — for orders, products, and everything in between.",
+    "emailUsTitle": "Email Us",
+    "emailUsSub": "We reply within 24 hours",
+    "callUsTitle": "Call Us",
+    "callUsSub": "Mon–Fri 9:00–18:00 EET",
+    "officeTitle": "Our Office",
+    "officeDetail": "Vilnius, Lithuania",
+    "officeTooltip": "{address}\nCompany No. {number}",
+    "hoursTitle": "Working Hours",
+    "hoursDetail": "Mon–Fri 9:00–18:00",
+    "hoursSub": "Sat 10:00–14:00",
+    "formTitle": "Send us a message",
+    "topicLabel": "What can we help with?",
+    "topicGeneral": "General Inquiry",
+    "topicSupport": "Product Support",
+    "topicWarranty": "Warranty & Returns",
+    "topicBusiness": "Business / Wholesale",
+    "namePlaceholder": "John Doe",
+    "emailPlaceholder": "your@email.com",
+    "subjectPlaceholder": "How can we help?",
+    "messagePlaceholder": "Tell us more about your question or concern...",
+    "messageSent": "Message Sent!",
+    "sendAnother": "Send Another Message",
+    "sendFailed": "Failed to send message. Please try again.",
+    "faqTitle": "Frequently Asked",
+    "faqShippingQ": "How long does shipping take?",
+    "faqShippingA": "Standard 5–7 days, Express 2–3 days.",
+    "faqReturnsQ": "What is your return policy?",
+    "faqReturnsA": "30-day returns on all unused items.",
+    "faqInternationalQ": "Do you ship internationally?",
+    "faqInternationalA": "Yes, across all EU countries.",
+    "faqTrackingQ": "How do I track my order?",
+    "faqTrackingA": "Check your account or email for tracking.",
+    "responseTimesTitle": "Response Times",
+    "responseEmail": "Email",
+    "responseOrders": "Order support",
+    "responseWholesale": "Wholesale",
+    "within24h": "Within 24h",
+    "within48h": "Within 48h",
+    "privacyNote": "Your information is secure and will only be used to respond to your inquiry. We never share your data."
+  },
+  "notifications": {
+    "orderPlaced": "Order placed successfully!",
+    "orderShipped": "Your order has been shipped",
+    "profileUpdated": "Profile updated",
+    "addressAdded": "Address added",
+    "addressDeleted": "Address removed",
+    "itemAdded": "Item added to cart",
+    "itemRemoved": "Item removed from cart",
+    "cartUpdated": "Cart updated",
+    "reviewSubmitted": "Review submitted for moderation",
+    "addedToWishlist": "Added to wishlist",
+    "removedFromWishlist": "Removed from wishlist",
+    "feedGenerated": "Product feed generated",
+    "importComplete": "Import completed: {success} added, {errors} errors",
+    "settingsSaved": "Store settings saved"
+  },
+  "order": {
+    "status": {
+      "PENDING": "Pending",
+      "CONFIRMED": "Confirmed",
+      "PROCESSING": "Processing",
+      "SHIPPED": "Shipped",
+      "DELIVERED": "Delivered",
+      "CANCELLED": "Cancelled",
+      "REFUNDED": "Refunded"
+    },
+    "paymentStatus": {
+      "PENDING": "Pending",
+      "PAID": "Paid",
+      "FAILED": "Failed",
+      "REFUNDED": "Refunded"
+    },
+    "paymentMethod": {
+      "manual": "Manual payment",
+      "card": "Card"
+    },
+    "shippingMethod": {
+      "standard": "Standard Shipping",
+      "express": "Express Shipping",
+      "free": "Economy Shipping"
+    },
+    "shippingTime": {
+      "standard": "5–7 business days",
+      "express": "2–3 business days",
+      "free": "7–14 business days"
+    },
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "tax": "Tax",
+    "discount": "Discount",
+    "total": "Total",
+    "free": "Free",
+    "product": "Product",
+    "qty": "Qty",
+    "price": "Price",
+    "sku": "SKU: {sku}",
+    "qtyLabel": "Qty: {count}",
+    "qtyTimesPrice": "Qty {count} × {price}",
+    "orderRef": "Order <strong>#{number}</strong>",
+    "summary": "Order Summary",
+    "checkingPayment": "Checking payment status...",
+    "doNotClose": "Please do not close or refresh this page.",
+    "paymentFailed": "Payment Failed",
+    "paymentFailedDesc": "Your payment transaction could not be completed. Please try again or use another payment method.",
+    "thankYou": "Thank you for your order. We'll send a confirmation email shortly.",
+    "deliveryTo": "Delivery to",
+    "nextSteps": "Next Steps",
+    "failedNextSteps": "Please check your card details and try again. Alternatively, you can contact our customer support for assistance.",
+    "nextStepPrepare": "We'll prepare your order within 1–2 business days",
+    "nextStepTracking": "You'll receive a tracking link by email",
+    "nextStepDelivery": "Estimated delivery depends on destination",
+    "confirmationSent": "A confirmation email has been sent to <strong>{email}</strong>",
+    "viewOrders": "View Orders",
+    "continueShopping": "Continue Shopping"
+  },
+  "validation": {
+    "emailRequired": "Email is required",
+    "emailInvalid": "Please enter a valid email address",
+    "phoneRequired": "Phone is required",
+    "nameRequired": "Name is required",
+    "firstNameRequired": "First name is required",
+    "lastNameRequired": "Last name is required",
+    "addressRequired": "Address is required",
+    "streetRequired": "Street address is required",
+    "cityRequired": "City is required",
+    "postalCodeRequired": "Postal code is required",
+    "countryRequired": "Country is required",
+    "shippingMethodRequired": "Shipping method is required",
+    "subjectRequired": "Subject is required",
+    "messageTooShort": "Message must be at least 10 characters",
+    "dateOfBirthRequired": "Date of birth is required",
+    "mustBeAdult": "You must be at least 18 years old",
+    "passwordRequired": "Password is required",
+    "passwordMin": "Password must be at least 6 characters",
+    "passwordsMismatch": "Passwords do not match",
+    "cardNumberTooShort": "Card number is too short",
+    "cardNumberTooLong": "Card number is too long",
+    "cardUnsupported": "Only VISA or Mastercard cards are accepted",
+    "cardHolderRequired": "Card holder name is required",
+    "expiryMonthFormat": "Must be 2 digits (e.g. 05)",
+    "expiryYearFormat": "Must be 4 digits (e.g. 2034)",
+    "cvvTooShort": "CVV is too short",
+    "cvvTooLong": "CVV is too long"
+  },
+  "countries": {
+    "select": "Select country..."
+  },
+  "nav": {
+    "home": "Home",
+    "catalog": "Catalog",
+    "cart": "Cart",
+    "account": "Account",
+    "login": "Log in",
+    "register": "Create account",
+    "logout": "Log out",
+    "admin": "Admin Panel",
+    "search": "Search products...",
+    "allCategories": "All Categories",
+    "contact": "Contact",
+    "language": "Language",
+    "currency": "Currency",
+    "theme": "Appearance",
+    "switchToDark": "Switch to dark mode",
+    "switchToLight": "Switch to light mode",
+    "utility1": "Thoughtfully made for a softer home",
+    "utility2": "Natural materials — linen, clay & oak",
+    "utility3": "Warm support · 30-day easy returns",
+    "shopByRoom": "Shop by room",
+    "rooms": {
+      "livingRoom": "Living Room",
+      "bedroom": "Bedroom",
+      "kitchen": "Kitchen",
+      "diningRoom": "Dining Room",
+      "bathroom": "Bathroom",
+      "homeOffice": "Home Office",
+      "lighting": "Lighting",
+      "decorTextiles": "Decor & Textiles"
+    },
+    "browseAllCategories": "Browse all categories",
+    "searchPlaceholder": "Search sofas, ceramics, linen…",
+    "searchButton": "Search",
+    "wishlist": "Wishlist",
+    "menu": "Menu",
+    "closeMenu": "Close menu",
+    "newArrivals": "New Arrivals",
+    "deals": "Deals",
+    "myAccount": "My Account",
+    "signIn": "Sign In"
+  },
   "common": {
     "loading": "Loading...",
     "error": "Something went wrong",
@@ -17,18 +405,93 @@
     "savedChanges": "Changes saved successfully",
     "copiedToClipboard": "Copied to clipboard"
   },
-  "nav": {
-    "home": "Home",
-    "catalog": "Catalog",
-    "cart": "Cart",
-    "account": "Account",
-    "login": "Log in",
-    "register": "Create account",
-    "logout": "Log out",
-    "admin": "Admin Panel",
-    "search": "Search products...",
-    "allCategories": "All Categories",
-    "contact": "Contact"
+  "footer": {
+    "about": "About Us",
+    "contact": "Contact",
+    "shipping": "Shipping & Delivery",
+    "returns": "Returns & Refunds",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "copyright": "© {year} {storeName}. All rights reserved.",
+    "followUs": "Follow Us",
+    "subscribeSuccess": "Thanks for subscribing!",
+    "shopHeading": "Shop by room",
+    "newArrivals": "New arrivals",
+    "bestSellers": "Best sellers",
+    "sale": "Sale",
+    "customerCare": "Customer care",
+    "warranty": "Warranty",
+    "careGuides": "Care guides",
+    "company": "Company",
+    "myOrders": "My orders",
+    "wishlist": "Wishlist",
+    "tagline": "Thoughtful things for a softer home.",
+    "intro": "Fresh finds, friendly prices. nurvishop brings you lifestyle goods, accessories and everyday favourites — polished enough to pay with confidence.",
+    "newsletterEyebrow": "Join the letter",
+    "newsletterText": "Join us for slow interiors, new arrivals and quiet offers.",
+    "emailLabel": "Email address",
+    "emailPlaceholder": "you@example.com",
+    "subscribe": "Subscribe",
+    "secureCheckout": "Secure checkout",
+    "sourcedMaterials": "Thoughtfully sourced materials",
+    "trustedPayments": "Trusted payments",
+    "pciAlt": "PCI DSS Compliant",
+    "legalEntity": "{tradingName} is a trading name of <strong>{legalName}</strong>, a company registered in Lithuania (company no. {companyNumber}). Registered office: {address}.",
+    "vatNotice": "VAT is included in all product prices where applicable. {legalName} is the Merchant of Record for orders placed on this website.",
+    "legalNav": "Legal",
+    "cookies": "Cookies",
+    "accessibility": "Accessibility",
+    "legalNotice": "Legal notice",
+    "cookieSettings": "Cookie settings"
+  },
+  "errors": {
+    "notFound": "Page not found",
+    "notFoundSubtitle": "The page you're looking for doesn't exist",
+    "serverError": "Server error",
+    "unauthorized": "Please log in to continue",
+    "forbidden": "You don't have access to this page",
+    "validationError": "Please check the form for errors",
+    "networkError": "Network error. Please check your connection.",
+    "backHome": "Back to home",
+    "browseCatalog": "Browse the catalog"
+  },
+  "layout": {
+    "breadcrumb": "Breadcrumb"
+  },
+  "shared": {
+    "decreaseQuantity": "Decrease quantity",
+    "increaseQuantity": "Increase quantity",
+    "quantity": "Quantity: {count}",
+    "addedToCart": "Added to cart",
+    "qty": "Qty: {count}"
+  },
+  "cookies": {
+    "title": "We value your privacy",
+    "close": "Close cookie banner",
+    "intro": "We use strictly necessary cookies to make our store work. With your consent we also use functional, analytics, and marketing cookies. You can accept all, reject non-essential cookies, or set your own preferences. Read more in our <policy>Cookie Policy</policy>.",
+    "alwaysActive": "Always active",
+    "categories": {
+      "necessary": {
+        "label": "Strictly necessary",
+        "description": "Required for cart, checkout, login, payment security and fraud prevention."
+      },
+      "functional": {
+        "label": "Functional",
+        "description": "Remember preferences such as recently viewed products and display settings."
+      },
+      "analytics": {
+        "label": "Analytics & performance",
+        "description": "Help us understand how visitors use the site so we can improve it."
+      },
+      "marketing": {
+        "label": "Marketing",
+        "description": "Used to deliver and measure more relevant advertising."
+      }
+    },
+    "save": "Save preferences",
+    "customize": "Customize",
+    "rejectAll": "Reject non-essential",
+    "acceptAll": "Accept all"
   },
   "home": {
     "heroTitle": "Fresh finds, friendly prices",
@@ -54,7 +517,277 @@
     "promoSupport": "24/7 Support",
     "promoSupportDesc": "We're here to help",
     "promoSecure": "Secure Payment",
-    "promoSecureDesc": "100% secure checkout"
+    "promoSecureDesc": "100% secure checkout",
+    "metaTitle": "nurvishop — Fresh finds, friendly prices",
+    "metaDescription": "nurvishop — a modern store for lifestyle goods, accessories and everyday favourites. Fresh, likable, and easy to trust.",
+    "orgDescription": "Warm, naturally made home goods — linen, clay, oak and stoneware for a softer home.",
+    "topBar": {
+      "about": "About",
+      "payment": "Payment",
+      "returns": "Returns",
+      "warranty": "Warranty",
+      "contacts": "Contacts"
+    },
+    "promoStrip": {
+      "made": {
+        "title": "Thoughtfully Made",
+        "subtitle": "Warm, tactile design"
+      },
+      "returns": {
+        "title": "Easy Returns",
+        "subtitle": "30-day policy"
+      },
+      "warranty": {
+        "title": "2-Year Warranty",
+        "subtitle": "On all products"
+      },
+      "giftCards": {
+        "title": "Gift Cards",
+        "subtitle": "Available now"
+      },
+      "quality": {
+        "title": "Premium Quality",
+        "subtitle": "Certified goods"
+      },
+      "support": {
+        "title": "24/7 Support",
+        "subtitle": "Always here"
+      }
+    },
+    "sidebar": {
+      "open": "Open categories",
+      "close": "Close categories",
+      "categories": "Categories",
+      "catalog": "Catalog",
+      "expand": "Expand {name}",
+      "collapse": "Collapse {name}"
+    },
+    "hero": {
+      "slide1": {
+        "eyebrow": "New season · Warm Natural Home",
+        "title": "Home, made",
+        "accent": "softer.",
+        "subtitle": "Thoughtful pieces in linen, clay and oak — calm, tactile things that make everyday living feel a little kinder.",
+        "cta": "Shop the collection",
+        "secondary": "New arrivals"
+      },
+      "slide2": {
+        "eyebrow": "Textiles & Comfort",
+        "title": "Textures that",
+        "accent": "comfort.",
+        "subtitle": "Soft-washed linen, brushed cotton and hand-finished throws to layer warmth into every room.",
+        "cta": "Explore textiles",
+        "secondary": "Shop furniture"
+      },
+      "slide3": {
+        "eyebrow": "Light & Atmosphere",
+        "title": "Warm light,",
+        "accent": "quiet evenings.",
+        "subtitle": "Ceramics, candles and gentle lighting to slow the pace and make the evenings glow.",
+        "cta": "Discover décor",
+        "secondary": "Shop kitchenware"
+      },
+      "values": "Thoughtfully made · Natural materials · Warm support",
+      "shopNow": "Shop Now",
+      "previous": "Previous slide",
+      "next": "Next slide",
+      "goToSlide": "Go to slide {number}"
+    },
+    "showcase": {
+      "eyebrow": "Explore the home",
+      "title": "Shop by room",
+      "items": "{count, plural, one {# item} other {# items}}"
+    },
+    "promoGrid": {
+      "tableware": {
+        "badge": "Kitchen & Dining",
+        "title": "Everyday Tableware",
+        "subtitle": "Ceramics & glassware"
+      },
+      "linen": {
+        "badge": "Textiles",
+        "title": "Soft-Washed Linen",
+        "subtitle": "Up to 30% off"
+      },
+      "lighting": {
+        "badge": "Décor & Lighting",
+        "title": "Warm Up Every Room",
+        "subtitle": "Candles & lamps"
+      },
+      "members": {
+        "badge": "Members Club",
+        "title": "Join & Get 10% Off Your First Order",
+        "subtitle": "Member pricing, early access, and warm support",
+        "cta": "Join Free"
+      },
+      "shopNow": "Shop now"
+    },
+    "popularBrands": "Popular Brands",
+    "scrollLeft": "Scroll left",
+    "scrollRight": "Scroll right",
+    "hotDeals": "Hot Deals",
+    "saleBadge": "Sale",
+    "viewAll": "View all",
+    "dealOfTheDay": {
+      "badge": "Deal of the Day",
+      "endsIn": "Offer ends in",
+      "description": "Limited time offer — grab it before the deal expires!",
+      "cta": "Shop Now"
+    },
+    "newsletterBanner": {
+      "off": "OFF",
+      "title": "Subscribe & Save 10%",
+      "subtitle": "Get exclusive deals, new arrivals & special offers straight to your inbox.",
+      "success": "You're in! Check your inbox.",
+      "placeholder": "Enter your email",
+      "emailLabel": "Email address",
+      "cta": "Subscribe"
+    },
+    "trust": {
+      "materials": {
+        "label": "Natural Materials",
+        "desc": "Linen, clay & oak"
+      },
+      "payment": {
+        "label": "Secure Payment",
+        "desc": "100% protected checkout"
+      },
+      "returns": {
+        "label": "Easy Returns",
+        "desc": "30-day return policy"
+      },
+      "support": {
+        "label": "24/7 Support",
+        "desc": "We're always here to help"
+      }
+    },
+    "materials": {
+      "eyebrow": "Materials we love",
+      "title": "Made from things that <em>age well</em>.",
+      "text": "We choose honest, natural materials — the kind that soften, patina and feel better the longer they live in your home.",
+      "items": {
+        "linen": {
+          "name": "Linen",
+          "desc": "Breathable, soft-washed and better with every wash."
+        },
+        "clay": {
+          "name": "Clay",
+          "desc": "Hand-finished terracotta and glazed stoneware."
+        },
+        "oak": {
+          "name": "Oak",
+          "desc": "Warm, solid timber that ages gracefully."
+        },
+        "stone": {
+          "name": "Stone",
+          "desc": "Cool, tactile marble and natural stoneware."
+        }
+      }
+    },
+    "editorial": {
+      "quote": "A home should feel like a slow exhale — warm textures, honest materials and objects that earn their place over time.",
+      "attribution": "The nurvishop philosophy"
+    },
+    "card": {
+      "inStock": "In stock",
+      "outOfStock": "Out of stock",
+      "addToWishlist": "Add to wishlist",
+      "quickView": "Quick view",
+      "addToCart": "Add to cart"
+    },
+    "sections": {
+      "allTab": "All",
+      "popularTitle": "Most Popular",
+      "popularSubtitle": "Top products by availability",
+      "popularViewAll": "View all popular",
+      "productCount": "{count, plural, one {#+ product} other {#+ products}}",
+      "categoryViewAll": "All {name}",
+      "newTitle": "New Arrivals",
+      "newSubtitle": "Just landed in store",
+      "newViewAll": "View all new"
+    }
+  },
+  "about": {
+    "metaTitle": "About us",
+    "metaDescription": "Learn about nurvishop — who we are, what we value and the promise we make to every customer.",
+    "breadcrumb": "About Us",
+    "title": "About <brand>nurvishop</brand>",
+    "intro": "We're on a mission to make professional-grade electrical materials accessible to electricians, contractors, and DIY installers. Finding the right cables, switchgear, and installation accessories shouldn't be complicated.",
+    "values": {
+      "customerFirst": {
+        "title": "Customer First",
+        "desc": "Whether you're a professional electrician or a DIY installer, your satisfaction drives every decision we make."
+      },
+      "fastReliable": {
+        "title": "Fast & Reliable",
+        "desc": "We partner with trusted carriers to deliver your electrical supplies quickly and safely, every time."
+      },
+      "certifiedQuality": {
+        "title": "Certified Quality",
+        "desc": "Every product meets professional installation standards and is sourced from certified manufacturers."
+      },
+      "tradePricing": {
+        "title": "Trade Pricing",
+        "desc": "We work directly with manufacturers to offer competitive trade prices on cables, switchgear, and more."
+      }
+    },
+    "promiseTitle": "Our Promise",
+    "promiseText": "We stand behind every electrical product we sell. If you're not completely satisfied, we'll make it right — that's our guarantee to you."
+  },
+  "faq": {
+    "metaTitle": "FAQ",
+    "metaDescription": "Answers to common questions about shipping, returns, payment and orders at nurvishop.",
+    "breadcrumb": "FAQ",
+    "title": "Frequently Asked <highlight>Questions</highlight>",
+    "subtitle": "Everything you need to know about shopping with us",
+    "items": {
+      "shippingTime": {
+        "q": "How long does shipping take?",
+        "a": "Standard shipping takes 3-5 business days. Express shipping is available for 1-2 business day delivery. Free shipping is offered on orders over €100."
+      },
+      "returns": {
+        "q": "What is your return policy?",
+        "a": "We offer a 30-day return policy on all items. Products must be unused and in their original packaging. Contact our support team to initiate a return."
+      },
+      "international": {
+        "q": "Do you ship internationally?",
+        "a": "Yes! We ship to most countries worldwide. International shipping typically takes 7-14 business days depending on the destination."
+      },
+      "tracking": {
+        "q": "How can I track my order?",
+        "a": "Once your order ships, you'll receive a confirmation email with a tracking number. You can also track your order from your account dashboard."
+      },
+      "payment": {
+        "q": "What payment methods do you accept?",
+        "a": "We accept Visa, Mastercard, American Express, PayPal, and bank transfers. All payments are processed securely with SSL encryption."
+      },
+      "changeOrder": {
+        "q": "Can I change or cancel my order?",
+        "a": "Orders can be modified or cancelled within 1 hour of placement. After that, please contact our support team and we'll do our best to help."
+      },
+      "giftWrap": {
+        "q": "Do you offer gift wrapping?",
+        "a": "Yes! Gift wrapping is available at checkout for a small additional fee. You can also include a personalized message with your gift."
+      },
+      "support": {
+        "q": "How do I contact customer support?",
+        "a": "You can reach us via our contact form, email at info@nurvishop.com, or through live chat on our website. We're available 24/7 to help."
+      }
+    }
+  },
+  "meta": {
+    "siteTitle": "nurvishop — Fresh finds, friendly prices",
+    "siteDescription": "nurvishop — a modern store for lifestyle goods, accessories and everyday favourites. Fresh, likable, and easy to trust.",
+    "categoryDescription": "Shop {category} at nurvishop — {count, plural, one {# product} other {# products}} with fast EU delivery and 30-day returns.",
+    "productDescriptionFallback": "{name} — buy online at nurvishop with fast EU delivery and 30-day returns."
+  },
+  "policies": {
+    "home": "Home",
+    "title": "Policies",
+    "metaTitle": "Policies",
+    "pageMetaTitle": "{title}",
+    "intro": "Please review our policies below. These policies govern your use of the nurvishop website and any purchases made through it.",
+    "lastUpdated": "Last updated: {date}"
   },
   "product": {
     "addToCart": "Add to Cart",
@@ -96,14 +829,55 @@
     "priceLowHigh": "Price: Low to High",
     "priceHighLow": "Price: High to Low",
     "nameAZ": "Name: A to Z",
-    "showing": "Showing {count} of {total} products",
+    "showing": "Showing {count} of {total, plural, one {# product} other {# products}}",
     "shareProduct": "Share",
     "freeShipping": "Natural Materials",
     "freeShippingDesc": "linen, clay & oak",
     "easyReturns": "Easy Returns",
     "easyReturnsDesc": "30-day return policy",
     "securePayment": "Secure Payment",
-    "securePaymentDesc": "SSL encrypted checkout"
+    "securePaymentDesc": "SSL encrypted checkout",
+    "noImage": "No image",
+    "sale": "Sale",
+    "showImage": "Show image {index} of {total}",
+    "imageAlt": "{name} – image {index}",
+    "warrantyCartItemName": "{years}-year extended warranty — {name}",
+    "wishlistLoginRequired": "Please log in to use your wishlist",
+    "addedToWishlist": "Added to your wishlist",
+    "removedFromWishlist": "Removed from your wishlist",
+    "conditions": {
+      "new": "New",
+      "used": "Used",
+      "refurbished": "Refurbished"
+    },
+    "ratingOutOf": "Rated {rating} out of 5",
+    "reviewCount": "{count, plural, one {# review} other {# reviews}}",
+    "anonymous": "Anonymous"
+  },
+  "catalog": {
+    "filters": "Filters",
+    "closeFilters": "Close filters",
+    "emptyTitle": "No products found",
+    "emptySubtitle": "There are no products here yet. Please check back soon.",
+    "emptyFilteredSubtitle": "Try adjusting or clearing your filters.",
+    "clearFilters": "Clear filters",
+    "prevPage": "Prev",
+    "nextPage": "Next",
+    "prevPageLabel": "Previous page",
+    "nextPageLabel": "Next page",
+    "pageLabel": "Page {page}",
+    "priceMin": "Min",
+    "priceMax": "Max",
+    "priceMinLabel": "Minimum price",
+    "priceMaxLabel": "Maximum price",
+    "priceUnder": "Under {price}",
+    "priceBetween": "{min}–{max}",
+    "priceOver": "{price}+",
+    "allBrands": "All brands",
+    "onSale": "On sale",
+    "emptyCategoryTitle": "No products in this category yet",
+    "emptyCategorySubtitle": "Browse the full catalog to find something you'll love.",
+    "browseAll": "Browse catalog"
   },
   "cart": {
     "title": "Shopping Cart",
@@ -117,83 +891,24 @@
     "total": "Total",
     "checkout": "Proceed to Checkout",
     "remove": "Remove",
-    "itemCount": "{count} items"
-  },
-  "checkout": {
-    "title": "Checkout",
-    "contact": "Contact Information",
-    "shipping": "Shipping Address",
-    "shippingMethod": "Shipping Method",
-    "payment": "Payment",
-    "review": "Review Order",
-    "placeOrder": "Place Order",
-    "email": "Email",
-    "firstName": "First Name",
-    "lastName": "Last Name",
-    "address": "Address",
-    "apartment": "Apartment, suite, etc.",
-    "city": "City",
-    "province": "State / Province",
-    "postalCode": "Postal Code",
-    "country": "Country",
-    "phone": "Phone",
+    "itemCount": "{count, plural, one {# item} other {# items}}",
+    "itemsInCart": "{count, plural, one {# item in your cart} other {# items in your cart}}",
+    "freeShippingUnlocked": "Free shipping",
+    "sku": "SKU: {sku}",
+    "removeItem": "Remove {name} from cart",
     "orderSummary": "Order Summary",
-    "processing": "Processing your order..."
+    "free": "Free",
+    "taxIncluded": "Tax ({rate}%, incl.)",
+    "freeShippingRemaining": "Add {amount} more for free shipping",
+    "secureCheckout": "Secure checkout with SSL encryption"
   },
-  "account": {
-    "title": "My Account",
-    "welcome": "Welcome, {name}",
-    "orders": "My Orders",
-    "profile": "Profile",
-    "addresses": "Addresses",
-    "wishlist": "Wishlist",
-    "orderNumber": "Order #{number}",
-    "orderStatus": "Status",
-    "orderDate": "Date",
-    "orderTotal": "Total",
-    "noOrders": "You haven't placed any orders yet",
-    "noOrdersSubtitle": "When you place an order, it will appear here",
-    "editProfile": "Edit Profile",
-    "addAddress": "Add Address",
-    "defaultAddress": "Default",
-    "setDefault": "Set as default",
-    "emptyWishlist": "Your wishlist is empty",
-    "logout": "Log out"
-  },
-  "auth": {
-    "loginTitle": "Welcome Back",
-    "loginSubtitle": "Log in to your account",
-    "registerTitle": "Create Account",
-    "registerSubtitle": "Join us today",
-    "googleLogin": "Continue with Google",
-    "emailLogin": "Log in with Email",
-    "email": "Email address",
-    "password": "Password",
-    "confirmPassword": "Confirm Password",
-    "orDivider": "or",
-    "forgotPassword": "Forgot password?",
-    "noAccount": "Don't have an account?",
-    "hasAccount": "Already have an account?",
-    "signUp": "Sign up",
-    "signIn": "Sign in",
-    "magicLink": "Send Magic Link",
-    "magicLinkSent": "Check your email for a login link",
-    "termsAgree": "By signing up, you agree to our {terms} and {privacy}",
-    "forgotPasswordTitle": "Forgot Password",
-    "forgotPasswordSubtitle": "Enter your email and we'll send you a reset link",
-    "sendResetLink": "Send Reset Link",
-    "resetEmailSent": "If an account exists with that email, we've sent a password reset link. Check your inbox.",
-    "backToLogin": "Back to login",
-    "resetPasswordTitle": "Reset Password",
-    "resetPasswordSubtitle": "Enter your new password below",
-    "newPassword": "New password",
-    "resetPassword": "Reset Password",
-    "passwordResetSuccess": "Your password has been reset successfully. You can now sign in with your new password.",
-    "invalidResetLink": "Invalid Reset Link",
-    "invalidResetLinkDesc": "This password reset link is invalid or has expired.",
-    "requestNewLink": "Request a new reset link",
-    "passwordsMismatch": "Passwords do not match",
-    "passwordTooShort": "Password must be at least 6 characters"
+  "search": {
+    "title": "Search",
+    "inputLabel": "Search products",
+    "noResultsTitle": "No results for “{query}”",
+    "noResultsSubtitle": "Check the spelling or try a more general term.",
+    "browseCatalog": "Browse catalog",
+    "minChars": "Type at least 2 characters to search."
   },
   "admin": {
     "dashboard": "Dashboard",
@@ -228,52 +943,5 @@
     "storeLogo": "Logo",
     "storeColors": "Colors",
     "storeContact": "Contact Info"
-  },
-  "footer": {
-    "about": "About Us",
-    "contact": "Contact",
-    "shipping": "Shipping & Delivery",
-    "returns": "Returns & Refunds",
-    "privacy": "Privacy Policy",
-    "terms": "Terms of Service",
-    "copyright": "© {year} {storeName}. All rights reserved.",
-    "followUs": "Follow Us"
-  },
-  "contact": {
-    "title": "Contact Us",
-    "subtitle": "We'd love to hear from you",
-    "name": "Your Name",
-    "email": "Your Email",
-    "subject": "Subject",
-    "message": "Message",
-    "send": "Send Message",
-    "success": "Thank you! We'll get back to you soon.",
-    "feedback": "Feedback",
-    "feedbackSubtitle": "Help us improve your experience"
-  },
-  "errors": {
-    "notFound": "Page not found",
-    "notFoundSubtitle": "The page you're looking for doesn't exist",
-    "serverError": "Server error",
-    "unauthorized": "Please log in to continue",
-    "forbidden": "You don't have access to this page",
-    "validationError": "Please check the form for errors",
-    "networkError": "Network error. Please check your connection."
-  },
-  "notifications": {
-    "orderPlaced": "Order placed successfully!",
-    "orderShipped": "Your order has been shipped",
-    "profileUpdated": "Profile updated",
-    "addressAdded": "Address added",
-    "addressDeleted": "Address removed",
-    "itemAdded": "Item added to cart",
-    "itemRemoved": "Item removed from cart",
-    "cartUpdated": "Cart updated",
-    "reviewSubmitted": "Review submitted for moderation",
-    "addedToWishlist": "Added to wishlist",
-    "removedFromWishlist": "Removed from wishlist",
-    "feedGenerated": "Product feed generated",
-    "importComplete": "Import completed: {success} added, {errors} errors",
-    "settingsSaved": "Store settings saved"
   }
 }

@@ -81,6 +81,8 @@ export function getHomepageCategorySections(
   categories: HomepageCategory[],
   maxPerCategory = 10,
   maxSections?: number,
+  /** Label for the leading "all products" tab (pass a translated string). */
+  allLabel = "All",
 ): CategorySection[] {
   const sections = categories
     .map((cat) => {
@@ -95,7 +97,7 @@ export function getHomepageCategorySections(
       const unique = Array.from(new Map(merged.map((p) => [p.id, p])).values());
 
       const subcategoryTabs = cat.children?.length
-        ? ["All", ...cat.children.map((c) => c.name)]
+        ? [allLabel, ...cat.children.map((c) => c.name)]
         : [];
 
       return {

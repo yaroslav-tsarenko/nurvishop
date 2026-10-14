@@ -1,13 +1,14 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import Image from "next/image";
+import { ProductImage } from "@/components/shared/ProductImage/ProductImage";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { ArrowRight } from "lucide-react";
 import { motion, useInView } from "framer-motion";
 import { formatPrice } from "@/lib/utils/format-price";
 import { useCurrency } from "@/providers/CurrencyProvider";
-import { getProductImage, getProductImageFallback, shouldUnoptimizeImage } from "@/lib/utils/product-image";
+import { getProductImage } from "@/lib/utils/product-image";
 import { getDiscountPercent, type HomepageProduct } from "@/lib/homepage-products";
 
 interface Props {
@@ -26,6 +27,7 @@ function getTimeUntilMidnight() {
 }
 
 export function DealOfTheDay({ product }: Props) {
+  const t = useTranslations("home.dealOfTheDay");
   const { currency, convert } = useCurrency();
   const [time, setTime] = useState<{ h: number; m: number; s: number } | null>(null);
   const ref = useRef(null);
@@ -61,9 +63,9 @@ export function DealOfTheDay({ product }: Props) {
             animate={isInView ? { scale: [1, 1.08, 1] } : {}}
             transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 4 }}
           >
-            Deal of the Day
+            {t("badge")}
           </motion.span>
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1.5" role="timer" aria-label={t("endsIn")}>
             <span className="min-w-8 rounded-sm bg-white/[0.12] px-2 py-1 text-center text-[0.8125rem] font-bold tabular-nums backdrop-blur-[4px]">{pad(time?.h ?? 0)}</span>
             <span className="text-xs opacity-50">:</span>
             <span className="min-w-8 rounded-sm bg-white/[0.12] px-2 py-1 text-center text-[0.8125rem] font-bold tabular-nums backdrop-blur-[4px]">{pad(time?.m ?? 0)}</span>
@@ -73,7 +75,7 @@ export function DealOfTheDay({ product }: Props) {
         </div>
         <h2 className="m-0 mb-1.5 font-display text-2xl font-extrabold leading-[1.2] tracking-tight max-md:text-xl">{product.name}</h2>
         <p className="m-0 mb-5 max-w-[360px] text-sm leading-[1.5] opacity-70">
-          Limited time offer — grab it before the deal expires!
+          {t("description")}
         </p>
         <div className="mb-5 flex items-baseline gap-3">
           <span className="text-[1.75rem] font-extrabold text-pop max-md:text-[1.375rem]">{formatPrice(convert(Number(product.price)), currency)}</span>
@@ -86,7 +88,7 @@ export function DealOfTheDay({ product }: Props) {
           href={`/product/${product.slug}`}
           className="inline-flex w-fit cursor-pointer items-center gap-2 rounded-lg border-none bg-accent px-7 py-3 text-sm font-bold text-white no-underline transition-[transform,box-shadow] duration-200 hover:-translate-y-px hover:bg-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
         >
-          Shop Now <ArrowRight size={16} />
+          {t("cta")} <ArrowRight size={16} />
         </Link>
       </motion.div>
       <motion.div
@@ -100,16 +102,12 @@ export function DealOfTheDay({ product }: Props) {
           whileHover={{ scale: 1.05 }}
           transition={{ type: "spring", stiffness: 200 }}
         >
-          <Image
+          <ProductImage
             src={imgUrl}
             alt={product.name}
             width={240}
             height={200}
             className="max-h-[180px] max-w-full object-contain"
-            unoptimized={shouldUnoptimizeImage(imgUrl)}
-            onError={(e) => {
-              (e.target as HTMLImageElement).src = getProductImageFallback("240x200");
-            }}
           />
         </motion.div>
       </motion.div>

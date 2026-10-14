@@ -31,37 +31,37 @@ export function Footer() {
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
     if (email) {
-      toast.success("Thanks for subscribing!");
+      toast.success(t("subscribeSuccess"));
       setEmail("");
     }
   };
 
   const columns: FooterColumn[] = [
     {
-      heading: "Shop by room",
+      heading: t("shopHeading"),
       links: [
         { label: nav("catalog"), href: "/catalog" },
-        { label: "New arrivals", href: "/catalog?sort=newest" },
-        { label: "Best sellers", href: "/catalog?sort=popular" },
-        { label: "Sale", href: "/catalog?onSale=true" },
+        { label: t("newArrivals"), href: "/catalog?sort=newest" },
+        { label: t("bestSellers"), href: "/catalog?sort=popular" },
+        { label: t("sale"), href: "/catalog?onSale=true" },
       ],
     },
     {
-      heading: "Customer care",
+      heading: t("customerCare"),
       links: [
         { label: t("shipping"), href: "/policies/shipping" },
         { label: t("returns"), href: "/policies/returns" },
-        { label: "Warranty", href: "/policies/warranty" },
-        { label: "Care guides", href: "/faq" },
+        { label: t("warranty"), href: "/policies/warranty" },
+        { label: t("careGuides"), href: "/faq" },
         { label: t("contact"), href: "/contact" },
       ],
     },
     {
-      heading: "Company",
+      heading: t("company"),
       links: [
         { label: t("about"), href: "/about" },
-        { label: "My orders", href: "/account/orders" },
-        { label: "Wishlist", href: "/account/wishlist" },
+        { label: t("myOrders"), href: "/account/orders" },
+        { label: t("wishlist"), href: "/account/wishlist" },
         { label: nav("login"), href: "/auth/login" },
       ],
     },
@@ -81,33 +81,31 @@ export function Footer() {
               <span>nurvishop</span>
             </Link>
             <p className="max-w-[340px] font-display text-lg italic leading-relaxed text-[#F0E9DF]/90">
-              Thoughtful things for a softer home.
+              {t("tagline")}
             </p>
             <p className="max-w-[360px] text-sm leading-relaxed text-[#A89C8D]">
-              Fresh finds, friendly prices. nurvishop brings you lifestyle goods,
-              accessories and everyday favourites — polished enough to pay with
-              confidence.
+              {t("intro")}
             </p>
           </div>
 
           <div className="flex flex-col gap-4">
-            <p className="eyebrow text-accent">Join the letter</p>
+            <p className="eyebrow text-accent">{t("newsletterEyebrow")}</p>
             <p className="max-w-[420px] text-sm leading-relaxed text-[#F0E9DF]/90">
-              Join us for slow interiors, new arrivals and quiet offers.
+              {t("newsletterText")}
             </p>
             <form
               onSubmit={handleSubscribe}
               className="flex w-full max-w-[460px] flex-col gap-2 sm:flex-row"
             >
               <label htmlFor="footer-newsletter-email" className="sr-only">
-                Email address
+                {t("emailLabel")}
               </label>
               <input
                 id="footer-newsletter-email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
+                placeholder={t("emailPlaceholder")}
                 required
                 className="flex-1 rounded-pill border border-[#5C6B4F]/40 bg-[#F0E9DF]/[0.06] px-5 py-3 text-sm text-[#F0E9DF] outline-none transition-[border-color,background-color] duration-200 placeholder:text-[#A89C8D] focus-visible:border-accent focus-visible:ring-2 focus-visible:ring-accent/50"
               />
@@ -115,7 +113,7 @@ export function Footer() {
                 type="submit"
                 className="flex items-center justify-center gap-1.5 whitespace-nowrap rounded-pill bg-accent px-6 py-3 text-sm font-semibold text-white transition-[background-color,transform] duration-200 hover:-translate-y-px hover:bg-accent-hover active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
               >
-                Subscribe
+                {t("subscribe")}
                 <ArrowRight size={16} />
               </button>
             </form>
@@ -163,15 +161,15 @@ export function Footer() {
           <div className="flex flex-wrap items-center gap-x-6 gap-y-4">
             <span className="inline-flex items-center gap-2 text-sm text-[#A89C8D]">
               <ShieldCheck size={18} className="text-sage" />
-              Secure checkout
+              {t("secureCheckout")}
             </span>
             <span className="inline-flex items-center gap-2 text-sm text-[#A89C8D]">
               <Leaf size={18} className="text-sage" />
-              Thoughtfully sourced materials
+              {t("sourcedMaterials")}
             </span>
             <span className="inline-flex items-center gap-2 text-sm text-[#A89C8D]">
               <CreditCard size={18} className="text-sage" />
-              Trusted payments
+              {t("trustedPayments")}
             </span>
           </div>
 
@@ -184,7 +182,7 @@ export function Footer() {
                 <Image src={mastercardLogo} alt="Mastercard" height={100} width={100} className="!h-auto !max-h-6 !w-auto !max-w-full object-contain" />
               </span>
               <span className="flex h-9 w-14 items-center justify-center rounded-md bg-[#F0E9DF] px-2">
-                <Image src={pciDssLogo} alt="PCI DSS Compliant" height={100} width={100} className="!h-auto !max-h-6 !w-auto !max-w-full object-contain" />
+                <Image src={pciDssLogo} alt={t("pciAlt")} height={100} width={100} className="!h-auto !max-h-6 !w-auto !max-w-full object-contain" />
               </span>
             </div>
             <div className="flex gap-2">
@@ -220,14 +218,16 @@ export function Footer() {
         {/* Company legal details */}
         <div className="flex flex-col gap-1.5 py-6">
           <p className="m-0 max-w-[900px] text-xs leading-relaxed text-[#A89C8D]">
-            {COMPANY.tradingName} is a trading name of{" "}
-            <strong className="text-[#F0E9DF]">{COMPANY.legalName}</strong>, a company
-            registered in Lithuania (company no. {COMPANY.companyNumber}).
-            {" "}Registered office: {COMPANY.addressInline}.
+            {t.rich("legalEntity", {
+              tradingName: COMPANY.tradingName,
+              legalName: COMPANY.legalName,
+              companyNumber: COMPANY.companyNumber,
+              address: COMPANY.addressInline,
+              strong: (chunks) => <strong className="text-[#F0E9DF]">{chunks}</strong>,
+            })}
           </p>
           <p className="m-0 max-w-[900px] text-xs leading-relaxed text-[#A89C8D]">
-            VAT is included in all product prices where applicable. {COMPANY.legalName} is
-            the Merchant of Record for orders placed on this website.
+            {t("vatNotice", { legalName: COMPANY.legalName })}
           </p>
         </div>
 
@@ -236,18 +236,18 @@ export function Footer() {
           <p className="m-0 text-xs text-[#A89C8D]">
             {t("copyright", { year: currentYear, storeName: "nurvishop" })}
           </p>
-          <nav className="flex flex-wrap items-center gap-x-5 gap-y-2" aria-label="Legal">
+          <nav className="flex flex-wrap items-center gap-x-5 gap-y-2" aria-label={t("legalNav")}>
             <Link href="/policies/privacy" className={linkClass}>{t("privacy")}</Link>
             <Link href="/policies/terms" className={linkClass}>{t("terms")}</Link>
-            <Link href="/policies/cookies" className={linkClass}>Cookies</Link>
-            <Link href="/policies/accessibility" className={linkClass}>Accessibility</Link>
-            <Link href="/policies/legal" className={linkClass}>Legal notice</Link>
+            <Link href="/policies/cookies" className={linkClass}>{t("cookies")}</Link>
+            <Link href="/policies/accessibility" className={linkClass}>{t("accessibility")}</Link>
+            <Link href="/policies/legal" className={linkClass}>{t("legalNotice")}</Link>
             <button
               type="button"
               onClick={openCookieSettings}
               className="cursor-pointer border-none bg-transparent p-0 text-left text-sm text-[#A89C8D] transition-[color,padding] duration-200 hover:pl-1 hover:text-[#F0E9DF] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
             >
-              Cookie settings
+              {t("cookieSettings")}
             </button>
           </nav>
         </div>

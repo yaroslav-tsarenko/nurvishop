@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useFormatter } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { Chip } from "@heroui/react";
 import { useAuth } from "@/providers/AuthProvider";
@@ -9,7 +9,6 @@ import { useCurrency } from "@/providers/CurrencyProvider";
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner/LoadingSpinner";
 import { EmptyState } from "@/components/shared/EmptyState/EmptyState";
 import { formatPrice } from "@/lib/utils/format-price";
-import { format } from "date-fns";
 import { Package } from "lucide-react";
 
 interface Order {
@@ -33,6 +32,8 @@ const statusColors: Record<string, "default" | "accent" | "success" | "warning" 
 
 export default function OrdersPage() {
   const t = useTranslations("account");
+  const tOrder = useTranslations("order");
+  const format = useFormatter();
   const nav = useTranslations("nav");
   const { user } = useAuth();
   const { currency, convert } = useCurrency();
@@ -68,12 +69,12 @@ export default function OrdersPage() {
             <Link key={order.id} href={`/account/orders/${order.id}`} className="grid grid-cols-[1fr_auto_auto] items-center gap-6 rounded-lg border border-line bg-surface px-6 py-4 text-ink no-underline transition-[border-color,transform] duration-150 hover:-translate-y-px hover:border-accent max-[640px]:grid-cols-[1fr_auto] max-[640px]:grid-rows-[auto_auto] max-[640px]:gap-x-4 max-[640px]:gap-y-2 max-[640px]:px-4 max-[640px]:py-3.5">
               <div className="min-w-0 max-[640px]:col-span-full">
                 <div className="text-[0.9375rem] font-bold">#{order.orderNumber.slice(-8)}</div>
-                <div className="mt-0.5 text-xs text-subtle">{format(new Date(order.createdAt), "MMM d, yyyy")}</div>
+                <div className="mt-0.5 text-xs text-subtle">{format.dateTime(new Date(order.createdAt), { dateStyle: "medium" })}</div>
                 <div className="mt-1 text-xs text-subtle">
-                  {order.items.length} {order.items.length === 1 ? "item" : "items"}
+                  {t("itemsCount", { count: order.items.length })}
                 </div>
               </div>
-              <Chip size="sm" color={statusColors[order.status] || "default"}>{order.status}</Chip>
+              <Chip size="sm" color={statusColors[order.status] || "default"}>{tOrder.has(`status.${order.status}`) ? tOrder(`status.${order.status}`) : order.status}</Chip>
               <span className="whitespace-nowrap text-[0.9375rem] font-bold max-[640px]:text-base">{formatPrice(convert(Number(order.total)), currency)}</span>
             </Link>
           ))}

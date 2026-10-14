@@ -6,6 +6,10 @@ import { ProductInfo } from "@/components/product/ProductInfo/ProductInfo";
 import { ProductTabs } from "@/components/product/ProductTabs/ProductTabs";
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs/Breadcrumbs";
 import { JsonLd } from "@/components/shared/SEO/JsonLd";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { localizeCategoryName } from "@/lib/i18n/category-names";
+import { localizeProduct } from "@/lib/i18n/product";
+import { localeAlternates, openGraphFor, twitterFor } from "@/lib/i18n/metadata";
 
 export const revalidate = 60;
 
@@ -32,28 +36,46 @@ async function getCategoryChain(categoryId: string): Promise<{ name: string; slu
 }
 
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
-  const { slug } = await params;
-  const product = await prisma.product.findUnique({
+  const { slug, locale } = await params;
+  const raw = await prisma.product.findUnique({
     where: { slug },
-    select: { name: true, metaTitle: true, metaDescription: true, shortDescription: true },
+    select: {
+      name: true,
+      metaTitle: true,
+      metaDescription: true,
+      shortDescription: true,
+      translations: true,
+      images: { orderBy: { sortOrder: "asc" }, take: 1, select: { url: true, alt: true } },
+    },
   });
 
-  if (!product) return {};
+  if (!raw) return {};
+  const product = localizeProduct(raw, locale);
+  const t = await getTranslations({ locale, namespace: "meta" });
+
+  const title = product.metaTitle || product.name;
+  const description =
+    product.metaDescription ||
+    product.shortDescription ||
+    t("productDescriptionFallback", { name: product.name });
+  const path = `/product/${slug}`;
+  const images = product.images.map((img) => ({ url: img.url, alt: img.alt || product.name }));
 
   return {
-    title: product.metaTitle || product.name,
-    description: product.metaDescription || product.shortDescription || product.name,
-    openGraph: {
-      title: product.metaTitle || product.name,
-      description: product.metaDescription || product.shortDescription || undefined,
-    },
+    title,
+    description,
+    alternates: localeAlternates(locale, path),
+    openGraph: openGraphFor(locale, { title, description, path, images }),
+    twitter: twitterFor({ title, description, images }),
   };
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
-  const { slug } = await params;
+  const { slug, locale } = await params;
+  setRequestLocale(locale);
+  const nav = await getTranslations({ locale, namespace: "nav" });
 
-  const product = await prisma.product.findUnique({
+  const rawProduct = await prisma.product.findUnique({
     where: { slug },
     include: {
       images: { orderBy: { sortOrder: "asc" } },
@@ -67,19 +89,21 @@ export default async function ProductPage({ params }: ProductPageProps) {
     },
   });
 
-  if (!product || product.status === "ARCHIVED") notFound();
+  if (!rawProduct || rawProduct.status === "ARCHIVED") notFound();
+  const product = localizeProduct(rawProduct, locale);
 
   const primaryCategory = product.categories[0]?.category;
-  const categoryChain = primaryCategory
+  const categoryChain = (primaryCategory
     ? await getCategoryChain(primaryCategory.id)
-    : [];
+    : []
+  ).map((cat) => ({ ...cat, name: localizeCategoryName(cat.name, locale) }));
 
   const reviewCount = product.reviews.length;
   const avgRating = reviewCount > 0
     ? product.reviews.reduce((sum: number, r: { rating: number }) => sum + r.rating, 0) / reviewCount
     : 0;
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000").replace(/\/+$/, "");
 
   const characteristics = product.characteristics as Record<string, Record<string, string>> | null;
 
@@ -99,7 +123,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
       availability: product.quantity > 0
         ? "https://schema.org/InStock"
         : "https://schema.org/OutOfStock",
-      url: `${siteUrl}/en/product/${product.slug}`,
+      url: `${siteUrl}/${locale}/product/${product.slug}`,
     },
     ...(reviewCount > 0 && {
       aggregateRating: {
@@ -111,8 +135,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
   };
 
   const breadcrumbItems = [
-    { label: "Home", href: "/" },
-    { label: "Catalog", href: "/catalog" },
+    { label: nav("home"), href: "/" },
+    { label: nav("catalog"), href: "/catalog" },
     ...categoryChain.map((cat) => ({
       label: cat.name,
       href: `/catalog/${cat.slug}`,

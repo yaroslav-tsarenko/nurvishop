@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import clsx from "clsx";
 
@@ -28,15 +29,11 @@ interface DealData {
   imageUrl?: string | null;
 }
 
+// Copy for the fallback slides lives in messages under home.hero.<key>.
 interface DefaultSlide {
   id: string;
-  eyebrow: string;
-  title: string;
-  accent: string;
-  subtitle: string;
-  ctaLabel: string;
+  key: "slide1" | "slide2" | "slide3";
   linkUrl: string;
-  secondaryLabel: string;
   secondaryHref: string;
   gradient: string;
 }
@@ -44,42 +41,24 @@ interface DefaultSlide {
 const defaultSlides: DefaultSlide[] = [
   {
     id: "1",
-    eyebrow: "New season · Warm Natural Home",
-    title: "Home, made",
-    accent: "softer.",
-    subtitle:
-      "Thoughtful pieces in linen, clay and oak — calm, tactile things that make everyday living feel a little kinder.",
-    ctaLabel: "Shop the collection",
+    key: "slide1",
     linkUrl: "/catalog",
-    secondaryLabel: "New arrivals",
     secondaryHref: "/catalog?sort=newest",
     gradient:
       "linear-gradient(135deg, #2b241d 0%, #463527 55%, #55412f 100%)",
   },
   {
     id: "2",
-    eyebrow: "Textiles & Comfort",
-    title: "Textures that",
-    accent: "comfort.",
-    subtitle:
-      "Soft-washed linen, brushed cotton and hand-finished throws to layer warmth into every room.",
-    ctaLabel: "Explore textiles",
+    key: "slide2",
     linkUrl: "/catalog?category=soft-furnishings-18660",
-    secondaryLabel: "Shop furniture",
     secondaryHref: "/catalog?category=furniture-12651",
     gradient:
       "linear-gradient(135deg, #33261e 0%, #4f3526 55%, #5c4030 100%)",
   },
   {
     id: "3",
-    eyebrow: "Light & Atmosphere",
-    title: "Warm light,",
-    accent: "quiet evenings.",
-    subtitle:
-      "Ceramics, candles and gentle lighting to slow the pace and make the evenings glow.",
-    ctaLabel: "Discover décor",
+    key: "slide3",
     linkUrl: "/catalog?category=home-d-cor-5684",
-    secondaryLabel: "Shop kitchenware",
     secondaryHref: "/catalog?category=cutlery-crockery-and-glassware-5032",
     gradient:
       "linear-gradient(135deg, #23281f 0%, #384333 55%, #2b241d 100%)",
@@ -92,6 +71,7 @@ interface Props {
 }
 
 export function HeroCarousel({ slides, deals }: Props) {
+  const t = useTranslations("home.hero");
   const useDefaults = slides.length === 0;
   const [current, setCurrent] = useState(0);
   const count = useDefaults ? defaultSlides.length : slides.length;
@@ -132,30 +112,30 @@ export function HeroCarousel({ slides, deals }: Props) {
                 <div className="pointer-events-none absolute -left-10 bottom-8 h-48 w-48 rounded-blob bg-accent/25 blur-2xl" />
 
                 <div className="relative z-[2] max-w-[560px] p-12 max-[640px]:p-7">
-                  <p className="eyebrow mb-4 !text-[#e9be6a]">{slide.eyebrow}</p>
+                  <p className="eyebrow mb-4 !text-[#e9be6a]">{t(`${slide.key}.eyebrow`)}</p>
                   <h2 className="m-0 mb-4 font-display text-[2.75rem] font-semibold leading-[1.05] tracking-[-0.02em] text-[#f5efe6] max-[640px]:text-[2rem]">
-                    {slide.title}{" "}
-                    <span className="italic text-[#eab98d]">{slide.accent}</span>
+                    {t(`${slide.key}.title`)}{" "}
+                    <span className="italic text-[#eab98d]">{t(`${slide.key}.accent`)}</span>
                   </h2>
                   <p className="m-0 mb-7 max-w-[440px] text-[1rem] leading-[1.6] text-[#ded2c2]">
-                    {slide.subtitle}
+                    {t(`${slide.key}.subtitle`)}
                   </p>
                   <div className="flex flex-wrap items-center gap-3">
                     <Link
                       href={slide.linkUrl}
                       className="inline-block rounded-pill bg-accent px-7 py-3 text-sm font-semibold text-white no-underline shadow-accent transition-[transform,background-color] duration-200 hover:-translate-y-0.5 hover:bg-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
                     >
-                      {slide.ctaLabel}
+                      {t(`${slide.key}.cta`)}
                     </Link>
                     <Link
                       href={slide.secondaryHref}
                       className="inline-block rounded-pill border border-white/70 bg-white/10 px-7 py-3 text-sm font-semibold text-white no-underline transition-colors duration-200 hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
                     >
-                      {slide.secondaryLabel}
+                      {t(`${slide.key}.secondary`)}
                     </Link>
                   </div>
                   <p className="mt-6 text-[0.78rem] font-medium tracking-[0.02em] text-[#cbbfad]">
-                    Thoughtfully made · Natural materials · Warm support
+                    {t("values")}
                   </p>
                 </div>
               </div>
@@ -191,7 +171,7 @@ export function HeroCarousel({ slides, deals }: Props) {
                     href={slide.linkUrl}
                     className="inline-block rounded-pill bg-accent px-7 py-3 text-sm font-semibold text-white no-underline transition-[transform,background-color] duration-200 hover:-translate-y-0.5 hover:bg-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
                   >
-                    {slide.ctaLabel || "Shop Now"}
+                    {slide.ctaLabel || t("shopNow")}
                   </Link>
                 )}
               </div>
@@ -204,14 +184,14 @@ export function HeroCarousel({ slides, deals }: Props) {
             <button
               className="absolute left-3 top-1/2 z-[3] flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-line bg-surface/80 text-ink backdrop-blur transition-colors duration-200 hover:bg-surface focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
               onClick={prev}
-              aria-label="Previous slide"
+              aria-label={t("previous")}
             >
               <ChevronLeft size={20} />
             </button>
             <button
               className="absolute right-3 top-1/2 z-[3] flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-line bg-surface/80 text-ink backdrop-blur transition-colors duration-200 hover:bg-surface focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
               onClick={next}
-              aria-label="Next slide"
+              aria-label={t("next")}
             >
               <ChevronRight size={20} />
             </button>
@@ -226,7 +206,7 @@ export function HeroCarousel({ slides, deals }: Props) {
                       : "w-2 rounded-full bg-accent/30",
                   )}
                   onClick={() => setCurrent(i)}
-                  aria-label={`Slide ${i + 1}`}
+                  aria-label={t("goToSlide", { number: i + 1 })}
                 />
               ))}
             </div>

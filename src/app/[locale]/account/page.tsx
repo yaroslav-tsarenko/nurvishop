@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useFormatter } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { Chip } from "@heroui/react";
 import { Package, ChevronRight } from "lucide-react";
@@ -9,7 +9,6 @@ import { useAuth } from "@/providers/AuthProvider";
 import { useCurrency } from "@/providers/CurrencyProvider";
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner/LoadingSpinner";
 import { formatPrice } from "@/lib/utils/format-price";
-import { format } from "date-fns";
 
 interface Order {
   id: string;
@@ -31,6 +30,8 @@ const statusColors: Record<string, "default" | "accent" | "success" | "warning" 
 
 export default function AccountPage() {
   const t = useTranslations("account");
+  const tOrder = useTranslations("order");
+  const format = useFormatter();
   const { user, loading } = useAuth();
   const { currency, convert } = useCurrency();
   const [orders, setOrders] = useState<Order[]>([]);
@@ -61,38 +62,38 @@ export default function AccountPage() {
 
       <div className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-4">
         <div className="flex flex-col gap-1.5 rounded-xl border border-line bg-surface p-5">
-          <span className="text-xs font-semibold uppercase tracking-wide text-subtle">Orders</span>
+          <span className="text-xs font-semibold uppercase tracking-wide text-subtle">{t("statOrders")}</span>
           <span className="text-2xl font-extrabold tracking-tight">{orders.length}</span>
-          <span className="text-xs text-muted">All-time</span>
+          <span className="text-xs text-muted">{t("allTime")}</span>
         </div>
         <div className="flex flex-col gap-1.5 rounded-xl border border-line bg-surface p-5">
-          <span className="text-xs font-semibold uppercase tracking-wide text-subtle">Total Spent</span>
+          <span className="text-xs font-semibold uppercase tracking-wide text-subtle">{t("totalSpent")}</span>
           <span className="text-2xl font-extrabold tracking-tight">{formatPrice(convert(totalSpent), currency)}</span>
-          <span className="text-xs text-muted">Across all orders</span>
+          <span className="text-xs text-muted">{t("acrossAllOrders")}</span>
         </div>
         <div className="flex flex-col gap-1.5 rounded-xl border border-line bg-surface p-5">
-          <span className="text-xs font-semibold uppercase tracking-wide text-subtle">Account</span>
+          <span className="text-xs font-semibold uppercase tracking-wide text-subtle">{t("statAccount")}</span>
           <span className="overflow-hidden text-ellipsis whitespace-nowrap text-base font-extrabold tracking-tight">{user?.email}</span>
-          <span className="text-xs text-muted">{user?.name || "No name set"}</span>
+          <span className="text-xs text-muted">{user?.name || t("noNameSet")}</span>
         </div>
       </div>
 
       <div className="mt-6">
         <div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" }}>
-            <h2 style={{ fontSize: "1.0625rem", fontWeight: 700 }}>Recent Orders</h2>
+            <h2 style={{ fontSize: "1.0625rem", fontWeight: 700 }}>{t("recentOrders")}</h2>
             <Link href="/account/orders" style={{ fontSize: "0.8125rem", color: "var(--color-accent)", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "0.25rem" }}>
-              View all <ChevronRight size={14} />
+              {t("viewAll")} <ChevronRight size={14} />
             </Link>
           </div>
           {ordersLoading ? (
-            <div style={{ padding: "1.5rem", textAlign: "center", color: "var(--color-text-tertiary)" }}>Loading...</div>
+            <div style={{ padding: "1.5rem", textAlign: "center", color: "var(--color-text-tertiary)" }}>{t("loading")}</div>
           ) : recentOrders.length === 0 ? (
             <div style={{ padding: "2rem", textAlign: "center", border: "1px dashed var(--color-border)", borderRadius: "var(--radius-lg)", color: "var(--color-text-tertiary)" }}>
               <Package size={32} style={{ margin: "0 auto 0.5rem", opacity: 0.5 }} />
-              <p style={{ fontSize: "0.875rem" }}>No orders yet</p>
+              <p style={{ fontSize: "0.875rem" }}>{t("noOrdersShort")}</p>
               <Link href="/catalog" style={{ display: "inline-block", marginTop: "0.75rem", color: "var(--color-accent)", fontSize: "0.875rem", fontWeight: 600, textDecoration: "none" }}>
-                Start shopping →
+                {t("startShopping")}
               </Link>
             </div>
           ) : (
@@ -101,9 +102,9 @@ export default function AccountPage() {
                 <Link key={order.id} href={`/account/orders/${order.id}`} className="grid grid-cols-[1fr_auto_auto] items-center gap-6 rounded-lg border border-line bg-surface px-6 py-4 text-ink no-underline transition-[border-color,transform] duration-150 hover:-translate-y-px hover:border-accent max-[640px]:grid-cols-[1fr_auto] max-[640px]:grid-rows-[auto_auto] max-[640px]:gap-x-4 max-[640px]:gap-y-2 max-[640px]:px-4 max-[640px]:py-3.5">
                   <div className="min-w-0 max-[640px]:col-span-full">
                     <div className="text-[0.9375rem] font-bold">#{order.orderNumber.slice(-8)}</div>
-                    <div className="mt-0.5 text-xs text-subtle">{format(new Date(order.createdAt), "MMM d, yyyy")}</div>
+                    <div className="mt-0.5 text-xs text-subtle">{format.dateTime(new Date(order.createdAt), { dateStyle: "medium" })}</div>
                   </div>
-                  <Chip size="sm" color={statusColors[order.status] || "default"}>{order.status}</Chip>
+                  <Chip size="sm" color={statusColors[order.status] || "default"}>{tOrder.has(`status.${order.status}`) ? tOrder(`status.${order.status}`) : order.status}</Chip>
                   <span className="whitespace-nowrap text-[0.9375rem] font-bold max-[640px]:text-base">{formatPrice(convert(Number(order.total)), currency)}</span>
                 </Link>
               ))}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { Search } from "lucide-react";
 import { ProductGrid } from "@/components/product/ProductGrid/ProductGrid";
@@ -10,8 +10,9 @@ import { LoadingSpinner } from "@/components/shared/LoadingSpinner/LoadingSpinne
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs/Breadcrumbs";
 
 export default function SearchPage() {
-  const t = useTranslations("common");
   const nav = useTranslations("nav");
+  const s = useTranslations("search");
+  const locale = useLocale();
   const searchParams = useSearchParams();
   const initialQuery = searchParams.get("q") || "";
 
@@ -28,7 +29,7 @@ export default function SearchPage() {
 
     setLoading(true);
     const timer = setTimeout(() => {
-      fetch(`/api/search?q=${encodeURIComponent(query)}&limit=20`)
+      fetch(`/api/search?q=${encodeURIComponent(query)}&limit=20&locale=${locale}`)
         .then((res) => res.json())
         .then((d) => setResults(Array.isArray(d) ? d : []))
         .catch(console.error)
@@ -36,22 +37,24 @@ export default function SearchPage() {
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [query]);
+  }, [query, locale]);
 
   return (
     <div style={{ maxWidth: "var(--max-width)", margin: "0 auto", padding: "0 1rem 4rem" }}>
-      <Breadcrumbs items={[{ label: nav("home"), href: "/" }, { label: t("search") }]} />
+      <Breadcrumbs items={[{ label: nav("home"), href: "/" }, { label: s("title") }]} />
 
       <div style={{ textAlign: "center", marginBottom: "1.75rem" }}>
         <h1 style={{ fontSize: "clamp(1.375rem, 4.5vw, 1.75rem)", fontWeight: 800, letterSpacing: "-0.03em", marginBottom: "1rem" }}>
-          Search
+          {s("title")}
         </h1>
         <div style={{ maxWidth: "32rem", margin: "0 auto", position: "relative" }}>
           <div style={{ position: "absolute", left: "1rem", top: "50%", transform: "translateY(-50%)", pointerEvents: "none", color: "var(--color-text-tertiary)" }}>
             <Search size={20} />
           </div>
           <input
+            type="search"
             placeholder={nav("search")}
+            aria-label={s("inputLabel")}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             autoFocus
@@ -75,8 +78,17 @@ export default function SearchPage() {
       ) : results.length > 0 ? (
         <ProductGrid products={results} />
       ) : query.length >= 2 ? (
-        <EmptyState title={t("noResults")} actionLabel={nav("catalog")} actionHref="/catalog" />
-      ) : null}
+        <EmptyState
+          title={s("noResultsTitle", { query })}
+          subtitle={s("noResultsSubtitle")}
+          actionLabel={s("browseCatalog")}
+          actionHref="/catalog"
+        />
+      ) : (
+        <p style={{ textAlign: "center", fontSize: "0.875rem", color: "var(--color-text-tertiary)" }}>
+          {s("minChars")}
+        </p>
+      )}
     </div>
   );
 }
