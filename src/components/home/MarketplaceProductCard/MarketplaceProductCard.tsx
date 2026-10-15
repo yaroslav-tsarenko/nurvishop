@@ -29,7 +29,7 @@ interface Props {
 export function MarketplaceProductCard({ product }: Props) {
   const t = useTranslations("home.card");
   const { addItem } = useCart();
-  const { currency, convert } = useCurrency();
+  const { currency, convert, locale } = useCurrency();
   const price = Number(product.price);
   const comparePrice = product.comparePrice ? Number(product.comparePrice) : null;
   const hasDiscount = comparePrice && comparePrice > price;
@@ -112,9 +112,9 @@ export function MarketplaceProductCard({ product }: Props) {
         </div>
         <div className="mb-1.5 mt-auto flex items-center justify-between">
           <div className="flex items-baseline gap-1.5">
-            <span className="font-display text-base font-medium text-ink">{formatPrice(convert(price), currency)}</span>
+            <span className="font-display text-base font-medium text-ink">{formatPrice(convert(price), currency, locale)}</span>
             {hasDiscount && (
-              <span className="text-xs text-muted line-through">{formatPrice(convert(comparePrice), currency)}</span>
+              <span className="text-xs text-muted line-through">{formatPrice(convert(comparePrice), currency, locale)}</span>
             )}
           </div>
           <button

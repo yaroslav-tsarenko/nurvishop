@@ -242,8 +242,11 @@
   --promo-bg-warm: #2e2717;
 }
 
-/* Latvian: Fraunces draws ā/ē/ī/ū macrons off-centre, use Lora instead.
-   :lang() outranks the next/font class that defines --font-display-brand. */
-html:lang(lv) {
+/* Latvian: Fraunces draws ā/ē/ī/ū/ģ macrons and accents off-centre, so use
+   Lora. Both the <html> and the [locale] layout wrapper carry lang, and
+   --font-display is re-declared because it's resolved where it's defined. */
+html:lang(lv),
+[lang="lv"] {
   --font-display-brand: var(--font-display-lv);
+  --font-display: var(--font-display-lv), Georgia, "Times New Roman", serif;
 }

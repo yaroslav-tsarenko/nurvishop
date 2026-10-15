@@ -33,7 +33,7 @@ export default function AccountPage() {
   const tOrder = useTranslations("order");
   const format = useFormatter();
   const { user, loading } = useAuth();
-  const { currency, convert } = useCurrency();
+  const { currency, convert, locale } = useCurrency();
   const [orders, setOrders] = useState<Order[]>([]);
   const [ordersLoading, setOrdersLoading] = useState(true);
 
@@ -68,7 +68,7 @@ export default function AccountPage() {
         </div>
         <div className="flex flex-col gap-1.5 rounded-xl border border-line bg-surface p-5">
           <span className="text-xs font-semibold uppercase tracking-wide text-subtle">{t("totalSpent")}</span>
-          <span className="text-2xl font-extrabold tracking-tight">{formatPrice(convert(totalSpent), currency)}</span>
+          <span className="text-2xl font-extrabold tracking-tight">{formatPrice(convert(totalSpent), currency, locale)}</span>
           <span className="text-xs text-muted">{t("acrossAllOrders")}</span>
         </div>
         <div className="flex flex-col gap-1.5 rounded-xl border border-line bg-surface p-5">
@@ -105,7 +105,7 @@ export default function AccountPage() {
                     <div className="mt-0.5 text-xs text-subtle">{format.dateTime(new Date(order.createdAt), { dateStyle: "medium" })}</div>
                   </div>
                   <Chip size="sm" color={statusColors[order.status] || "default"}>{tOrder.has(`status.${order.status}`) ? tOrder(`status.${order.status}`) : order.status}</Chip>
-                  <span className="whitespace-nowrap text-[0.9375rem] font-bold max-[640px]:text-base">{formatPrice(convert(Number(order.total)), currency)}</span>
+                  <span className="whitespace-nowrap text-[0.9375rem] font-bold max-[640px]:text-base">{formatPrice(convert(Number(order.total)), currency, locale)}</span>
                 </Link>
               ))}
             </div>

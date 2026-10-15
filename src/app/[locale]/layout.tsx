@@ -11,6 +11,7 @@ import { ToastProvider } from "@/providers/ToastProvider";
 import { Header } from "@/components/layout/Header/Header";
 import { Footer } from "@/components/layout/Footer/Footer";
 import { CookieConsent } from "@/components/shared/CookieConsent/CookieConsent";
+import { HtmlLangSync } from "@/components/shared/HtmlLangSync/HtmlLangSync";
 import { openGraphFor, twitterFor } from "@/lib/i18n/metadata";
 
 interface LocaleLayoutProps {
@@ -51,13 +52,19 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
         <AuthProvider>
           <CurrencyProvider>
             <CartProvider>
-              <div className="flex flex-col min-h-screen">
-                <Header />
-                <main className="flex-1">{children}</main>
-                <Footer />
+              {/* The root <html lang> isn't re-rendered on client-side locale
+                  switches, so locale-specific CSS (Latvian display font) keys
+                  off this wrapper, which is. */}
+              <div lang={locale} className="contents">
+                <HtmlLangSync locale={locale} />
+                <div className="flex flex-col min-h-screen">
+                  <Header />
+                  <main className="flex-1">{children}</main>
+                  <Footer />
+                </div>
+                <ToastProvider />
+                <CookieConsent />
               </div>
-              <ToastProvider />
-              <CookieConsent />
             </CartProvider>
           </CurrencyProvider>
         </AuthProvider>

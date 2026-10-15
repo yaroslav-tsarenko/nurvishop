@@ -98,8 +98,8 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                   <div style={{ fontSize: "0.75rem", color: "var(--color-text-tertiary)" }}>{tOrder("sku", { sku: item.productSku })}</div>
                 </td>
                 <td style={{ textAlign: "right" }}>{item.quantity}</td>
-                <td style={{ textAlign: "right" }}>{formatPrice(convert(Number(item.price)), currency)}</td>
-                <td style={{ textAlign: "right", fontWeight: 600 }}>{formatPrice(convert(Number(item.total)), currency)}</td>
+                <td style={{ textAlign: "right" }}>{formatPrice(convert(Number(item.price)), currency, locale)}</td>
+                <td style={{ textAlign: "right", fontWeight: 600 }}>{formatPrice(convert(Number(item.total)), currency, locale)}</td>
               </tr>
             ))}
           </tbody>
@@ -111,8 +111,8 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
               <div className="text-sm font-semibold">{item.productName}</div>
               {item.variantName && <div style={{ fontSize: "0.75rem", color: "var(--color-text-tertiary)" }}>{item.variantName}</div>}
               <div className="flex justify-between text-xs text-subtle">
-                <span>{tOrder("qtyTimesPrice", { count: item.quantity, price: formatPrice(convert(Number(item.price)), currency) })}</span>
-                <span className="font-bold text-ink">{formatPrice(convert(Number(item.total)), currency)}</span>
+                <span>{tOrder("qtyTimesPrice", { count: item.quantity, price: formatPrice(convert(Number(item.price)), currency, locale) })}</span>
+                <span className="font-bold text-ink">{formatPrice(convert(Number(item.total)), currency, locale)}</span>
               </div>
             </div>
           ))}
@@ -121,25 +121,25 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
         <div className="flex flex-col items-end gap-1 border-t border-line bg-mist px-5 py-4 text-sm">
           <div className="flex gap-4">
             <span style={{ color: "var(--color-text-secondary)" }}>{tOrder("subtotal")}</span>
-            <span>{formatPrice(convert(Number(order.subtotal)), currency)}</span>
+            <span>{formatPrice(convert(Number(order.subtotal)), currency, locale)}</span>
           </div>
           <div className="flex gap-4">
             <span style={{ color: "var(--color-text-secondary)" }}>{tOrder("shipping")}</span>
-            <span>{Number(order.shippingCost) === 0 ? tOrder("free") : formatPrice(convert(Number(order.shippingCost)), currency)}</span>
+            <span>{Number(order.shippingCost) === 0 ? tOrder("free") : formatPrice(convert(Number(order.shippingCost)), currency, locale)}</span>
           </div>
           <div className="flex gap-4">
             <span style={{ color: "var(--color-text-secondary)" }}>{tOrder("tax")}</span>
-            <span>{formatPrice(convert(Number(order.taxAmount)), currency)}</span>
+            <span>{formatPrice(convert(Number(order.taxAmount)), currency, locale)}</span>
           </div>
           {Number(order.discountAmount) > 0 && (
             <div className="flex gap-4">
               <span style={{ color: "var(--color-success)" }}>{tOrder("discount")}</span>
-              <span style={{ color: "var(--color-success)" }}>−{formatPrice(convert(Number(order.discountAmount)), currency)}</span>
+              <span style={{ color: "var(--color-success)" }}>−{formatPrice(convert(Number(order.discountAmount)), currency, locale)}</span>
             </div>
           )}
           <div className="flex w-full justify-between gap-4 border-t border-line pt-2 mt-1 text-lg font-extrabold">
             <span>{tOrder("total")}</span>
-            <span>{formatPrice(convert(Number(order.total)), currency)}</span>
+            <span>{formatPrice(convert(Number(order.total)), currency, locale)}</span>
           </div>
         </div>
       </div>

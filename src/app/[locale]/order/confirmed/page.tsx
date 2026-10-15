@@ -165,10 +165,10 @@ function ConfirmedContent() {
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis" }}>{item.productName}</div>
                   <div style={{ fontSize: "0.75rem", color: "var(--color-text-tertiary)", marginTop: "0.125rem" }}>
-                    {tOrder("qtyTimesPrice", { count: item.quantity, price: formatPrice(convert(Number(item.price)), currency) })}
+                    {tOrder("qtyTimesPrice", { count: item.quantity, price: formatPrice(convert(Number(item.price)), currency, locale) })}
                   </div>
                 </div>
-                <span style={{ fontWeight: 700, whiteSpace: "nowrap" }}>{formatPrice(convert(Number(item.total)), currency)}</span>
+                <span style={{ fontWeight: 700, whiteSpace: "nowrap" }}>{formatPrice(convert(Number(item.total)), currency, locale)}</span>
               </div>
             ))}
           </div>
@@ -176,15 +176,15 @@ function ConfirmedContent() {
           <div style={{ display: "flex", flexDirection: "column", gap: "0.375rem", fontSize: "0.875rem" }}>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <span style={{ color: "var(--color-text-secondary)" }}>{tOrder("subtotal")}</span>
-              <span>{formatPrice(convert(Number(order.subtotal)), currency)}</span>
+              <span>{formatPrice(convert(Number(order.subtotal)), currency, locale)}</span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <span style={{ color: "var(--color-text-secondary)" }}>{tOrder("shipping")}</span>
-              <span>{Number(order.shippingCost) === 0 ? tOrder("free") : formatPrice(convert(Number(order.shippingCost)), currency)}</span>
+              <span>{Number(order.shippingCost) === 0 ? tOrder("free") : formatPrice(convert(Number(order.shippingCost)), currency, locale)}</span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <span style={{ color: "var(--color-text-secondary)" }}>{tOrder("tax")}</span>
-              <span>{formatPrice(convert(Number(order.taxAmount)), currency)}</span>
+              <span>{formatPrice(convert(Number(order.taxAmount)), currency, locale)}</span>
             </div>
             <div style={{
               display: "flex",
@@ -196,7 +196,7 @@ function ConfirmedContent() {
               marginTop: "0.375rem",
             }}>
               <span>{tOrder("total")}</span>
-              <span>{formatPrice(convert(Number(order.total)), currency)}</span>
+              <span>{formatPrice(convert(Number(order.total)), currency, locale)}</span>
             </div>
           </div>
         </motion.div>

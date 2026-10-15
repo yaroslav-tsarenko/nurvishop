@@ -28,7 +28,7 @@ function getTimeUntilMidnight() {
 
 export function DealOfTheDay({ product }: Props) {
   const t = useTranslations("home.dealOfTheDay");
-  const { currency, convert } = useCurrency();
+  const { currency, convert, locale } = useCurrency();
   const [time, setTime] = useState<{ h: number; m: number; s: number } | null>(null);
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-60px" });
@@ -78,9 +78,9 @@ export function DealOfTheDay({ product }: Props) {
           {t("description")}
         </p>
         <div className="mb-5 flex items-baseline gap-3">
-          <span className="text-[1.75rem] font-extrabold text-pop max-md:text-[1.375rem]">{formatPrice(convert(Number(product.price)), currency)}</span>
+          <span className="text-[1.75rem] font-extrabold text-pop max-md:text-[1.375rem]">{formatPrice(convert(Number(product.price)), currency, locale)}</span>
           {product.comparePrice && (
-            <span className="text-base line-through opacity-50">{formatPrice(convert(Number(product.comparePrice)), currency)}</span>
+            <span className="text-base line-through opacity-50">{formatPrice(convert(Number(product.comparePrice)), currency, locale)}</span>
           )}
           {discount > 0 && <span className="rounded-pill bg-pop/20 px-2 py-[0.2rem] text-xs font-bold text-pop">-{discount}%</span>}
         </div>

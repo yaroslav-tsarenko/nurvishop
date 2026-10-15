@@ -52,7 +52,7 @@
     "promoInvalid": "Kods nav derīgs vai tam ir beidzies termiņš",
     "promoFailed": "Neizdevās piemērot kodu",
     "discountLine": "Atlaide ({percent}%)",
-    "shippingCalculated": "Tiks aprēķināta pēc piegādes adreses",
+    "shippingCalculated": "Tiks aprēķināta atbilstoši piegādes adresei",
     "includesVat": "T. sk. PVN ({rate}%)",
     "pricesIncludeVat": "Visās cenās ir iekļauts PVN, ja piemērojams.",
     "secureCheckout": "Droša apmaksa ar SSL šifrēšanu",
@@ -76,15 +76,15 @@
     "noOrdersSubtitle": "Kad veiksiet pasūtījumu, tas parādīsies šeit",
     "editProfile": "Rediģēt profilu",
     "addAddress": "Pievienot adresi",
-    "defaultAddress": "Noklusējuma",
-    "setDefault": "Iestatīt kā noklusējuma",
+    "defaultAddress": "Galvenā",
+    "setDefault": "Iestatīt kā galveno",
     "emptyWishlist": "Jūsu vēlmju saraksts ir tukšs",
     "logout": "Iziet",
     "userFallback": "Lietotājs",
     "statOrders": "Pasūtījumi",
     "allTime": "Visu laiku",
     "totalSpent": "Kopā iztērēts",
-    "acrossAllOrders": "Par visiem pasūtījumiem",
+    "acrossAllOrders": "Visos pasūtījumos",
     "statAccount": "Konts",
     "noNameSet": "Vārds nav norādīts",
     "recentOrders": "Jaunākie pasūtījumi",
@@ -185,7 +185,7 @@
   },
   "contact": {
     "title": "Sazinieties ar mums",
-    "subtitle": "Mēs labprāt uzklausīsim Jūs",
+    "subtitle": "Priecāsimies saņemt Jūsu ziņu",
     "name": "Jūsu vārds",
     "email": "Jūsu e-pasts",
     "subject": "Tēma",
@@ -197,7 +197,7 @@
     "metaTitle": "Kontakti",
     "metaDescription": "Sazinieties ar nurvishop – jautājumi par pasūtījumiem, precēm, garantiju vai vairumtirdzniecību. Atbildam 24 stundu laikā.",
     "eyebrow": "Mēs Jūs uzklausām",
-    "heroSubtitle": "Mēs labprāt uzklausīsim Jūs. Īsti cilvēki un sirsnīgas atbildes – par pasūtījumiem, precēm un visu pārējo.",
+    "heroSubtitle": "Priecāsimies saņemt Jūsu ziņu. Īsti cilvēki un sirsnīgas atbildes – par pasūtījumiem, precēm un visu pārējo.",
     "emailUsTitle": "Rakstiet mums",
     "emailUsSub": "Atbildam 24 stundu laikā",
     "callUsTitle": "Zvaniet mums",
@@ -222,13 +222,13 @@
     "sendAnother": "Nosūtīt vēl vienu ziņojumu",
     "sendFailed": "Neizdevās nosūtīt ziņojumu. Lūdzu, mēģiniet vēlreiz.",
     "faqTitle": "Biežāk uzdotie jautājumi",
-    "faqShippingQ": "Cik ilgi notiek piegāde?",
+    "faqShippingQ": "Cik ilgs ir piegādes laiks?",
     "faqShippingA": "Standarta piegāde – 5–7 dienas, ekspresspiegāde – 2–3 dienas.",
     "faqReturnsQ": "Kāda ir preču atgriešanas kārtība?",
     "faqReturnsA": "Nelietotas preces varat atgriezt 30 dienu laikā.",
     "faqInternationalQ": "Vai piegādājat uz ārzemēm?",
     "faqInternationalA": "Jā, uz visām ES valstīm.",
-    "faqTrackingQ": "Kā izsekot savam pasūtījumam?",
+    "faqTrackingQ": "Kā izsekot savu pasūtījumu?",
     "faqTrackingA": "Sūtījuma izsekošanas informāciju atradīsiet savā kontā vai e-pastā.",
     "responseTimesTitle": "Atbildes laiks",
     "responseEmail": "E-pasts",
@@ -236,7 +236,7 @@
     "responseWholesale": "Vairumtirdzniecība",
     "within24h": "24 stundu laikā",
     "within48h": "48 stundu laikā",
-    "privacyNote": "Jūsu informācija ir drošībā un tiks izmantota tikai, lai atbildētu uz Jūsu jautājumu. Mēs nekad nenododam Jūsu datus trešajām personām."
+    "privacyNote": "Jūsu informācija ir drošībā un tiks izmantota tikai tam, lai atbildētu uz Jūsu jautājumu. Mēs nekad nenododam Jūsu datus trešajām personām."
   },
   "notifications": {
     "orderPlaced": "Pasūtījums veiksmīgi noformēts!",
@@ -251,7 +251,7 @@
     "addedToWishlist": "Pievienots vēlmju sarakstam",
     "removedFromWishlist": "Izņemts no vēlmju saraksta",
     "feedGenerated": "Preču plūsma izveidota",
-    "importComplete": "Importēšana pabeigta: pievienotas {success}, kļūdas: {errors}",
+    "importComplete": "Importēšana pabeigta. Pievienotas preces: {success}, kļūdas: {errors}",
     "settingsSaved": "Veikala iestatījumi saglabāti"
   },
   "order": {
@@ -329,7 +329,7 @@
     "subjectRequired": "Norādiet tēmu",
     "messageTooShort": "Ziņojumā jābūt vismaz 10 rakstzīmēm",
     "dateOfBirthRequired": "Norādiet dzimšanas datumu",
-    "mustBeAdult": "Jums jābūt vismaz 18 gadus vecam",
+    "mustBeAdult": "Reģistrēties var tikai personas no 18 gadu vecuma",
     "passwordRequired": "Ievadiet paroli",
     "passwordMin": "Parolei jābūt vismaz 6 rakstzīmes garai",
     "passwordsMismatch": "Paroles nesakrīt",
@@ -363,7 +363,7 @@
     "switchToDark": "Pārslēgt uz tumšo režīmu",
     "switchToLight": "Pārslēgt uz gaišo režīmu",
     "utility1": "Rūpīgi radīts mājīgākam mājoklim",
-    "utility2": "Dabīgi materiāli — lins, māls un ozols",
+    "utility2": "Dabīgi materiāli – lins, māls un ozols",
     "utility3": "Sirsnīgs atbalsts · vienkārša atgriešana 30 dienu laikā",
     "shopByRoom": "Preces pa telpām",
     "rooms": {
@@ -374,7 +374,7 @@
       "bathroom": "Vannas istaba",
       "homeOffice": "Mājas birojs",
       "lighting": "Apgaismojums",
-      "decorTextiles": "Dekori un tekstils"
+      "decorTextiles": "Dekors un tekstils"
     },
     "browseAllCategories": "Skatīt visas kategorijas",
     "searchPlaceholder": "Meklēt dīvānus, keramiku, linu…",
@@ -389,7 +389,7 @@
   },
   "common": {
     "loading": "Ielādē...",
-    "error": "Kaut kas nogāja greizi",
+    "error": "Radās kļūda",
     "retry": "Mēģināt vēlreiz",
     "save": "Saglabāt",
     "cancel": "Atcelt",
@@ -426,11 +426,11 @@
     "myOrders": "Mani pasūtījumi",
     "wishlist": "Vēlmju saraksts",
     "tagline": "Pārdomātas lietas mājīgākam mājoklim.",
-    "intro": "Svaigi atradumi par draudzīgām cenām. nurvishop piedāvā dzīvesstila preces, aksesuārus un ikdienas favorītus — veikalā, kurā varat iepirkties ar pārliecību.",
+    "intro": "Svaigi atradumi par draudzīgām cenām. nurvishop piedāvā dzīvesstila preces, aksesuārus un ikdienas favorītus – veikalā, kurā varat iepirkties ar pārliecību.",
     "newsletterEyebrow": "Jaunumu vēstule",
     "newsletterText": "Pierakstieties, lai saņemtu iedvesmu mierīgam interjeram, ziņas par jaunumiem un neuzbāzīgus piedāvājumus.",
     "emailLabel": "E-pasta adrese",
-    "emailPlaceholder": "jusu@epasts.lv",
+    "emailPlaceholder": "jusu@e-pasts.lv",
     "subscribe": "Abonēt",
     "secureCheckout": "Droša pirkuma noformēšana",
     "sourcedMaterials": "Rūpīgi atlasīti materiāli",
@@ -468,7 +468,7 @@
   "cookies": {
     "title": "Mēs rūpējamies par Jūsu privātumu",
     "close": "Aizvērt sīkdatņu paziņojumu",
-    "intro": "Mēs izmantojam obligāti nepieciešamās sīkdatnes, lai mūsu veikals darbotos. Ar Jūsu piekrišanu izmantojam arī funkcionālās, analītikas un mārketinga sīkdatnes. Varat pieņemt visas, noraidīt neobligātās sīkdatnes vai iestatīt savas preferences. Vairāk lasiet mūsu <policy>Sīkdatņu politikā</policy>.",
+    "intro": "Mēs izmantojam obligāti nepieciešamās sīkdatnes, lai mūsu veikals darbotos. Ar Jūsu piekrišanu izmantojam arī funkcionālās, analītikas un mārketinga sīkdatnes. Varat pieņemt visas, noraidīt neobligātās sīkdatnes vai iestatīt savas preferences. Vairāk lasiet mūsu <policy>sīkdatņu politikā</policy>.",
     "alwaysActive": "Vienmēr aktīvas",
     "categories": {
       "necessary": {
@@ -495,13 +495,13 @@
   },
   "home": {
     "heroTitle": "Svaigi atradumi, draudzīgas cenas",
-    "heroSubtitle": "Ikdienas favorīti, dzīvesstila preces un mazi prieki — rūpīgi atlasīti, ar bezmaksas piegādi pasūtījumiem virs 50 €",
+    "heroSubtitle": "Ikdienas favorīti, dzīvesstila preces un mazi prieki – rūpīgi atlasīti, ar bezmaksas piegādi pasūtījumiem virs 50 €",
     "heroCta": "Iepirkties",
     "heroSale": "Atlaides līdz 50 %",
-    "heroSaleSubtitle": "Lieli ietaupījumi šīs sezonas iecienītākajām precēm — tikai ierobežotu laiku",
+    "heroSaleSubtitle": "Lieli ietaupījumi šīs sezonas iecienītākajām precēm – tikai ierobežotu laiku",
     "heroShopSale": "Uz izpārdošanu",
     "heroNew": "Tikko ieradušies jaunumi",
-    "heroNewSubtitle": "Jaunas preces katru nedēļu — esiet pirmie, kas tās iegādājas",
+    "heroNewSubtitle": "Jaunas preces katru nedēļu – esiet pirmie, kas tās iegādājas",
     "heroExplore": "Apskatīt jaunumus",
     "featured": "Izceltās preces",
     "newArrivals": "Jaunumi",
@@ -509,7 +509,7 @@
     "newsletter": "Esiet lietas kursā",
     "newsletterSubtitle": "Abonējiet mūsu jaunumu vēstuli, lai saņemtu ekskluzīvus piedāvājumus un ziņas par jaunumiem",
     "newsletterCta": "Abonēt",
-    "newsletterPlaceholder": "Ievadiet savu e-pastu",
+    "newsletterPlaceholder": "Ievadiet savu e-pasta adresi",
     "promoFreeShipping": "Dabīgi materiāli",
     "promoFreeShippingDesc": "Lins, māls un ozols",
     "promoReturns": "Vienkārša atgriešana",
@@ -518,9 +518,9 @@
     "promoSupportDesc": "Esam šeit, lai palīdzētu",
     "promoSecure": "Droša apmaksa",
     "promoSecureDesc": "100 % droša pirkuma noformēšana",
-    "metaTitle": "nurvishop — svaigi atradumi, draudzīgas cenas",
-    "metaDescription": "nurvishop — moderns veikals ar dzīvesstila precēm, aksesuāriem un ikdienas favorītiem. Svaigs, patīkams un uzticams.",
-    "orgDescription": "Siltas, no dabīgiem materiāliem darinātas mājas preces — lins, māls, ozols un akmensmasa mājīgākam mājoklim.",
+    "metaTitle": "nurvishop – svaigi atradumi, draudzīgas cenas",
+    "metaDescription": "nurvishop – moderns veikals ar dzīvesstila precēm, aksesuāriem un ikdienas favorītiem. Svaigs, patīkams un uzticams.",
+    "orgDescription": "Siltas, no dabīgiem materiāliem darinātas mājas preces – lins, māls, ozols un akmensmasa mājīgākam mājoklim.",
     "topBar": {
       "about": "Par mums",
       "payment": "Apmaksa",
@@ -565,9 +565,9 @@
     "hero": {
       "slide1": {
         "eyebrow": "Jaunā sezona · Silta, dabiska māja",
-        "title": "Māja — vēl",
+        "title": "Māja – vēl",
         "accent": "mājīgāka.",
-        "subtitle": "Pārdomātas lietas no lina, māla un ozola — mierīgas, taustāmas lietas, kas padara ikdienu mazliet sirsnīgāku.",
+        "subtitle": "Pārdomāti priekšmeti no lina, māla un ozola – mierīgas, taustāmas lietas, kas padara ikdienu mazliet sirsnīgāku.",
         "cta": "Apskatīt kolekciju",
         "secondary": "Jaunumi"
       },
@@ -575,7 +575,7 @@
         "eyebrow": "Tekstils un komforts",
         "title": "Faktūras, kas",
         "accent": "sniedz komfortu.",
-        "subtitle": "Mīksti mazgāts lins, matēta kokvilna un ar rokām apdarināti pledi, kas ienes siltumu katrā telpā.",
+        "subtitle": "Mīksti mazgāts lins, maiga kokvilna un ar rokām apdarināti pledi, kas ienes siltumu katrā telpā.",
         "cta": "Apskatīt tekstilu",
         "secondary": "Apskatīt mēbeles"
       },
@@ -610,7 +610,7 @@
         "subtitle": "Atlaides līdz 30 %"
       },
       "lighting": {
-        "badge": "Dekori un apgaismojums",
+        "badge": "Dekors un apgaismojums",
         "title": "Siltums katrā telpā",
         "subtitle": "Sveces un lampas"
       },
@@ -631,7 +631,7 @@
     "dealOfTheDay": {
       "badge": "Dienas piedāvājums",
       "endsIn": "Piedāvājums beigsies pēc",
-      "description": "Piedāvājums ierobežotu laiku — paspējiet, kamēr tas ir spēkā!",
+      "description": "Piedāvājums ierobežotu laiku – paspējiet, kamēr tas ir spēkā!",
       "cta": "Iepirkties"
     },
     "newsletterBanner": {
@@ -639,7 +639,7 @@
       "title": "Abonējiet un ietaupiet 10 %",
       "subtitle": "Saņemiet ekskluzīvus piedāvājumus, ziņas par jaunumiem un īpašās akcijas tieši savā e-pastā.",
       "success": "Paldies! Pārbaudiet savu e-pastu.",
-      "placeholder": "Ievadiet savu e-pastu",
+      "placeholder": "Ievadiet savu e-pasta adresi",
       "emailLabel": "E-pasta adrese",
       "cta": "Abonēt"
     },
@@ -664,7 +664,7 @@
     "materials": {
       "eyebrow": "Mūsu iemīļotie materiāli",
       "title": "Darināts no materiāliem, kas <em>skaisti noveco</em>.",
-      "text": "Mēs izvēlamies godīgus, dabīgus materiālus — tādus, kas laika gaitā kļūst maigāki, iegūst patinu un šķiet arvien tīkamāki, jo ilgāk tie ir Jūsu mājās.",
+      "text": "Mēs izvēlamies godīgus, dabīgus materiālus – tādus, kas laika gaitā kļūst maigāki, iegūst patinu un šķiet arvien tīkamāki, jo ilgāk tie ir Jūsu mājās.",
       "items": {
         "linen": {
           "name": "Lins",
@@ -685,7 +685,7 @@
       }
     },
     "editorial": {
-      "quote": "Mājām jābūt kā lēnai izelpai — siltas faktūras, godīgi materiāli un lietas, kas laika gaitā nopelna savu vietu.",
+      "quote": "Mājām jābūt kā lēnai izelpai – siltas faktūras, godīgi materiāli un lietas, kas laika gaitā nopelna savu vietu.",
       "attribution": "nurvishop filozofija"
     },
     "card": {
@@ -709,7 +709,7 @@
   },
   "about": {
     "metaTitle": "Par mums",
-    "metaDescription": "Uzziniet vairāk par nurvishop — kas mēs esam, kas mums ir svarīgs un ko mēs apsolām katram klientam.",
+    "metaDescription": "Uzziniet vairāk par nurvishop – kas mēs esam, kas mums ir svarīgs un ko mēs apsolām katram klientam.",
     "breadcrumb": "Par mums",
     "title": "Par <brand>nurvishop</brand>",
     "intro": "Mūsu mērķis ir padarīt profesionāla līmeņa elektromateriālus pieejamus elektriķiem, būvuzņēmējiem un ikvienam, kurš darbus veic pats. Atrast piemērotus kabeļus, sadales iekārtas un montāžas piederumus nedrīkst būt sarežģīti.",
@@ -732,7 +732,7 @@
       }
     },
     "promiseTitle": "Mūsu solījums",
-    "promiseText": "Mēs atbildam par katru pārdoto elektropreci. Ja neesat pilnībā apmierināti, mēs to novērsīsim — tā ir mūsu garantija Jums."
+    "promiseText": "Mēs atbildam par katru pārdoto elektropreci. Ja neesat pilnībā apmierināti, mēs to novērsīsim – tā ir mūsu garantija Jums."
   },
   "faq": {
     "metaTitle": "Biežāk uzdotie jautājumi",
@@ -743,7 +743,7 @@
     "items": {
       "shippingTime": {
         "q": "Cik ilgi jāgaida piegāde?",
-        "a": "Standarta piegāde aizņem 3–5 darba dienas. Pieejama arī ekspresa piegāde 1–2 darba dienu laikā. Pasūtījumiem virs 100 € piegāde ir bez maksas."
+        "a": "Standarta piegāde aizņem 3–5 darba dienas. Pieejama arī ekspresspiegāde 1–2 darba dienu laikā. Pasūtījumiem virs 100 € piegāde ir bez maksas."
       },
       "returns": {
         "q": "Kādi ir preču atgriešanas noteikumi?",
@@ -754,32 +754,32 @@
         "a": "Jā! Mēs piegādājam uz lielāko daļu pasaules valstu. Starptautiskā piegāde parasti aizņem 7–14 darba dienas atkarībā no galamērķa."
       },
       "tracking": {
-        "q": "Kā varu izsekot savam pasūtījumam?",
+        "q": "Kā varu izsekot savu pasūtījumu?",
         "a": "Tiklīdz pasūtījums būs nosūtīts, Jūs saņemsiet apstiprinājuma e-pastu ar sūtījuma izsekošanas numuru. Pasūtījuma statusu varat redzēt arī savā kontā."
       },
       "payment": {
-        "q": "Kādas apmaksas metodes var izmantot?",
+        "q": "Kādus maksājuma veidus pieņemat?",
         "a": "Mēs pieņemam Visa, Mastercard, American Express, PayPal un bankas pārskaitījumus. Visi maksājumi tiek apstrādāti droši, izmantojot SSL šifrēšanu."
       },
       "changeOrder": {
         "q": "Vai varu mainīt vai atcelt savu pasūtījumu?",
-        "a": "Pasūtījumu var mainīt vai atcelt 1 stundas laikā pēc tā veikšanas. Pēc tam, lūdzu, sazinieties ar mūsu klientu atbalsta komandu — darīsim visu iespējamo, lai palīdzētu."
+        "a": "Pasūtījumu var mainīt vai atcelt 1 stundas laikā pēc tā veikšanas. Pēc tam, lūdzu, sazinieties ar mūsu klientu atbalsta komandu – darīsim visu iespējamo, lai palīdzētu."
       },
       "giftWrap": {
         "q": "Vai piedāvājat dāvanu iesaiņošanu?",
-        "a": "Jā! Noformējot pasūtījumu, par nelielu papildu samaksu varat izvēlēties dāvanu iesaiņojumu. Dāvanai varat pievienot arī personisku apsveikumu."
+        "a": "Jā! Noformējot pasūtījumu, par nelielu papildu maksu varat izvēlēties dāvanu iesaiņojumu. Dāvanai varat pievienot arī personisku apsveikumu."
       },
       "support": {
         "q": "Kā sazināties ar klientu atbalstu?",
-        "a": "Ar mums varat sazināties, izmantojot saziņas formu, rakstot uz info@nurvishop.com vai tiešsaistes tērzēšanā mūsu vietnē. Esam pieejami 24/7, lai palīdzētu."
+        "a": "Ar mums varat sazināties, izmantojot saziņas formu, rakstot uz info@nurvishop.com vai tērzējot tiešsaistē mūsu vietnē. Esam pieejami 24/7, lai palīdzētu."
       }
     }
   },
   "meta": {
-    "siteTitle": "nurvishop — svaigi atradumi, draudzīgas cenas",
-    "siteDescription": "nurvishop — moderns interneta veikals ar mājas un dzīvesstila precēm, aksesuāriem un ikdienas iecienītākajām lietām. Svaigi, patīkami un uzticami.",
-    "categoryDescription": "{category} nurvishop interneta veikalā — {count, plural, zero {# preču} one {# prece} other {# preces}} ar ātru piegādi ES un 30 dienu atgriešanas iespēju.",
-    "productDescriptionFallback": "{name} — pērciet internetā nurvishop ar ātru piegādi ES un 30 dienu atgriešanas iespēju."
+    "siteTitle": "nurvishop – svaigi atradumi, draudzīgas cenas",
+    "siteDescription": "nurvishop – moderns interneta veikals ar mājas un dzīvesstila precēm, aksesuāriem un ikdienas iecienītākajām lietām. Svaigi, patīkami un uzticami.",
+    "categoryDescription": "{category} nurvishop interneta veikalā – {count, plural, zero {# preču} one {# prece} other {# preces}} ar ātru piegādi ES un 30 dienu atgriešanas iespēju.",
+    "productDescriptionFallback": "{name} – pērciet nurvishop interneta veikalā ar ātru piegādi ES un 30 dienu atgriešanas iespēju."
   },
   "policies": {
     "home": "Sākums",
@@ -810,8 +810,8 @@
     "condition": "Stāvoklis",
     "category": "Kategorija",
     "warranty": "Garantija",
-    "warrantyStandard": "Iekļauta standarta 2 gadu ES garantija. Zemāk varat pagarināt garantijas termiņu.",
-    "warrantyDescription": "Papildu garantija — aizsargājiet savu pirkumu pret defektiem un darbības traucējumiem",
+    "warrantyStandard": "Iekļauta standarta 2 gadu ES garantija. Tālāk varat pagarināt garantijas termiņu.",
+    "warrantyDescription": "Papildu garantija – aizsargājiet savu pirkumu pret defektiem un darbības traucējumiem",
     "warrantyOption1year": "1 gada papildu garantija",
     "warrantyOption2year": "2 gadu papildu garantija",
     "warrantyOption3year": "3 gadu papildu garantija",
@@ -841,8 +841,8 @@
     "sale": "Akcija",
     "showImage": "Rādīt {index}. attēlu no {total}",
     "imageAlt": "{name} – {index}. attēls",
-    "warrantyCartItemName": "{years, plural, zero {# gadu} one {# gada} other {# gadu}} pagarinātā garantija — {name}",
-    "wishlistLoginRequired": "Lūdzu, piesakieties, lai izmantotu vēlmju sarakstu",
+    "warrantyCartItemName": "{years, plural, zero {# gadu} one {# gada} other {# gadu}} pagarinātā garantija – {name}",
+    "wishlistLoginRequired": "Lūdzu, pieslēdzieties, lai izmantotu vēlmju sarakstu",
     "addedToWishlist": "Pievienots vēlmju sarakstam",
     "removedFromWishlist": "Izņemts no vēlmju saraksta",
     "conditions": {
@@ -876,7 +876,7 @@
     "allBrands": "Visi zīmoli",
     "onSale": "Akcijas preces",
     "emptyCategoryTitle": "Šajā kategorijā vēl nav preču",
-    "emptyCategorySubtitle": "Apskatiet visu katalogu — noteikti atradīsiet ko sev piemērotu.",
+    "emptyCategorySubtitle": "Apskatiet visu katalogu – noteikti atradīsiet kaut ko sev piemērotu.",
     "browseAll": "Skatīt katalogu"
   },
   "cart": {
@@ -900,7 +900,7 @@
     "free": "Bez maksas",
     "taxIncluded": "PVN ({rate}%, iekļauts cenā)",
     "freeShippingRemaining": "Pievienojiet preces vēl par {amount}, lai saņemtu bezmaksas piegādi",
-    "secureCheckout": "Drošs pasūtījuma noformējums ar SSL šifrēšanu"
+    "secureCheckout": "Droša pasūtījuma noformēšana ar SSL šifrēšanu"
   },
   "search": {
     "title": "Meklēšana",

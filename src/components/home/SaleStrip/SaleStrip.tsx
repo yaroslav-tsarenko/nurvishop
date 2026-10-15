@@ -17,7 +17,7 @@ interface Props {
 
 export function SaleStrip({ products }: Props) {
   const t = useTranslations("home");
-  const { currency, convert } = useCurrency();
+  const { currency, convert, locale } = useCurrency();
   const scrollRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-40px" });
@@ -114,11 +114,11 @@ export function SaleStrip({ products }: Props) {
                   </h4>
                   <div className="mt-auto flex items-baseline gap-1.5">
                     <span className="text-[0.9375rem] font-extrabold text-danger">
-                      {formatPrice(convert(Number(p.price)), currency)}
+                      {formatPrice(convert(Number(p.price)), currency, locale)}
                     </span>
                     {p.comparePrice && (
                       <span className="text-[0.7rem] text-subtle line-through">
-                        {formatPrice(convert(Number(p.comparePrice)), currency)}
+                        {formatPrice(convert(Number(p.comparePrice)), currency, locale)}
                       </span>
                     )}
                   </div>

@@ -36,7 +36,7 @@ export default function OrdersPage() {
   const format = useFormatter();
   const nav = useTranslations("nav");
   const { user } = useAuth();
-  const { currency, convert } = useCurrency();
+  const { currency, convert, locale } = useCurrency();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -75,7 +75,7 @@ export default function OrdersPage() {
                 </div>
               </div>
               <Chip size="sm" color={statusColors[order.status] || "default"}>{tOrder.has(`status.${order.status}`) ? tOrder(`status.${order.status}`) : order.status}</Chip>
-              <span className="whitespace-nowrap text-[0.9375rem] font-bold max-[640px]:text-base">{formatPrice(convert(Number(order.total)), currency)}</span>
+              <span className="whitespace-nowrap text-[0.9375rem] font-bold max-[640px]:text-base">{formatPrice(convert(Number(order.total)), currency, locale)}</span>
             </Link>
           ))}
         </div>

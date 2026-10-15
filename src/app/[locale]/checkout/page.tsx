@@ -590,7 +590,7 @@ export default function CheckoutPage() {
                             <div style={{ fontSize: "0.75rem", color: "var(--color-text-tertiary)" }}>{tOrder(`shippingTime.${m.key}`)}</div>
                           </div>
                           <span style={{ fontSize: "0.875rem", fontWeight: 700, color: m.price === 0 ? "var(--color-success)" : "var(--color-text)" }}>
-                            {m.price === 0 ? tOrder("free") : formatPrice(convert(m.price), currency)}
+                            {m.price === 0 ? tOrder("free") : formatPrice(convert(m.price), currency, locale)}
                           </span>
                         </label>
                       );
@@ -665,7 +665,7 @@ export default function CheckoutPage() {
                         <div style={{ fontSize: "0.75rem", color: "var(--color-text-tertiary)" }}>{tOrder("qtyLabel", { count: item.quantity })}</div>
                       </div>
                       <span style={{ fontSize: "0.875rem", fontWeight: 700, flexShrink: 0 }}>
-                        {formatPrice(convert(item.price * item.quantity), currency)}
+                        {formatPrice(convert(item.price * item.quantity), currency, locale)}
                       </span>
                     </motion.div>
                   ))}
@@ -764,7 +764,7 @@ export default function CheckoutPage() {
             }}>
               <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem" }}>
                 <Truck size={14} style={{ color: "var(--color-accent)" }} />
-                <span>{t.rich("addForFreeShipping", { amount: formatPrice(amountToFreeShipping, currency), strong: (chunks) => <strong>{chunks}</strong> })}</span>
+                <span>{t.rich("addForFreeShipping", { amount: formatPrice(amountToFreeShipping, currency, locale), strong: (chunks) => <strong>{chunks}</strong> })}</span>
               </div>
               <div style={{ height: 4, borderRadius: 2, background: "var(--color-border)", overflow: "hidden" }}>
                 <div style={{
@@ -821,7 +821,7 @@ export default function CheckoutPage() {
                   {item.name}
                 </span>
                 <span style={{ fontSize: "0.75rem", fontWeight: 600, flexShrink: 0 }}>
-                  {formatPrice(convert(item.price * item.quantity), currency)}
+                  {formatPrice(convert(item.price * item.quantity), currency, locale)}
                 </span>
               </div>
             ))}
@@ -899,12 +899,12 @@ export default function CheckoutPage() {
           <div style={{ display: "flex", flexDirection: "column", gap: "0.625rem", fontSize: "0.875rem" }}>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <span style={{ color: "var(--color-text-secondary)" }}>{tOrder("subtotal")}</span>
-              <span style={{ fontWeight: 500 }}>{formatPrice(convert(cart.subtotal), currency)}</span>
+              <span style={{ fontWeight: 500 }}>{formatPrice(convert(cart.subtotal), currency, locale)}</span>
             </div>
             {discount && (
               <div style={{ display: "flex", justifyContent: "space-between", color: "#15803d" }}>
                 <span>{t("discountLine", { percent: discount.percent })}</span>
-                <span style={{ fontWeight: 600 }}>−{formatPrice(convert(discountAmount), currency)}</span>
+                <span style={{ fontWeight: 600 }}>−{formatPrice(convert(discountAmount), currency, locale)}</span>
               </div>
             )}
             <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -913,13 +913,13 @@ export default function CheckoutPage() {
                 {step < 1
                   ? t("shippingCalculated")
                   : finalShipping > 0
-                    ? formatPrice(convert(finalShipping), currency)
+                    ? formatPrice(convert(finalShipping), currency, locale)
                     : tOrder("free")}
               </span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <span style={{ color: "var(--color-text-secondary)" }}>{t("includesVat", { rate: VAT_RATE })}</span>
-              <span style={{ fontWeight: 500 }}>{formatPrice(convert(vatIncluded), currency)}</span>
+              <span style={{ fontWeight: 500 }}>{formatPrice(convert(vatIncluded), currency, locale)}</span>
             </div>
             <div style={{
               display: "flex",
@@ -931,7 +931,7 @@ export default function CheckoutPage() {
               marginTop: "0.375rem",
             }}>
               <span>{tOrder("total")}</span>
-              <span>{formatPrice(convert(step < 1 ? discountedSubtotal : orderTotal), currency)}</span>
+              <span>{formatPrice(convert(step < 1 ? discountedSubtotal : orderTotal), currency, locale)}</span>
             </div>
             <p style={{ fontSize: "0.6875rem", color: "var(--color-text-tertiary)", margin: "0.25rem 0 0" }}>
               {t("pricesIncludeVat")}
