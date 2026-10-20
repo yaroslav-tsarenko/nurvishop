@@ -59,9 +59,9 @@ export function ContactBlock() {
   return (
     <div className="mt-2 rounded-md border border-line bg-mist px-4 py-[0.875rem] text-[0.875rem] leading-[1.7]">
       <p>
-        <strong>ULTRASENS LT MB</strong>
+        <strong>MIRAPOL LT MB</strong>
         <br />
-        Company number: 308011165
+        Company number: 308010323
         <br />
         Registered office: V. Nagevičiaus g. 3, LT-08237 Vilnius, Lithuania
         <br />

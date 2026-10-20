@@ -140,7 +140,7 @@ function emailWrapper(content: string, options: { preheader?: string } = {}): st
     </div>
     <div style="text-align:center;margin-top:24px;font-size:12px;color:#999;line-height:1.6;">
       <p style="margin:0 0 4px;">&copy; ${new Date().getFullYear()} nurvishop. All rights reserved.</p>
-      <p style="margin:0;">ULTRASENS LT MB &middot; Vilnius, Lithuania &middot; <a href="${getSiteUrl()}" style="color:${BRAND_COLOR};text-decoration:none;">nurvishop.com</a></p>
+      <p style="margin:0;">MIRAPOL LT MB &middot; Vilnius, Lithuania &middot; <a href="${getSiteUrl()}" style="color:${BRAND_COLOR};text-decoration:none;">nurvishop.com</a></p>
       <p style="margin:8px 0 0;">
         <a href="${getSiteUrl()}/en/policies/privacy" style="color:#999;text-decoration:underline;margin:0 6px;">Privacy</a>
         <a href="${getSiteUrl()}/en/policies/terms" style="color:#999;text-decoration:underline;margin:0 6px;">Terms</a>
@@ -461,8 +461,8 @@ export async function sendOrderInvoiceEmail(data: OrderEmailData): Promise<boole
           <td style="width:50%;vertical-align:top;padding-right:12px;">
             <p style="margin:0 0 4px;font-size:11px;color:#999;text-transform:uppercase;letter-spacing:0.06em;font-weight:700;">From</p>
             <p style="margin:0;font-size:13px;color:${TEXT_COLOR};line-height:1.55;">
-              <strong>ULTRASENS LT MB</strong><br />
-              Company number: 308011165<br />
+              <strong>MIRAPOL LT MB</strong><br />
+              Company number: 308010323<br />
               V. Nagevičiaus g. 3<br />
               LT-08237 Vilnius<br />
               Lithuania

@@ -125,8 +125,8 @@ export async function generateInvoicePdf(data: InvoicePdfData): Promise<Buffer> 
   y -= 15;
 
   const fromLines = [
-    "ULTRASENS LT MB",
-    "Company number: 308011165",
+    "MIRAPOL LT MB",
+    "Company number: 308010323",
     "V. Nageviciaus g. 3",
     "LT-08237 Vilnius",
     "Lithuania",

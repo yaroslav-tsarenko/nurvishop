@@ -26,9 +26,9 @@ export const CURRENCIES = ["EUR", "USD", "GBP"] as const;
 export const VAT_RATE = 21;
 
 export const COMPANY = {
-  legalName: "ULTRASENS LT MB",
+  legalName: "MIRAPOL LT MB",
   tradingName: "nurvishop",
-  companyNumber: "308011165",
+  companyNumber: "308010323",
   addressLines: [
     "V. Nagevičiaus g. 3",
     "LT-08237 Vilnius",
