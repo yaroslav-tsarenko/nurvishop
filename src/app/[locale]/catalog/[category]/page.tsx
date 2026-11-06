@@ -9,7 +9,7 @@ import { localizeCategoryName } from "@/lib/i18n/category-names";
 import { localizedProductName } from "@/lib/i18n/product";
 import { localeAlternates, openGraphFor, twitterFor } from "@/lib/i18n/metadata";
 
-export const revalidate = 60;
+export const revalidate = 86400;
 
 interface CategoryPageProps {
   params: Promise<{ category: string; locale: string }>;

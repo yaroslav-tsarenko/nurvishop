@@ -39,7 +39,9 @@ export async function GET(request: NextRequest) {
       orderBy: { name: "asc" },
     });
 
-    return NextResponse.json(products.map((p) => localizeProduct(p, locale)));
+    return NextResponse.json(products.map((p) => localizeProduct(p, locale)), {
+      headers: { "Cache-Control": "public, s-maxage=600, stale-while-revalidate=86400" },
+    });
   } catch (error) {
     console.error("Error searching:", error);
     return NextResponse.json({ error: "Search failed" }, { status: 500 });

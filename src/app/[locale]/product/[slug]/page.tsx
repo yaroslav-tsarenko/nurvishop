@@ -11,7 +11,7 @@ import { localizeCategoryName } from "@/lib/i18n/category-names";
 import { localizeProduct } from "@/lib/i18n/product";
 import { localeAlternates, openGraphFor, twitterFor } from "@/lib/i18n/metadata";
 
-export const revalidate = 60;
+export const revalidate = 86400;
 
 interface ProductPageProps {
   params: Promise<{ slug: string; locale: string }>;
